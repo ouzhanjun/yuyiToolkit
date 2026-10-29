@@ -1,0 +1,234 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:baseControls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+             x:Class="yuyiAvalonia.UI.Controls.FillCanvasPropertyEditor">
+
+    <UserControl.Resources>
+        <conv:EnumToBoolConverter x:Key="EnumToBool"/>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <!-- 填充类型选择 -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <RadioButton Content="无填充"
+                         IsChecked="{Binding FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource EnumToBool}, ConverterParameter=None}"
+                         Margin="0,0,12,0"
+                         FontSize="10"/>
+            <RadioButton Content="纯色"
+                         IsChecked="{Binding FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource EnumToBool}, ConverterParameter=Solid}"
+                         Margin="0,0,12,0"
+                         FontSize="10"/>
+            <RadioButton Content="渐变"
+                         IsChecked="{Binding FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource EnumToBool}, ConverterParameter=Gradient}"
+                         FontSize="10"/>
+        </StackPanel>
+
+        <!-- 透明度 -->
+        <StackPanel Margin="0,0,0,10">
+            <TextBlock Text="透明度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Slider Grid.Column="0"
+                        Value="{Binding Opacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        Minimum="0" Maximum="1"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="0.1"
+                        Height="30"/>
+                <TextBlock Grid.Column="1"
+                            Text="{Binding Opacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:P0}}"
+                            FontSize="10"
+                            Foreground="{DynamicResource TextPrimary}"
+                            VerticalAlignment="Center"
+                            Margin="8,0,0,0"
+                            Width="40"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- 纯色填充 -->
+        <StackPanel IsVisible="{Binding FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource EnumToBool}, ConverterParameter=Solid}">
+            <StackPanel Margin="0,0,0,5">
+                <TextBlock Text="背景颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:ColorInput Text="{Binding BackgroundColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                    FontSize="10" Height="30"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 渐变填充 -->
+        <StackPanel IsVisible="{Binding FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource EnumToBool}, ConverterParameter=Gradient}">
+            <TextBlock Text="渐变颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <Grid Margin="0,0,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="起始" FontSize="9" Foreground="{DynamicResource TextPrimary}"/>
+                    <controls:ColorInput Text="{Binding GradientStartColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontSize="10" Height="30"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Text="→" FontSize="14" VerticalAlignment="Center" Margin="8,5,8,0" Foreground="{DynamicResource TextPrimary}"/>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="结束" FontSize="9" Foreground="{DynamicResource TextPrimary}"/>
+                    <controls:ColorInput Text="{Binding GradientEndColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontSize="10" Height="30"/>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="渐变角度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,5,0,5"/>
+            <Grid Margin="0,5,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Slider Grid.Column="0"
+                        Value="{Binding GradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        Minimum="0"
+                        Maximum="360"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="5"
+                        Height="30"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
+                    <controls:NumericUpDownEx Value="{Binding GradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                              Minimum="0"
+                                              Maximum="360"
+                                              Step="5"
+                                              Height="30"
+                                              Width="65"/>
+                    <ToggleButton x:Name="GradientAnglePickerToggle"
+                                  IsChecked="{Binding IsGradientAnglePickerOpen, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                  Padding="8,4"
+                                  FontSize="10"
+                                  Margin="5,0,0,0">
+                        <PathIcon Data="{x:Static icon:Icon.Rotation}" Width="14" Height="14"/>
+                    </ToggleButton>
+                </StackPanel>
+            </Grid>
+
+            <!-- 渐变角度选择器 -->
+            <Border IsVisible="{Binding IsGradientAnglePickerOpen, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="10"
+                    Margin="0,5,0,5"
+                    HorizontalAlignment="Center">
+                <controls:AnglePicker Angle="{Binding GradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                   Size="100"
+                                   CircleBrush="{DynamicResource BorderColor}"
+                                   LineBrush="{DynamicResource AccentColor}"
+                                   HandleBrush="{DynamicResource AccentColor}"/>
+            </Border>
+        </StackPanel>
+
+        <!-- 独立背景图属性 -->
+        <Separator Margin="0,15" Height="1" Background="{DynamicResource BorderColor}"/>
+
+        <!-- 背景图启动开关 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                        Text="启用背景图"
+                        FontSize="11"
+                        Foreground="{DynamicResource TextPrimary}"
+                        VerticalAlignment="Center"/>
+            <ToggleSwitch Grid.Column="1"
+                          OnContent="" OffContent=""
+                          IsChecked="{Binding EnableBackgroundImage, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                          VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- 背景图片设置（受启动开关控制） -->
+        <StackPanel IsVisible="{Binding EnableBackgroundImage, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <!-- 背景图片 -->
+            <StackPanel Margin="0,0,0,5">
+                <TextBlock Text="背景图片" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <Border Background="{DynamicResource BgProperty}"
+                        CornerRadius="4"
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="1"
+                        Height="30"
+                        ClipToBounds="True">
+                    <TextBox Text="{Binding BackgroundImage, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                             FontSize="10"
+                             Watermark="图片路径..."
+                             BorderBrush="Transparent"
+                             VerticalAlignment="Center"
+                             Height="30"/>
+                </Border>
+            </StackPanel>
+
+            <!-- 选择图片按钮 -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Button Content="选择图片"
+                        Margin="0,0,10,0"
+                        Padding="12,4"
+                        Click="OnSelectImageClick"
+                        FontSize="10"/>
+                <Button Content="清除"
+                        Padding="12,4"
+                        Click="OnClearImageClick"
+                        FontSize="10"/>
+            </StackPanel>
+
+            <!-- 拉伸模式和平铺模式 -->
+            <Grid Margin="0,0,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 拉伸模式 -->
+                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                    <TextBlock Text="拉伸模式" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_StretchComboBox"
+                         FontSize="10" Height="30"/>
+                </StackPanel>
+
+                <!-- 平铺模式 -->
+                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                    <TextBlock Text="平铺模式" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_TileModeComboBox"
+                         FontSize="10" Height="30"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 平铺对齐X和Y -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 平铺对齐X -->
+                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                    <TextBlock Text="水平起点" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_AlignmentXComboBox"
+                        FontSize="10" Height="30"/>
+                </StackPanel>
+
+                <!-- 平铺对齐Y -->
+                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                    <TextBlock Text="垂直起点" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_AlignmentYComboBox"
+                        FontSize="10" Height="30"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

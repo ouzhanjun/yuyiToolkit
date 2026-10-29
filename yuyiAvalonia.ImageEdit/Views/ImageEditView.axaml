@@ -1,0 +1,174 @@
+    <UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:yuyiAvalonia.ImageEdit.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers"
+             xmlns:local="using:yuyiAvalonia.ImageEdit.Views"
+             xmlns:converters="clr-namespace:yuyiAvalonia.ImageEdit.Converters"
+             xmlns:controls="clr-namespace:yuyiAvalonia.ImageEdit.Controls"
+             x:Class="yuyiAvalonia.ImageEdit.Views.ImageEditView"
+             x:Name="ImageEditControl"
+             PointerPressed="OnPointerPressed"
+             PointerMoved="OnPointerMoved"
+             PointerReleased="OnPointerReleased"
+             KeyDown="OnKeyDown">
+
+    <UserControl.Resources>
+        <converters:BoolToFontWeightConverter x:Key="BoolToFontWeightConverter"/>
+        <converters:BoolToFontStyleConverter x:Key="BoolToFontStyleConverter"/>
+        <converters:BoolToScrollBarVisibilityConverter x:Key="BoolToScrollBarVisibilityConverter"/>
+        <converters:HalfConverter x:Key="HalfConverter"/>
+        <converters:EditToolModeToHitTestConverter x:Key="EditToolModeToHitTestConverter"/>
+    </UserControl.Resources>
+  <!--
+    <UserControl.DataContext>
+        <vm:ImageEditViewModel />
+    </UserControl.DataContext>
+    -->
+    <DockPanel>
+
+        <!-- 右侧参数调节面板 -->
+        <Border DockPanel.Dock="Right"
+                Width="250"
+                Margin="5,5,5,5"
+                Padding="5"
+                Background="{DynamicResource BgToolbar}"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource BorderColor}"
+                CornerRadius="6">
+            <TransitioningContentControl Content="{Binding RightControl}"/>
+        </Border>
+
+        <!-- 左侧图片列表面板 -->
+        <Border DockPanel.Dock="Left"
+                Width="180"
+                Margin="5,5,0,5"
+                Padding="5"
+                Background="{DynamicResource BgToolbar}"
+                BorderThickness="1"
+                BorderBrush="{DynamicResource BorderColor}"
+                CornerRadius="6"
+                IsVisible="{Binding HasMultipleImages}">
+            <DockPanel>
+                <!-- 文件夹路径标题 -->
+                <TextBlock DockPanel.Dock="Top"
+                           Text="{Binding CurrentFolderPath}"
+                           FontSize="10"
+                           TextTrimming="CharacterEllipsis"
+                           Margin="0,0,0,5"
+                           Foreground="{DynamicResource TextPrimary}"/>
+
+                <!-- 图片列表 -->
+                <ListBox ItemsSource="{Binding ImageList}"
+                         SelectedItem="{Binding SelectedImageItem}"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+                    </ListBox.Styles>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="3"
+                                    Background="{DynamicResource BgPanel}"
+                                    BorderBrush="{DynamicResource BorderColor}"
+                                    BorderThickness="1"
+                                    CornerRadius="4">
+                                <StackPanel>
+                                    <!-- 缩略图 -->
+                                    <Image Source="{Binding Thumbnail}"
+                                           Height="70"
+                                           Stretch="Uniform"
+                                           HorizontalAlignment="Center"/>
+                                    <!-- 文件名 -->
+                                    <TextBlock Text="{Binding FileName}"
+                                               FontSize="10"
+                                               TextTrimming="CharacterEllipsis"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,3,0,0"
+                                               ToolTip.Tip="{Binding FileName}"
+                                               Foreground="{DynamicResource TextPrimary}"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </Border>
+
+        <Border x:Name="ImageContainer"
+                SizeChanged="ImageContainer_SizeChanged"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                ClipToBounds="True">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto"
+                          x:Name="ImageScrollViewer">
+                <!-- 图像显示区域 -->
+                <Panel HorizontalAlignment="Center" 
+                        VerticalAlignment="Center"
+                        Width="{Binding ScaledImageSize.Width}"
+                        Height="{Binding ScaledImageSize.Height}">   
+                    <Image x:Name="DisplayImage"
+                        PointerWheelChanged="OnPointerWheelChanged"
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center"
+                        Source="{Binding ImageSource}"
+                        Stretch="Uniform"
+                        Width="{Binding ScaledImageSize.Width}"
+                        Height="{Binding ScaledImageSize.Height}">
+                    </Image>
+
+                    <!-- 画笔绘制叠加层 -->
+                    <Canvas x:Name="BrushCanvas"
+                            Width="{Binding ScaledImageSize.Width}"
+                            Height="{Binding ScaledImageSize.Height}"
+                            IsHitTestVisible="True"
+                            IsVisible="False">
+
+                        <!-- 文字输入框（支持 IME 富文本） -->
+                        <controls:RichTextInputControl x:Name="TextInputBox"
+                            Width="{Binding TextInputBoxSize.Width}"
+                            Canvas.Left="{Binding TextInsertPointDisplay.X}"
+                            Canvas.Top="{Binding TextInsertPointDisplay.Y}"
+                            ZoomLevel="{Binding ZoomLevel}"
+                            FontSize="{Binding CurrentTextSettings.FontSizeDisplay}"
+                            FontFamily="{Binding CurrentTextSettings.FontFamily}"
+                            FontWeight="{Binding CurrentTextSettings.IsBold, Converter={StaticResource BoolToFontWeightConverter}}"
+                            FontStyle="{Binding CurrentTextSettings.IsItalic, Converter={StaticResource BoolToFontStyleConverter}}"
+                            Foreground="{Binding CurrentTextSettings.FontColorDisplay}"
+                            BorderThickness="1"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            KeyDown="OnTextInputKeyDown">
+                        </controls:RichTextInputControl>
+                    </Canvas>
+
+                    <Button IsVisible="{Binding !HasImage}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Width="120" Height="80" CornerRadius="4" Background="{DynamicResource BgToolbar}" Opacity="0.3"
+                        Command="{Binding OpenFileCommand}">
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <TextBlock>请选择图片</TextBlock>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- 选择框叠加层 -->
+                    <controls:SelectionOverlayControl x:Name="SelectionOverlay"
+                            Width="{Binding ScaledImageSize.Width}"
+                            Height="{Binding ScaledImageSize.Height}"
+                            SelectionRect="{Binding SelectionRect}"
+                            ZoomLevel="{Binding ZoomLevel}"
+                            ImageWidth="{Binding ImageSource.PixelSize.Width}"
+                            ImageHeight="{Binding ImageSource.PixelSize.Height}"
+                            IsSelectionVisible="{Binding UseSelection}"
+                            IsHitTestVisible="{Binding CurrentToolMode, Converter={StaticResource EditToolModeToHitTestConverter}}"/>
+                </Panel>
+            </ScrollViewer>
+        </Border>
+    </DockPanel>
+</UserControl>

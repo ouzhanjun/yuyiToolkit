@@ -1,0 +1,166 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
+             x:Class="yuyiAvalonia.UI.Controls.TextPropertyEditor">
+
+    <StackPanel>
+        <TextBlock Text="文本内容" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+        <controls:TextInput Text="{Binding Text, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            Margin="0,0,0,10"
+                            FontSize="11"
+                            Watermark="请输入文本内容"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            Height="60"/>
+
+        <!-- 字体和颜色 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,3,0">
+                <TextBlock Text="字体" FontSize="10" Foreground="{DynamicResource TextPrimary}"/>
+                <controls:FontComboBox FontSize="10" SelectedFontFamily="{Binding FontFamily, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="0,0,3,0">
+                <TextBlock Text="字号" FontSize="10" Foreground="{DynamicResource TextPrimary}"/>
+                <controls:NumericUpDownEx Value="{Binding FontSize, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="8" Maximum="100" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Margin="0,0,0,0">
+                <TextBlock Text="颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}"/>
+                <controls:ColorInput IsFrontColor="True" Text="{Binding ForeColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="120" FontSize="11" Height="30"/>
+            </StackPanel>
+
+        </Grid>
+
+        <!-- 加粗、斜体、下划线 -->
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+            <ToggleButton IsChecked="{Binding IsBold, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          Height="30" Width="30"
+                          CornerRadius="15"
+                          ToolTip.Tip="粗体"
+                          Margin="0,0,8,0"
+                          FontWeight="Bold">
+                <TextBlock Text="B" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+            </ToggleButton>
+            <ToggleButton IsChecked="{Binding IsItalic, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          Height="30" Width="30"
+                          CornerRadius="15"
+                          ToolTip.Tip="斜体"
+                          Margin="0,0,8,0">
+                <TextBlock Text="I" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" FontStyle="Italic"/>
+            </ToggleButton>
+            <ToggleButton IsChecked="{Binding IsUnderline, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          Height="30" Width="30"
+                          CornerRadius="15"
+                          ToolTip.Tip="下划线"
+                          Margin="0,0,8,0">
+                <TextBlock Text="U" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" TextDecorations="Underline"/>
+            </ToggleButton>
+            <ToggleButton IsChecked="{Binding IsStrikethrough, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          Height="30" Width="30"
+                          CornerRadius="15"
+                          ToolTip.Tip="删除线">
+                <TextBlock Text="S" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" TextDecorations="Strikethrough"/>
+            </ToggleButton>
+        </StackPanel>
+
+        <!-- 文本对齐方式 -->
+        <Grid Margin="0,0,0,10" ColumnDefinitions="*,*">
+            <!-- 水平对齐 -->
+            <StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center" Margin="0,0,5,0">
+                <TextBlock Text="水平对齐" FontSize="10" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                
+                <controls:ThreeButtonGroup
+                    x:Name="PART_TextAlignment" 
+                    ToolTip.Tip="水平对齐"
+                    Height="30"
+                    Cursor="Hand"
+                    Tip1="左对齐"
+                    Tip2="中间对齐"
+                    Tip3="右对齐"
+                    SelectedItem="{Binding TextAlignment, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Icon1="{x:Static icon:Icon.LeftAlignment}"
+                    Icon2="{x:Static icon:Icon.CenterAlignment}"
+                    Icon3="{x:Static icon:Icon.RightAlignment}"/>
+            </StackPanel>
+
+            <!-- 垂直对齐 -->
+            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="5,0,0,0">
+                <TextBlock Text="垂直对齐" FontSize="10" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                
+                <controls:ThreeButtonGroup
+                    ToolTip.Tip="垂直对齐"
+                    x:Name="PART_TextVerticalAlignment" 
+                    Height="30"
+                    Cursor="Hand"
+                    Tip1="上对齐"
+                    Tip2="中间对齐"
+                    Tip3="下对齐"
+                    SelectedItem="{Binding VerticalTextAlignmentIndex, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Icon1="{x:Static icon:Icon.TopAlignment}"
+                    Icon2="{x:Static icon:Icon.MiddleAlignment}"
+                    Icon3="{x:Static icon:Icon.BottomAlignment}"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 行间距和字间距 -->
+        <Grid Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                <TextBlock Text="行间距" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:LineSpacingComboBox SelectedValue="{Binding LineHeight, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                               FontSize="10" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                <TextBlock Text="字间距" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding LetterSpacing, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                          Minimum="0" Maximum="50" Height="30"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 渐变文字 -->
+        <ToggleSwitch FontSize="11"
+                      IsChecked="{Binding HasTextGradient, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      OnContent="启用渐变文字"
+                      OffContent="关闭渐变文字"
+                      Margin="0,10,0,10"/>
+
+        <Grid Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,0,0">
+                <TextBlock Text="起始颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:ColorInput Text="{Binding TextGradientStartColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="10" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                <TextBlock Text="结束颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:ColorInput Text="{Binding TextGradientEndColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="10" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                <TextBlock Text="渐变角度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding TextGradientAngle, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="0" Maximum="360" Height="30"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

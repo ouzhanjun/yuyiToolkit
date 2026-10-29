@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://www.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="400"
+             xmlns:vm="clr-namespace:yuyiAvalonia.ImageEdit.ViewModels"
+             xmlns:models="clr-namespace:yuyiAvalonia.ImageEdit.Models"
+             xmlns:local="using:yuyiAvalonia.ImageEdit.Views"
+             x:DataType="vm:ImageEditViewModel"
+             x:Class="yuyiAvalonia.ImageEdit.Views.ImageEditControlPanel">
+  <TabControl Margin="0">
+    <TabItem Header="基础" FontSize="12">
+    <!-- 图像显示区域 -->
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <local:ImageEditCommonPanel x:Name="BasicPanel" Title="基础调整" IntensityBasic="{Binding ImageEditIntensityBasic}"></local:ImageEditCommonPanel>
+    </ScrollViewer>
+    </TabItem>
+    <TabItem Header="颜色" FontSize="12">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <local:ImageEditCommonPanel x:Name="ColorPanel" Title="颜色调整" IntensityBasic="{Binding ImageEditIntensityColor}"></local:ImageEditCommonPanel>
+    </ScrollViewer>
+    </TabItem>
+    <TabItem Header="效果" FontSize="12">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <local:ImageEditCommonPanel x:Name="EffectPanel" Title="效果调整" IntensityBasic="{Binding ImageEditIntensityEffect}"></local:ImageEditCommonPanel>
+    </ScrollViewer>
+    </TabItem>
+    <TabItem Header="风格化" FontSize="12">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <local:ImageEditCommonPanel x:Name="StylizePanel" Title="风格化调整" IntensityBasic="{Binding ImageEditIntensityStylize}"></local:ImageEditCommonPanel>
+    </ScrollViewer>
+    </TabItem>
+</TabControl>
+</UserControl>

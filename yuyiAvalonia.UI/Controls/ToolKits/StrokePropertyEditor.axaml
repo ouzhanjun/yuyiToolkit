@@ -1,0 +1,291 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="using:yuyiAvalonia.UI.Models"
+             xmlns:toolkits="using:yuyiAvalonia.UI.Controls.ToolKits"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:converters="using:yuyiAvalonia.UI.Converters"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
+             x:Class="yuyiAvalonia.UI.Controls.StrokePropertyEditor">
+
+    <StackPanel>
+
+        <!-- 启用高级边线 -->
+        <ToggleSwitch FontSize="11"
+                  IsChecked="{Binding EnableAdvancedStroke, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                  IsVisible="{Binding IsToggleVisible, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
+                  OnContent="启用高级边线"
+                  OffContent="关闭高级边线"
+                  Margin="0,0,0,10"/>
+        
+        <!-- 边框类型选择 -->
+        <StackPanel Margin="0,0,0,10">
+            <TextBlock Text="边框类型" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                
+            <Border Background="{DynamicResource BgProperty}"
+                    CornerRadius="4"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    ClipToBounds="True"
+                    Height="30"
+                    BorderThickness="1">
+                <ComboBox ItemsSource="{Binding StrokeStyleItemsSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            SelectedIndex="{Binding StrokeStyleIndex, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"  
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Height="30">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:StrokeStyleItem">
+                            <Border Height="18" Background="Transparent" Margin="1,0" Padding="8,1" ClipToBounds="True">
+                                <Canvas Margin="4,0" >
+                                    <Line StartPoint="4,11" EndPoint="900,11" Stroke="#666666" StrokeThickness="1.2"
+                                            Canvas.Left="0" Canvas.Top="0"  
+                                            StrokeDashArray="{Binding DashArray, Converter={x:Static converters:StrokeStyleDashArrayConverter.Instance}}"/>
+                                </Canvas>
+                            </Border>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Border>
+        </StackPanel>
+
+        <!-- 填充类型选择 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="填充类型" FontSize="10" Foreground="{DynamicResource TextPrimary}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <Border Grid.Column="1"
+                    Background="{DynamicResource BgProperty}"
+                    CornerRadius="4"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    Height="30"
+                    ClipToBounds="True">
+                <controls:EnumComboBox x:Name="PART_StrokeFillTypeComboBox"
+                          FontSize="10"
+                          Height="30"/>
+            </Border>
+        </Grid>
+
+        <!-- 透明度 -->
+        <StackPanel Margin="0,0,0,10">
+            <TextBlock Text="透明度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Slider Grid.Column="0"
+                        Value="{Binding StrokeOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        Minimum="0" Maximum="1"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="0.1"
+                        Height="30"/>
+                <TextBlock Grid.Column="1"
+                           Text="{Binding StrokeOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:P0}}"
+                           FontSize="10"
+                           Foreground="{DynamicResource TextPrimary}"
+                           VerticalAlignment="Center"
+                           Margin="8,0,0,0"
+                           Width="40"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- 纯色边框颜色 -->
+        <StackPanel x:Name="PART_PanelSolid" Margin="0,0,0,10">
+            <TextBlock Text="边框颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <controls:ColorInput Text="{Binding StrokeColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Height="30"/>
+        </StackPanel>
+
+        <!-- 渐变边框设置 -->
+        <StackPanel x:Name="PART_PanelGradient" Margin="0,0,0,10">
+            <TextBlock Text="渐变颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <Grid Margin="0,0,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="起始" FontSize="9" Foreground="{DynamicResource TextPrimary}"/>
+                    <controls:ColorInput Text="{Binding StrokeGradientStartColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Height="30"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Text="→" FontSize="14" VerticalAlignment="Center" Margin="8,5,8,0" Foreground="{DynamicResource TextPrimary}"/>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="结束" FontSize="9" Foreground="{DynamicResource TextPrimary}"/>
+                    <controls:ColorInput Text="{Binding StrokeGradientEndColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Height="30"/>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="渐变角度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,5,0,5"/>
+            <Grid Margin="0,5,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Slider Grid.Column="0"
+                        Value="{Binding StrokeGradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        Minimum="0"
+                        Maximum="360"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="5"
+                        Height="30"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="8,0,0,0">
+                    <controls:NumericUpDownEx Value="{Binding StrokeGradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                              Minimum="0"
+                                              Maximum="360"
+                                              Step="5"
+                                              Height="30"
+                                              Width="65"/>
+                    <ToggleButton x:Name="StrokeGradientAnglePickerToggle"
+                                  IsChecked="{Binding IsStrokeGradientAnglePickerOpen, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                  Padding="8,4"
+                                  FontSize="10"
+                                  Margin="5,0,0,0">
+                        <PathIcon Data="{x:Static icon:Icon.Rotation}" Width="14" Height="14"/>
+                    </ToggleButton>
+                </StackPanel>
+            </Grid>
+
+            <!-- 渐变角度选择器 -->
+            <Border IsVisible="{Binding IsStrokeGradientAnglePickerOpen, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="10"
+                    Margin="0,5,0,5"
+                    HorizontalAlignment="Center">
+                <controls:AnglePicker Angle="{Binding StrokeGradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                   Size="100"
+                                   CircleBrush="{DynamicResource BorderColor}"
+                                   LineBrush="{DynamicResource AccentColor}"
+                                   HandleBrush="{DynamicResource AccentColor}"/>
+            </Border>
+        </StackPanel>
+
+        <!-- 图片边框设置 -->
+        <StackPanel x:Name="PART_PanelImage" Margin="0,0,0,10">
+            <!-- 边框图片路径 -->
+            <StackPanel Margin="0,0,0,5">
+                <TextBlock Text="边框图片" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <Border Background="{DynamicResource BgProperty}"
+                        CornerRadius="4"
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="1"
+                        Height="30"
+                        ClipToBounds="True">
+                    <TextBox Text="{Binding StrokeImage, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Watermark="图片路径..."
+                             BorderBrush="Transparent"
+                             VerticalAlignment="Center"
+                             FontSize="10"
+                             Height="30"/>
+                </Border>
+            </StackPanel>
+
+            <!-- 选择图片按钮 -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Button Content="选择图片"
+                        Margin="0,0,10,0"
+                        Padding="12,4"
+                        Click="OnStrokeSelectImageClick"
+                        FontSize="10"/>
+                <Button Content="清除"
+                        Padding="12,4"
+                        Click="OnStrokeClearImageClick"
+                        FontSize="10"/>
+            </StackPanel>
+
+            <!-- 拉伸模式和平铺模式 -->
+            <Grid Margin="0,0,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                    <TextBlock Text="拉伸模式" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_StrokeStretchComboBox"
+                         FontSize="10" Height="30"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                    <TextBlock Text="平铺模式" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_StrokeTileModeComboBox"
+                          FontSize="10" Height="30"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 平铺对齐X和Y -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                    <TextBlock Text="水平起点" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_StrokeAlignmentXComboBox"
+                          FontSize="10" Height="30"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                    <TextBlock Text="垂直起点" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                    <controls:EnumComboBox x:Name="PART_StrokeAlignmentYComboBox"
+                        FontSize="10" Height="30"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                <TextBlock Text="边框粗细" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding StrokeWidth, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                         Minimum="0" Maximum="20" Height="30"/>
+                </StackPanel>
+            <!-- 虚线偏移 -->
+            <StackPanel Grid.Column="1" Margin="0,0,5,0">
+                <TextBlock Text="虚线偏移" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding StrokeDashOffset, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                         Minimum="0" Maximum="100" Height="30"/>
+            </StackPanel>
+
+            <!-- 圆角 -->
+            <StackPanel Grid.Column="2" Margin="0,0,0,0">
+                <TextBlock Text="圆角" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding CornerRadius, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                         Minimum="0" Maximum="100" Height="30"/>
+            </StackPanel>
+
+        </Grid>
+
+        <!-- 虚线数组编辑器 -->
+        <StackPanel Margin="0,0,0,5">
+            <TextBlock Text="虚线数组" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="4" Padding="6" Background="{DynamicResource BgToolbar}">
+                <local:StrokeDashArrayEditor
+                    x:Name="PART_DashArrayEditor"
+                    DashArrayDefinition="{Binding StrokeDashArrayDefinition, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    StrokeStyleIndex="{Binding StrokeStyleIndex, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
+                    HintText="设置各段长度（偶数个值效果最佳）"/>
+            </Border>
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

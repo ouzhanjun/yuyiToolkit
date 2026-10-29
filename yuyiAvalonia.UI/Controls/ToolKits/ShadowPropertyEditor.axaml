@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="300"
+             x:Class="yuyiAvalonia.UI.Controls.ShadowPropertyEditor">
+
+    <StackPanel>
+        <!-- 阴影开关 -->
+        <ToggleSwitch IsChecked="{Binding HasShadow, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      OnContent="启用阴影"
+                      FontSize="11"
+                      OffContent="关闭阴影"
+                      Margin="0,0,0,10"/>
+
+        <!-- 内阴影开关 -->
+        <ToggleSwitch IsChecked="{Binding IsInset, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      OnContent="内阴影"
+                      FontSize="11"
+                      OffContent="外阴影"
+                      IsEnabled="{Binding HasShadow, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Margin="0,0,0,10"/>
+
+        <!-- X偏移和Y偏移 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,0,0">
+                <TextBlock Text="X偏移" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding ShadowOffsetX, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="-50" Maximum="50" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                <TextBlock Text="Y偏移" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding ShadowOffsetY, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="-50" Maximum="50" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                <TextBlock Text="阴影大小" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding ShadowSpread, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="-20" Maximum="50" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="3" Margin="5,0,0,0">
+                <TextBlock Text="模糊半径" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding ShadowBlur, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="0" Maximum="50" Height="30"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- 阴影颜色 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1" Margin="0,0,5,0">
+                <TextBlock Text="阴影颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:ColorInput Text="{Binding ShadowColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="10" Height="30"/>
+            </StackPanel>
+        </Grid>
+
+    </StackPanel>
+</UserControl>

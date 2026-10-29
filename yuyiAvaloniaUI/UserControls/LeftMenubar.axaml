@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:menu="using:yuyiAvalonia.Base.ViewModels.Menu"
+             xmlns:vm="using:yuyiAvaloniaUI.ViewModels"
+            xmlns:mm ="using:yuyiAvalonia.Base.Helpers"
+            xmlns:views="using:yuyiAvaloniaUI.Views"
+             x:DataType="vm:MainContainerFourViewModel"
+             x:Class="yuyiAvaloniaUI.LeftMenubar">
+    <DockPanel>
+		<TextBox x:Name="Search"
+            Classes="Search"
+			Watermark="{Binding T_SearchText}"
+			KeyUp="SearchTextBox_OnKeyUp"
+			DockPanel.Dock="Top" 
+			Margin="0,0,0,0">
+		</TextBox>
+		<ScrollViewer>
+			<StackPanel>
+				<ItemsControl ItemsSource="{Binding LeftSidebarMenus}" Margin="0,10,0,5">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<StackPanel Margin="0,0,0,5">
+								<TextBlock Text="{Binding Key}" Classes="SidebarGroupName"/>
+								<ItemsControl ItemsSource="{Binding Value}">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Button Classes="SidebarMenuItem"
+												Classes.Active="{Binding IsActive}"
+                                                Command="{Binding MenuClickCommand}"
+                                                CommandParameter="{Binding}">
+												<WrapPanel Orientation="Horizontal">
+													<PathIcon Data="{Binding Icon}" Margin="0,0,5,0"/>
+													<TextBlock Text="{Binding Text}"/>
+												</WrapPanel>
+											</Button>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</StackPanel>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
+		</ScrollViewer>
+	</DockPanel>
+</UserControl>

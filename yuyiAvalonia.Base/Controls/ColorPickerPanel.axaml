@@ -1,0 +1,403 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls"
+             mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="800"
+             x:Class="yuyiAvalonia.Base.Controls.ColorPickerPanel"
+             x:Name="Root">
+
+    <UserControl.Resources>
+        <!-- 棋盘格背景（透明度预览用） -->
+        <DrawingBrush x:Key="CheckerBrush" TileMode="Tile" DestinationRect="0,0,6,6">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="#FFF">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="0,0,3,3"/>
+                                <RectangleGeometry Rect="3,3,3,3"/>
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                    <GeometryDrawing Brush="#CCC">
+                        <GeometryDrawing.Geometry>
+                            <GeometryGroup>
+                                <RectangleGeometry Rect="3,0,3,3"/>
+                                <RectangleGeometry Rect="0,3,3,3"/>
+                            </GeometryGroup>
+                        </GeometryDrawing.Geometry>
+                    </GeometryDrawing>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Resources>
+
+    <Border Background="{DynamicResource BgContent}"
+            Padding="10"
+            BoxShadow="0 2 8 0 #40000000">
+        <StackPanel Spacing="8">
+            <!-- 标题栏 -->
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0" Text="拾色器" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource TextPrimary}"/>
+                <Button Grid.Column="1" Content="✕" Padding="4,2" Background="Transparent"
+                        BorderThickness="0" Click="CloseButton_Click" FontSize="10"
+                        Foreground="{DynamicResource TextPrimary}"/>
+            </Grid>
+
+            <!-- 颜色预览区 -->
+            <Grid ColumnDefinitions="Auto,*" Height="28">
+                <Border Grid.Column="0" Width="28" CornerRadius="3" Margin="0,0,8,0" ClipToBounds="True">
+                    <Panel>
+                        <Border CornerRadius="3" Padding="-2" ClipToBounds="True">
+                            <Border.Background>
+                                <DrawingBrush TileMode="Tile" DestinationRect="0,0,4,4">
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <GeometryDrawing Brush="#FFF">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <RectangleGeometry Rect="0,0,2,2"/>
+                                                        <RectangleGeometry Rect="2,2,2,2"/>
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                            <GeometryDrawing Brush="#CCC">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <RectangleGeometry Rect="2,0,2,2"/>
+                                                        <RectangleGeometry Rect="0,2,2,2"/>
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Border.Background>
+                        </Border>
+                        <Border x:Name="ColorPreviewBg" CornerRadius="3"/>
+                    </Panel>
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                    <TextBlock Text="{Binding HexColor, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                               FontFamily="Consolas" FontSize="11"
+                               VerticalAlignment="Center" FontWeight="Medium" Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Text="{Binding RgbText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                               FontSize="9" Opacity="0.6" Foreground="{DynamicResource TextSecondary}"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 共享的色调-饱和度拾色面板：根据 ActiveFormat 切换 HSB / HSL 语义 -->
+            <Border Height="150" CornerRadius="3" ClipToBounds="True" x:Name="PickerHostBorder">
+                <Grid>
+                <!-- HSB 模式：白→色相 → 黑→透明叠加 -->
+                <Panel x:Name="HsbPickerPanel" ClipToBounds="True" Cursor="Cross">
+                    <Rectangle x:Name="SaturationGradient"/>
+                    <Rectangle>
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                <GradientStop Color="#00000000" Offset="0"/>
+                                <GradientStop Color="#FF000000" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Ellipse x:Name="SaturationSelector" Width="12" Height="12"
+                        Stroke="White" StrokeThickness="1.5"
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-6,-6,0,0"/>
+                </Panel>
+
+                <!-- HSL 模式：纯色底层 + 白→透明 + 黑→透明 -->
+                <Panel x:Name="HslPickerPanel" ClipToBounds="True" Cursor="Cross" IsVisible="False">
+                    <Rectangle x:Name="HslPickerBase"/>
+                    <Rectangle>
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                <GradientStop Color="#00FFFFFF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Rectangle>
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                <GradientStop Color="#00000000" Offset="0"/>
+                                <GradientStop Color="#FF000000" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Ellipse x:Name="HslPickerSelector" Width="12" Height="12"
+                        Stroke="White" StrokeThickness="1.5"
+                        HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-6,-6,0,0"/>
+                </Panel>
+                </Grid>
+            </Border>
+
+            <!-- 共享的色相滑块：根据模式显示不同 thumb -->
+            <StackPanel Spacing="3">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="色相" FontSize="9" Opacity="0.8" Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Grid.Column="1" x:Name="HueValueText" FontSize="9" Opacity="0.6" Foreground="{DynamicResource TextSecondary}"/>
+                </Grid>
+                <Border Height="10" CornerRadius="5" ClipToBounds="True" x:Name="HueTrack">
+                    <Panel>
+                        <Rectangle x:Name="HueGradient"/>
+                        <Rectangle x:Name="HueThumb" Width="6" Height="10" Fill="White"
+                                   Stroke="#333" StrokeThickness="0.5"
+                                   HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-3,0,0,0"/>
+                        <Rectangle x:Name="HslHueThumb" Width="6" Height="10" Fill="White"
+                                   Stroke="#333" StrokeThickness="0.5" IsVisible="False"
+                                   HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-3,0,0,0"/>
+                    </Panel>
+                </Border>
+            </StackPanel>
+
+            <!-- 共享的"第三分量"滑块 -->
+            <StackPanel Spacing="3">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" x:Name="BrightnessLabel" Text="亮度" FontSize="9" Opacity="0.8" Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Grid.Column="1" x:Name="BrightnessValueText" FontSize="9" Opacity="0.6" Foreground="{DynamicResource TextSecondary}"/>
+                </Grid>
+                <Border Height="10" CornerRadius="5" ClipToBounds="True" x:Name="BrightnessTrack">
+                    <Panel>
+                        <Rectangle x:Name="BrightnessGradient"/>
+                        <Rectangle x:Name="BrightnessThumb" Width="6" Height="10" Fill="White"
+                                   Stroke="#333" StrokeThickness="0.5"
+                                   HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-3,0,0,0"/>
+                        <Rectangle x:Name="LightnessThumb" Width="6" Height="10" Fill="White"
+                                   Stroke="#333" StrokeThickness="0.5" IsVisible="False"
+                                   HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-3,0,0,0"/>
+                    </Panel>
+                </Border>
+            </StackPanel>
+
+            <!-- HSL 模式下额外显示的"饱和度"滑块 -->
+            <StackPanel Spacing="3" x:Name="HslSaturationRow" IsVisible="False">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="饱和度" FontSize="9" Opacity="0.8" Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding HslSaturation, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:F0}%}"
+                               FontSize="9" Opacity="0.6" Foreground="{DynamicResource TextSecondary}"/>
+                </Grid>
+                <Border Height="10" CornerRadius="5" ClipToBounds="True" x:Name="HslSaturationTrack">
+                    <Panel>
+                        <Rectangle x:Name="HslSaturationTrackGradient"/>
+                        <Rectangle x:Name="HslSaturationThumb" Width="6" Height="10" Fill="White"
+                                   Stroke="#333" StrokeThickness="0.5"
+                                   HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-3,0,0,0"/>
+                    </Panel>
+                </Border>
+            </StackPanel>
+
+            <!-- HSB 模式下额外显示的"饱和度"滑块 -->
+            <StackPanel Spacing="3" x:Name="HsbSaturationRow" IsVisible="True">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="饱和度" FontSize="9" Opacity="0.8" Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Saturation, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:F0}%}"
+                               FontSize="9" Opacity="0.6" Foreground="{DynamicResource TextSecondary}"/>
+                </Grid>
+                <Panel>
+                    <Border Height="10" CornerRadius="5" ClipToBounds="True" x:Name="HsbSaturationTrack">
+                        <Panel>
+                            <Rectangle x:Name="HsbSaturationTrackGradient"/>
+                            <Rectangle x:Name="HsbSaturationThumb" Width="6" Height="10" Fill="White"
+                                       Stroke="#333" StrokeThickness="0.5"
+                                       HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-3,0,0,0"/>
+                        </Panel>
+                    </Border>
+                </Panel>
+            </StackPanel>
+
+            <!-- 透明度滑块 -->
+            <StackPanel Spacing="3">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="透明度" FontSize="9" Opacity="0.8" Foreground="{DynamicResource TextSecondary}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Alpha, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:F0}%}"
+                               FontSize="9" Opacity="0.6" Foreground="{DynamicResource TextSecondary}"/>
+                </Grid>
+                <Border Height="10" CornerRadius="5" ClipToBounds="True" x:Name="AlphaTrack">
+                    <Panel>
+                        <Rectangle Fill="{DynamicResource CheckerBrush}"/>
+                        <Rectangle x:Name="AlphaGradient"/>
+                        <Rectangle x:Name="AlphaThumb" Width="6" Height="10" Fill="White"
+                            Stroke="#333" StrokeThickness="0.5" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="-3,0,0,0"/>
+                    </Panel>
+                </Border>
+            </StackPanel>
+
+            <!-- Hex / CSS 切换由 ColorHexInput 内部实现（标题处下拉） + A 输入 -->
+            <Grid ColumnDefinitions="3*,*" ColumnSpacing="1">
+                <StackPanel Grid.Column="0">
+                    <TextBlock x:Name="PART_ColorModeTitle" Text="A" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                    <controls:ColorHexInput x:Name="HexInput" Height="28" CornerRadius="3,0,0,3"
+                        Title="Hex"
+                        ModeChanged="HexInput_ModeChanged"
+                        Text="{Binding HexColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        CssText="{Binding CssText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        Mode="{Binding HexCssMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="透明度" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                    <controls:NumericUpDownEx Height="28"
+                        CornerRadius="0,3,3,0"
+                        Title="A"
+                        Suffix="%"
+                        NeedUpDown="False"
+                        Value="{Binding Alpha, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        Minimum="0" Maximum="100" Step="1"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 格式切换：左侧下拉 (RGB/HSB/HSL)，右侧三组数字输入，仅当前模式可见 -->
+            <Grid ColumnDefinitions="*,3*" ColumnSpacing="1">
+                <StackPanel Grid.Column="0" x:Name="FormatComboTrigger" Cursor="Hand"
+                       PointerPressed="FormatComboTrigger_PointerPressed">
+                    <TextBlock Text="" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                    <Border Background="{DynamicResource BgProperty}" BorderBrush="{DynamicResource BorderColor}"
+                        Height="28"
+                        CornerRadius="3,0,0,3"
+                        BorderThickness="0"
+                        Padding="8,4" >
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="1">
+                            <TextBlock Grid.Column="0" x:Name="FormatComboLabel"
+                                Text="RGB" FontSize="10" FontWeight="Medium"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource TextSecondary}"/>
+                            <TextBlock Grid.Column="2" Text="▾" FontSize="12" Margin="4,0,0,0"
+                                VerticalAlignment="Center" Opacity="0.7"
+                                Foreground="{DynamicResource TextSecondary}"/>
+                        </Grid>
+                    </Border>
+                    <Popup x:Name="FormatComboPopup" PlacementTarget="FormatComboTrigger"
+                           Placement="Bottom" IsLightDismissEnabled="True">
+                        <Border Background="{DynamicResource BgContent}" BorderBrush="{DynamicResource BorderColor}"
+                                BorderThickness="1" CornerRadius="3" BoxShadow="0 2 8 0 #40000000" Padding="2">
+                            <StackPanel x:Name="FormatComboItems" MinWidth="80"/>
+                        </Border>
+                    </Popup>
+                </StackPanel>
+
+                <!-- R / G / B 输入（RGB 模式显示） -->
+                <Grid ColumnDefinitions="*,*,*" x:Name="RGBNumberRow" Grid.Column="2" ColumnSpacing="1">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="R" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            Title="R"
+                            CornerRadius="0"
+                            NeedUpDown="True"
+                            Value="{Binding Red, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="255" Step="1"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="G" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            CornerRadius="0"
+                            NeedUpDown="True"
+                            Title="G"
+                            Value="{Binding Green, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="255" Step="1"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="B" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            CornerRadius="0,3,3,0"
+                            NeedUpDown="True"
+                            Title="B"
+                            Value="{Binding Blue, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="255" Step="1"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- HSB H/S/B 数字输入（HSB 模式显示） -->
+                <Grid Grid.Column="2" ColumnDefinitions="*,*,*" x:Name="HsbNumberRow" IsVisible="False" ColumnSpacing="1">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="H" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            Title="H"
+                            CornerRadius="3,0,0,3"
+                            NeedUpDown="True"
+                            Value="{Binding Hue, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="360" Step="1"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="S" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            CornerRadius="0"
+                            Title="S"
+                            NeedUpDown="True"
+                            Value="{Binding Saturation, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="100" Step="1"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="B" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            CornerRadius="0,3,3,0"
+                            Title="B"
+                            NeedUpDown="True"
+                            Value="{Binding Brightness, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="100" Step="1"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- HSL H/S/L 数字输入（HSL 模式显示） -->
+                <Grid Grid.Column="2" ColumnDefinitions="*,*,*" x:Name="HslNumberRow" IsVisible="False" ColumnSpacing="1">
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="H" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            Title="H"
+                            CornerRadius="3,0,0,3"
+                            NeedUpDown="True"
+                            Value="{Binding HslHue, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="360" Step="1"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="S" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            CornerRadius="0"
+                            Title="S"
+                            NeedUpDown="True"
+                            Value="{Binding HslSaturation, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="100" Step="1"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="L" Margin="0,0,0,3" FontSize="9" Foreground="{DynamicResource TextSecondary}" HorizontalAlignment="Center"/>
+                        <controls:NumericUpDownEx Height="28"
+                            CornerRadius="0,3,3,0"
+                            Title="L"
+                            NeedUpDown="True"
+                            Value="{Binding Lightness, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                            Minimum="0" Maximum="100" Step="1"/>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- 预设颜色 -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="预设" FontSize="9" Opacity="0.8" Foreground="{DynamicResource TextSecondary}"/>
+                <ItemsControl x:Name="PresetColorItemsControl" ItemsSource="{x:Static controls:ColorPickerPanel.PresetColors}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="18" Height="18" CornerRadius="3" Margin="1"
+                                    Background="{Binding}"
+                                    Cursor="Hand"
+                                    Tag="{Binding}"
+                                    PointerPressed="PresetColor_Click"
+                                    x:Name="ColorBorder"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- 确认按钮 -->
+            <Button Content="确认" Height="28" FontSize="11" FontWeight="Medium"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    HorizontalAlignment="Stretch" Click="ConfirmButton_Click"
+                    x:Name="ConfirmButton"
+                    Background="{DynamicResource AccentColor}" Foreground="White"/>
+        </StackPanel>
+    </Border>
+</UserControl>

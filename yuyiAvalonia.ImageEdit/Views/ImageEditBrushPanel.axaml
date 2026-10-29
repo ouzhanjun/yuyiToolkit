@@ -1,0 +1,97 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:controls="using:yuyiAvalonia.Base.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://www.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="400"
+             xmlns:vm="clr-namespace:yuyiAvalonia.ImageEdit.ViewModels"
+             xmlns:models="clr-namespace:yuyiAvalonia.ImageEdit.Models"
+             x:DataType="vm:ImageEditViewModel"
+             x:Class="yuyiAvalonia.ImageEdit.Views.ImageEditBrushPanel">
+  <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Classes="UCSettings">
+      <TextBlock Text="画笔设置" Classes="Title"/>
+
+      <!-- 画笔类型 -->
+      <TextBlock Text="画笔类型" Classes="Content"/>
+      <ComboBox SelectedIndex="{Binding CurrentBrushSettings.BrushTypeIndex, Mode=TwoWay}" HorizontalAlignment="Stretch" Margin="0,0,0,10">
+        <ComboBoxItem Content="油画笔"/>
+        <ComboBoxItem Content="记号笔"/>
+        <ComboBoxItem Content="蜡笔"/>
+        <ComboBoxItem Content="水彩笔"/>
+        <ComboBoxItem Content="钢笔"/>
+        <ComboBoxItem Content="铅笔"/>
+        <ComboBoxItem Content="喷雾罐"/>
+        <ComboBoxItem Content="气笔"/>
+      </ComboBox>
+
+      <!-- 粗细 -->
+      <TextBlock Text="粗细" Classes="Content"/>
+      <Grid Margin="0,0,0,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+        <Slider Minimum="1" Maximum="50"
+                Value="{Binding CurrentBrushSettings.StrokeWidth, Mode=TwoWay}"
+                VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1" Text="{Binding CurrentBrushSettings.StrokeWidth}"
+                   VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="11"/>
+      </Grid>
+
+      <!-- 不透明度 -->
+      <TextBlock Text="不透明度" Classes="Content"/>
+      <Grid Margin="0,0,0,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+        <Slider Minimum="0" Maximum="1"
+                Value="{Binding CurrentBrushSettings.Opacity, Mode=TwoWay}"
+                VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1"
+                   Text="{Binding CurrentBrushSettings.Opacity, StringFormat={}{0:P0}}"
+                   VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="11"/>
+      </Grid>
+
+      <!-- 光泽 -->
+      <TextBlock Text="光泽" Classes="Content"/>
+      <Grid Margin="0,0,0,10">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+        <Slider Minimum="0" Maximum="1"
+                Value="{Binding CurrentBrushSettings.Glossiness, Mode=TwoWay}"
+                VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="1"
+                   Text="{Binding CurrentBrushSettings.Glossiness, StringFormat={}{0:P0}}"
+                   VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="11"/>
+      </Grid>
+
+      <!-- 平滑 -->
+      <ToggleSwitch Content="平滑笔触" IsChecked="{Binding CurrentBrushSettings.IsSmooth, Mode=TwoWay}" OnContent="是" OffContent="否"/>
+        
+      <TextBlock Text="画笔颜色" Classes="Content"/>
+      <!-- 画笔颜色 -->
+      <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,5">
+        <Border Height="30" CornerRadius="3" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1"
+                Width="30"
+                Background="{Binding CurrentBrushSettings.StrokeColorDisplay}">
+        </Border>
+        <Button x:Name="ShowColorPickerBtn" Content="🎨" Padding="8,4" Click="ShowColorPickerBtn_Click" Background="{DynamicResource AccentColor}"/>
+      </StackPanel>
+        
+      <!-- 拾色器面板（点击按钮时显示） -->
+       <!-- 
+      <Border x:Name="ColorPickerContainer" IsVisible="False" Margin="0,5,0,10" Background="{DynamicResource BgContent}" CornerRadius="8" Padding="8">
+        <controls:ColorPickerPanel x:Name="ColorPicker"/>
+      </Border>
+      -->
+    <Border>
+		<controls:ColorSelectorControl x:Name="ColorSelector" Margin="0,0,0,10"/>
+    </Border>
+
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

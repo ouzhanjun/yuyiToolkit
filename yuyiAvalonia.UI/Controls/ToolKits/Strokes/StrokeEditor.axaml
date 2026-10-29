@@ -1,0 +1,483 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+    xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+    xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+    xmlns:local="using:yuyiAvalonia.UI.Controls"
+    xmlns:models="using:yuyiAvalonia.UI.Models"
+    xmlns:conv="using:yuyiAvalonia.UI.Converters"
+    mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="410"
+    x:Class="yuyiAvalonia.UI.Controls.StrokeEditor">
+
+    <UserControl.Resources>
+        <conv:StringToBrushConverter x:Key="StrToBrush"/>
+        <conv:GradientStopsToPreviewBrushConverter x:Key="GradientPreviewBrush"/>
+    </UserControl.Resources>
+    
+    <StackPanel>
+        
+        <Grid x:Name="RootGrid" RowDefinitions="*,Auto" Margin="0,0,0,5">
+
+            <StackPanel Grid.Row="0">
+                <Grid Margin="0,0,0,5" ColumnDefinitions="*,25"  ColumnSpacing="1">
+                    
+                    <local:FillPropertyEditor x:Name="FillPropertyEditorCtrl" Fill="{Binding StrokeFill, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                    <Button x:Name="AddButton"
+                        Background="Transparent"
+                        Grid.Column="1"
+                        Padding="3"
+                        Cursor="Hand"
+                        Width="24" 
+                        Height="24"
+                        ToolTip.Tip="添加填充层"
+                        Click="AddButton_Click">
+                        <Border>
+                            <PathIcon Data="{x:Static icon:Icon.Add}"
+                                Width="11" Height="11"
+                                Foreground="{DynamicResource TextSecondary}"/>
+                        </Border>
+                    </Button>
+                </Grid>
+
+                <!-- 填充项列表（抽离到独立控件 FillItemsControl 中） -->
+                <local:FillItemsControl x:Name="FillItemsCtrl"
+                    Fills="{Binding StrokeFills, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+            </StackPanel>
+            
+            <!-- 添加填充类型的 Popup -->
+            <Popup x:Name="AddFillPopup"
+                PlacementMode="AnchorAndGravity"
+                PlacementTarget="{Binding #AddButton}"
+                PlacementAnchor="BottomRight"
+                PlacementGravity="BottomLeft"
+                HorizontalOffset="0"
+                VerticalOffset="5"
+                IsLightDismissEnabled="True"
+                IsOpen="{Binding IsAddPopupOpen, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                <Border Background="{DynamicResource BgContent}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="8">
+                    <StackPanel>
+                        <TextBlock Text="选择填充类型"
+                            FontSize="10"
+                            Foreground="{DynamicResource TextSecondary}"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,8"/>
+
+                        <!-- 三种填充类型图标按钮 -->
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <!-- 纯色 -->
+                            <Button x:Name="AddSolidButton"
+                                Padding="8"
+                                ToolTip.Tip="纯色填充"
+                                Click="AddSolidFill_Click">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <Border Width="32" Height="32"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource BgToolbar}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1">
+                                        <Border Width="20" 
+                                            Height="20"
+                                            CornerRadius="2"
+                                            Background="#3DCFEF"/>
+                                    </Border>
+                                    <TextBlock Text="纯色" FontSize="9"
+                                        Foreground="{DynamicResource TextSecondary}"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 渐变 -->
+                            <Button x:Name="AddGradientButton"
+                                Padding="8"
+                                ToolTip.Tip="渐变填充"
+                                Click="AddGradientFill_Click">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <Border Width="32" Height="32"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource BgToolbar}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1">
+                                        <Border Width="20" Height="20" CornerRadius="2">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                    <GradientStop Color="#FF6B6B" Offset="0"/>
+                                                    <GradientStop Color="#4ECDC4" Offset="1"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                    </Border>
+                                    <TextBlock Text="渐变" FontSize="9"
+                                        Foreground="{DynamicResource TextSecondary}"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!-- 图片 -->
+                            <Button x:Name="AddImageButton"
+                                Padding="8"
+                                ToolTip.Tip="图片填充"
+                                Click="AddImageFill_Click">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <Border Width="32" Height="32"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource BgToolbar}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1">
+                                        <PathIcon Data="{x:Static icon:Icon.Image}"
+                                            Width="16" Height="16"
+                                            Foreground="{DynamicResource TextSecondary}"/>
+                                    </Border>
+                                    <TextBlock Text="图片" FontSize="9"
+                                        Foreground="{DynamicResource TextSecondary}"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Popup>
+
+            <!-- 统一填充编辑器 Popup -->
+            <Popup x:Name="FillEditorPopup"
+                PlacementMode="AnchorAndGravity"
+                PlacementAnchor="Left"
+                PlacementGravity="Left"
+                IsLightDismissEnabled="True"
+                IsOpen="{Binding $parent[UserControl].IsFillEditorOpen, Mode=TwoWay}">
+                <Border Background="{DynamicResource BgContent}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    x:Name="DragHost"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    BoxShadow="0 4 16 0 #60000000"
+                    Padding="12">
+                    <StackPanel Width="250">
+                        <!-- 标题栏 + 类型图标切换 -->
+                        <Grid Margin="0,0,0,10" ColumnDefinitions="Auto,*,Auto,Auto">
+                        <!-- 类型图标按钮组 -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                            <ToggleButton Classes="FillTypeToggle"
+                                IsChecked="{Binding $parent[UserControl].SelectedFill.FillType, Converter={x:Static local:FillEditor.FillTypeSolidConverter}, Mode=OneWay}"
+                                Click="SelectFillType_Click"
+                                ToolTip.Tip="纯色"
+                                Tag="{x:Static models:FillType.Solid}"
+                                Padding="6"
+                                Width="24" Height="24"
+                                BorderThickness="0"
+                                CornerRadius="4">
+                                <!-- 实心圆：填充色为选中 FillItem 的纯色（带 2px 边线） -->
+                                <Border Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Background="{Binding $parent[UserControl].SelectedFill.BackgroundColor, Converter={StaticResource StrToBrush}}"
+                                    BorderBrush="{DynamicResource TextPrimary}"
+                                    BorderThickness="1"/>
+                            </ToggleButton>
+                            <ToggleButton Classes="FillTypeToggle"
+                                IsChecked="{Binding $parent[UserControl].SelectedFill.FillType, Converter={x:Static local:FillEditor.FillTypeGradientConverter}, Mode=OneWay}"
+                                Click="SelectFillType_Click"
+                                ToolTip.Tip="渐变"
+                                Tag="{x:Static models:FillType.Gradient}"
+                                Padding="6"
+                                Width="24" Height="24"
+                                BorderThickness="0"
+                                CornerRadius="4">
+                                <!-- 实心圆：填充色为选中 FillItem 渐变首/末色（左上 80% → 右下 20% 透明度） -->
+                                <Border Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Background="{Binding $parent[UserControl].SelectedFill, Converter={StaticResource GradientPreviewBrush}}"
+                                    BorderBrush="{DynamicResource TextPrimary}"
+                                    BorderThickness="1"/>
+                            </ToggleButton>
+                            <ToggleButton Classes="FillTypeToggle"
+                                IsChecked="{Binding $parent[UserControl].SelectedFill.FillType, Converter={x:Static local:FillEditor.FillTypeImageConverter}, Mode=OneWay}"
+                                Click="SelectFillType_Click"
+                                ToolTip.Tip="图片"
+                                Tag="{x:Static models:FillType.Image}"
+                                Padding="6"
+                                Width="24" Height="24"
+                                BorderThickness="0"
+                                CornerRadius="4">
+                                <PathIcon Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Data="{x:Static icon:Icon.Image}"
+                                    Foreground="{DynamicResource TextPrimary}"/>
+                            </ToggleButton>
+                        </StackPanel>
+
+
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center" />
+
+                            <controls:VisibilityToggle Grid.Column="2"
+                                    IsVisible="{Binding $parent[UserControl].SelectedFill.IsEnabled}"
+                                    ToggleOnClick="True"
+                                    Margin="0,0,4,0"/>
+
+                            <Button Grid.Column="3"
+                                    Content="✕"
+                                    Padding="6,2"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Click="CloseFillEditor_Click"
+                                    FontSize="10"
+                                    Foreground="{DynamicResource TextSecondary}"/>
+                        </Grid>
+                        <StackPanel Margin="0,0,0,5">
+                            <controls:TextInput Text="{Binding $parent[UserControl].SelectedFill.Name, Mode=TwoWay}"
+                                Margin="0,0,0,10"
+                                Title="名称"
+                                FontSize="11"
+                                Watermark="请输入文本内容"
+                                AcceptsReturn="True"/>
+                        </StackPanel>
+                    
+                        <!-- 纯色编辑器 -->
+                        <StackPanel IsVisible="{Binding $parent[UserControl].SelectedFill.FillType, Converter={x:Static local:FillEditor.FillTypeSolidConverter}}">
+                            <local:SolidFillPropertyEditor
+                                x:Name="PART_SolidFillPropertyEditor"
+                                FillColor="{Binding $parent[UserControl].SelectedFill.BackgroundColor, Mode=TwoWay}"
+                                Opacity="{Binding $parent[UserControl].SelectedFill.Opacity, Mode=TwoWay}"/>
+                        </StackPanel>
+
+                        <!-- 渐变编辑器 -->
+                        <StackPanel IsVisible="{Binding $parent[UserControl].SelectedFill.FillType, Converter={x:Static local:FillEditor.FillTypeGradientConverter}}">
+                            <local:GradientFillPropertyEditor
+                                x:Name="GradientFillPropertyEditor"
+                                GradientKindEnum="{Binding $parent[UserControl].SelectedFill.GradientKind, Mode=TwoWay}"
+                                GradientStops="{Binding $parent[UserControl].SelectedFill.GradientStops, Mode=TwoWay}"
+                                GradientAngle="{Binding $parent[UserControl].SelectedFill.GradientAngle, Mode=TwoWay}"
+                                RadialCenterX="{Binding $parent[UserControl].SelectedFill.RadialCenterX, Mode=TwoWay}"
+                                RadialCenterY="{Binding $parent[UserControl].SelectedFill.RadialCenterY, Mode=TwoWay}"
+                                Opacity="{Binding $parent[UserControl].SelectedFill.Opacity, Mode=TwoWay}"/>
+                        </StackPanel>
+                        
+                        <!-- 图片编辑器 -->
+                        <StackPanel IsVisible="{Binding $parent[UserControl].SelectedFill.FillType, Converter={x:Static local:FillEditor.FillTypeImageConverter}}">
+                            <local:ImageFillPropertyEditor
+                                ImagePath="{Binding $parent[UserControl].SelectedFill.ImagePath, Mode=TwoWay}"
+                                ImageStretch="{Binding $parent[UserControl].SelectedFill.ImageStretch, Mode=TwoWay}"
+                                ImageTileMode="{Binding $parent[UserControl].SelectedFill.ImageTileMode, Mode=TwoWay}"
+                                ImageAlignmentX="{Binding $parent[UserControl].SelectedFill.ImageAlignmentX, Mode=TwoWay}"
+                                ImageAlignmentY="{Binding $parent[UserControl].SelectedFill.ImageAlignmentY, Mode=TwoWay}"
+                                Opacity="{Binding $parent[UserControl].SelectedFill.Opacity,  Mode=TwoWay}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Popup>
+        </Grid>
+        
+        <!-- 边框类型选择 -->
+        <Grid ColumnDefinitions="*,*,30" ColumnSpacing="1" Margin="0,0,0,8">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="描边类型" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:ThreeButtonGroup x:Name="PART_StrokeType"
+                    CornerRadius="3,0,0,3"
+                    Height="30"
+                    Cursor="Hand"
+                    Tip1="实线"
+                    Tip2="虚线"
+                    Tip3="自定义"
+                    SelectedItem="{Binding StrokeType, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Icon1="{x:Static icon:Icon.Solid}"
+                    Icon2="{x:Static icon:Icon.Dashed}"
+                    Icon3="{x:Static icon:Icon.Custom}"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="1" IsVisible="{Binding StrokeType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:StrokeEditor.StrokeTypeDashedConverter}}">
+
+                <TextBlock Text="线条样式" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <local:StrokeStyleDropDown
+                    CornerRadius="0,3,3,0"
+                    Height="30"
+                    x:Name="PART_StrokeStyle"
+                    SelectedValue="{Binding StrokeStyle, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+            </StackPanel>
+
+            <!-- 虚线参数：与"线条样式"放在同一个格子（同一 Grid.Column="2"），通过 CustomConverter 互斥显示 -->
+            <StackPanel Grid.Column="1" IsVisible="{Binding StrokeType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:StrokeEditor.StrokeTypeCustomConverter}}">
+                <TextBlock Text="虚线参数" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericEditUpDownEx
+                    x:Name="PART_StrokeDashArrayString"
+                    CornerRadius="0,3,3,0"
+                    Title="虚线参数"
+                    Icon="{x:Static icon:Icon.Dashed}"
+                    ButtonIcon="{x:Static icon:Icon.Slider}"
+                    UseSlider="True"
+                    Minimum="0"
+                    Maximum="100"
+                    Step="1"
+                    FontSize="11"
+                    Height="30"
+                    Text="{Binding StrokeDashArrayString, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                <TextBlock FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <Button x:Name="PART_Stroke_Settings"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Width="24" 
+                    Height="24"
+                    Background="Transparent"
+                    Padding="3"
+                    ToolTip.Tip="线条高级设置">
+                    <Border>
+                        <PathIcon Data="{x:Static icon:Icon.Profile}"
+                            Width="11" 
+                            Height="11"
+                            Foreground="{DynamicResource TextSecondary}"/>
+                    </Border>
+                </Button>
+            </StackPanel>
+        </Grid>
+        <!-- （虚线参数已迁出，与"线条样式"合并到上一行同一列；虚线偏移迁移到"斜接限制"行右侧） -->
+
+        <!-- 边框类型选择 -->
+        <Grid ColumnDefinitions="*,*,Auto,30" Margin="0,0,0,8" ColumnSpacing="1">
+            <StackPanel Grid.Column="0">                
+                <TextBlock Text="Position" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:IconTextDropDown x:Name="PART_StrokePosition"
+                    Height="30"
+                    CornerRadius="3,0,0,3"
+                    ToolTipText="选择描边相对于路径的位置"
+                    ItemsSource="{Binding StrokePositionItemsSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    SelectedValue="{Binding StrokePosition, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="粗细" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericSpecUpDownEx 
+                    Grid.Column="0"
+                    Title ="粗细"
+                    CornerRadius="0,3,3,0"
+                    UseSlider="True"
+                    x:Name="PART_StrokeWidth"
+                    Icon="{x:Static icon:Icon.StrokeWeight}"
+                    ButtonIcon="{x:Static icon:Icon.Slider}"
+                    Minimum="0"
+                    Maximum="200"
+                    Height="30"
+                    Step="1"
+                    FontSize="11"
+                    Value="{Binding StrokeWidth, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 边框类型选择 -->
+        <Grid ColumnDefinitions="*,*,Auto,30" ColumnSpacing="1" Margin="0,0,0,8">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="End points" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                
+                <controls:ThreeButtonGroup x:Name="PART_EndCap"
+                    Height="30"
+                    CornerRadius="3,0,0,3"
+                    Cursor="Hand"
+                    Tip1="No End Cap"
+                    Tip2="End Cap Round"
+                    Tip3="End Cap Square"
+                    SelectedItem="{Binding StrokeEndpoint, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Icon1="{x:Static icon:Icon.EndCapNo}"
+                    Icon2="{x:Static icon:Icon.EndCapRound}"
+                    Icon3="{x:Static icon:Icon.EndCapSquare}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="Join" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:ThreeButtonGroup x:Name="PART_LineJoin"
+                    Height="30"
+                    CornerRadius="0,3,3,0"
+                    Cursor="Hand"
+                    Tip1="Miter"
+                    Tip2="Round"
+                    Tip3="Bevel"
+                    SelectedItem="{Binding StrokeJoin, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Icon1="{x:Static icon:Icon.StrokeLineJoinMiter}"
+                    Icon2="{x:Static icon:Icon.StrokeLineJoinRound}"
+                    Icon3="{x:Static icon:Icon.StrokeLineJoinBevel}"/>
+            </StackPanel>
+        </Grid>
+        
+        <!-- 斜接限制行：左侧"斜接限制"、右侧"虚线偏移" -->
+        <Grid ColumnDefinitions="*,*,Auto,30" Margin="0,0,0,8" ColumnSpacing="1" IsVisible="{Binding StrokeType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:StrokeEditor.StrokeTypeNotSolidConverter}}">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="斜接限制" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericSpecUpDownEx
+                    Title="斜接限制"
+                    UseSlider="True"
+                    x:Name="PART_StrokeMiterLimit"
+                    Icon="{x:Static icon:Icon.StrokeLineJoinMiter}"
+                    ButtonIcon="{x:Static icon:Icon.Slider}"
+                    CornerRadius="3,0,0,3"
+                    Minimum="1"
+                    Maximum="200"
+                    Step="1"
+                    FontSize="11"
+                    Height="30"
+                    Value="{Binding StrokeMiterLimit, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="虚线偏移" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericSpecUpDownEx
+                    Title="虚线偏移"
+                    UseSlider="True"
+                    x:Name="PART_StrokeDashOffset"
+                    Icon="{x:Static icon:Icon.Offset}"
+                    ButtonIcon="{x:Static icon:Icon.Slider}"
+                    Minimum="0"
+                    Maximum="100"
+                    CornerRadius="0,3,3,0"
+                    Step="1"
+                    FontSize="11"
+                    Height="30"
+                    Value="{Binding StrokeDashOffset, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+        
+        
+        <!-- 斜接限制：仅在 Join = Miter 时生效 -->
+        <Grid ColumnDefinitions="*,*,Auto,30" Margin="0,0,0,8" ColumnSpacing="1" IsVisible="{Binding StrokeType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:StrokeEditor.StrokeTypeNotSolidConverter}}">
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="交替颜色" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                
+                <controls:ColorInput 
+                    OpacityValue="{Binding OpacityPercent, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    Text="{Binding StrokeColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                    FontSize="10" 
+                    CornerRadius="3,0,0,3"
+                    Height="30"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="交替透明度" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericSpecUpDownEx
+                    Title ="透明度"
+                    Icon="{x:Static icon:Icon.Opacity}"
+                    ButtonIcon="{x:Static icon:Icon.Slider}"
+                    UseSlider="True"
+                    CornerRadius="0,3,3,0"
+                    Minimum="0"
+                    Maximum="100"
+                    Suffix="%"
+                    Step="1"
+                    FontSize="11"
+                    Height="30"
+                    Value="{Binding OpacityPercent, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+        
+    </StackPanel>
+</UserControl>

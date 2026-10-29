@@ -1,0 +1,268 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="650"
+             x:Class="yuyiAvalonia.UI.Controls.CanvasPageProperty">
+
+<UserControl.Resources>
+    <conv:EnumToBoolConverter x:Key="EnumToBool"/>
+    <conv:StringToBrushConverter x:Key="StrToBrush"/>
+    <conv:BorderColorConverter x:Key="SelBorder"/>
+    <conv:StringEqualsConverter x:Key="StrEquals"/>
+</UserControl.Resources>
+
+<ScrollViewer VerticalScrollBarVisibility="Auto">
+    <StackPanel Margin="8">
+
+        <!-- 画布尺寸浮动弹窗 -->
+        <Popup x:Name="CanvasSizePopup"
+               PlacementMode="AnchorAndGravity"
+               PlacementTarget="{Binding #ToggleCanvasSizeButton}"
+               PlacementAnchor="BottomRight"
+               PlacementGravity="BottomLeft"
+               HorizontalOffset="0"
+               VerticalOffset="5"
+               IsLightDismissEnabled="True"
+               Closed="CanvasSizePopup_Closed"
+               IsOpen="{Binding IsCanvasSizePanelExpanded, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Border Background="{DynamicResource BgContent}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="3"
+                    Padding="5"
+                    MaxWidth="320">
+                <StackPanel>
+                    <Grid Margin="0,0,0,10">
+                        <TextBlock Text="选择画布尺寸"
+                                   FontWeight="Bold"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   VerticalAlignment="Center"/>
+                        <Button HorizontalAlignment="Right"
+                                Background="Transparent"
+                                Padding="3"
+                                Click="CloseCanvasSizePopup_Click"
+                                ToolTip.Tip="关闭">
+                            <Path Data="M4,4 L12,12 M12,4 L4,12"
+                                  Stroke="{DynamicResource TextSecondary}"
+                                  StrokeThickness="1.1"
+                                  Width="11" Height="11"
+                                  Stretch="Uniform"/>
+                        </Button>
+                    </Grid>
+
+                    <!-- 分类标签按钮 -->
+                    <WrapPanel Orientation="Horizontal" Margin="0,0,0,10">
+                        <Button x:Name="BtnMobile" Content="手机" Classes="TagButton"
+                                Tag="Mobile" Click="FilterByCategory_Click" Margin="0,0,6,4"/>
+                        <Button x:Name="BtnTablet" Content="平板" Classes="TagButton"
+                                Tag="Tablet" Click="FilterByCategory_Click" Margin="0,0,6,4"/>
+                        <Button x:Name="BtnOther" Content="其他" Classes="TagButton"
+                                Tag="Other" Click="FilterByCategory_Click" Margin="0,0,6,4"/>
+                        <Button x:Name="BtnAll" Content="全部" Classes="TagButton Active"
+                                Tag="All" Click="FilterByCategory_Click" Margin="0,0,6,4"/>
+                    </WrapPanel>
+
+                    <!-- 卡片式布局 -->
+                    <ItemsControl ItemsSource="{Binding $parent[UserControl].FilteredCanvasSizes, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                  x:Name="CanvasSizeItemsControl">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource BgToolbar}"
+                                        CornerRadius="3"
+                                        Margin="3"
+                                        Padding="6"
+                                        Width="75"
+                                        Cursor="Hand"
+                                        BorderThickness="1"
+                                        BorderBrush="{Binding IsSelected, Converter={StaticResource SelBorder}}"
+                                        PointerPressed="OnCanvasSizePressed">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <!-- 图标 -->
+                                        <Border Width="32" Height="32"
+                                                CornerRadius="4"
+                                                Opacity="0.5"
+                                                HorizontalAlignment="Center"
+                                                Margin="0,0,0,4">
+                                            <Path Data="{Binding Icon}"
+                                                  Width="20" Height="20"
+                                                  Fill="{DynamicResource AccentColor}"
+                                                  Stretch="Uniform"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                                        </Border>
+                                        <!-- 尺寸文字 -->
+                                        <TextBlock Text="{Binding Name}"
+                                                   FontSize="10"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource TextPrimary}"
+                                                   HorizontalAlignment="Center"
+                                                   TextAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   MaxWidth="70"/>
+                                        <!-- 分辨率 -->
+                                        <TextBlock FontSize="9"
+                                                   Opacity="0.75"
+                                                   Foreground="{DynamicResource TextPrimary}"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,2,0,0">
+                                            <Run Text="{Binding Width, StringFormat={}{0:F0}}"/>
+                                            <Run Text="×"/>
+                                            <Run Text="{Binding Height, StringFormat={}{0:F0}}"/>
+                                        </TextBlock>
+                                        <!-- 选中标记 -->
+                                        <Border Background="{DynamicResource AccentColor}"
+                                                CornerRadius="3"
+                                                Padding="4,1"
+                                                HorizontalAlignment="Center"
+                                                Margin="0,4,0,0"
+                                                IsVisible="{Binding IsSelected}">
+                                            <TextBlock Text="✓" FontSize="8" Foreground="White"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+        <!-- 隐藏原来的内联面板 -->
+        <StackPanel>
+            <Grid Margin="0,0,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Text="画布尺寸"
+                    Grid.Column="0"
+                    FontWeight="Bold"
+                    FontSize="12"
+                    Margin="0,0,0,5"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource TextPrimary}"/>
+                
+                <Button Grid.Column="1"
+                    x:Name="ToggleCanvasSizeButton"
+                    Cursor="Hand"
+                    Background="Transparent"
+                    Padding="3"
+                    Margin="0,0,3,0"
+                    Click="ToggleCanvasSizePanel_Click"
+                    ToolTip.Tip="选择画布尺寸">
+                    <Panel>
+                        <!-- 展开 -->
+                        <PathIcon Width="15" Height="15"
+                            Data="{x:Static icon:Icon.PageSize}"
+                            Foreground="{DynamicResource TextSecondary}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            IsVisible="{Binding !IsCanvasSizePanelExpanded, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        <!-- 折叠 -->
+                        <PathIcon Width="15" Height="15"
+                            Data="{x:Static icon:Icon.PageSize}"
+                            Foreground="{DynamicResource TextPrimary}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            IsVisible="{Binding IsCanvasSizePanelExpanded, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    </Panel>
+                </Button>
+            </Grid>
+            <Grid Margin="0,0,0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="宽度" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                    <controls:NumericUpDownEx 
+                    Title ="W" Value="{Binding CanvasProperty.CanvasWidth, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Minimum="0" Maximum="2000" Height="28"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Text="×" FontSize="16" VerticalAlignment="Bottom" Margin="8,0,8,5" Foreground="{DynamicResource TextSecondary}"/>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="高度" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                    <controls:NumericUpDownEx Title ="H" Value="{Binding CanvasProperty.CanvasHeight, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" Minimum="0" Maximum="2000" Height="28"/>
+                </StackPanel>
+            </Grid>
+
+            <Separator Margin="0,10" Height="1" Background="{DynamicResource BorderColor}"/>
+            
+            <TextBlock Text="显示设置"
+                Grid.Column="0"
+                FontWeight="Bold"
+                FontSize="12"
+                Margin="0,0,0,5"
+                VerticalAlignment="Center"
+                Foreground="{DynamicResource TextPrimary}"/>
+                
+            <Grid Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="3" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                    <controls:VisibilityToggle IsVisible="{Binding CanvasProperty.ShowAllElementIds, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                               ToolTip="控件信息" IconSize="16"/>
+                    <TextBlock Text="控件信息" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="3" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                    <controls:VisibilityToggle IsVisible="{Binding CanvasProperty.ShowRulers, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                               ToolTip="刻度尺" IconSize="16"/>
+                    <TextBlock Text="刻度尺" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="3" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+                    <controls:VisibilityToggle IsVisible="{Binding CanvasProperty.ShowGrid, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                               ToolTip="网格线" IconSize="16"/>
+                    <TextBlock Text="网格线" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+            
+            <Separator Margin="0,10" Height="1" Background="{DynamicResource BorderColor}"/>
+            
+            <TextBlock Text="背景设置"
+                        FontWeight="Bold"
+                        FontSize="13"
+                        Margin="0,10,0,10"
+                        Foreground="{DynamicResource TextPrimary}"/>
+
+            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="8" CornerRadius="3">
+                <local:FillCanvasPropertyEditor
+                    BackgroundType="{Binding CanvasProperty.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    BackgroundColor="{Binding CanvasProperty.CanvasBackgroundColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    GradientStartColor="{Binding CanvasProperty.GradientStartColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    GradientEndColor="{Binding CanvasProperty.GradientEndColor, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    GradientAngle="{Binding CanvasProperty.GradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    BackgroundImage="{Binding CanvasProperty.CanvasBackgroundImage, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    EnableBackgroundImage="{Binding CanvasProperty.EnableBackgroundImage, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    BackgroundImageStretch="{Binding CanvasProperty.BackgroundImageStretch, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    BackgroundImageTileMode="{Binding CanvasProperty.BackgroundImageTileMode, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    BackgroundImageAlignmentX="{Binding CanvasProperty.BackgroundImageAlignmentX, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    BackgroundImageAlignmentY="{Binding CanvasProperty.BackgroundImageAlignmentY, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    Opacity="{Binding CanvasProperty.CanvasOpacity, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"/>
+            </Border>
+
+        </StackPanel>
+
+    </StackPanel>
+</ScrollViewer>
+</UserControl>

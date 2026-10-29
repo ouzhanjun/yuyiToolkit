@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="60"
+             x:Class="yuyiAvalonia.Base.Controls.ColorSelectorControl">
+    <ItemsControl ItemsSource="{Binding ColorItems}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Border Width="28" Height="28" CornerRadius="14"
+                            Background="{Binding Brush}"
+                            Cursor="Hand"
+                            Tag="{Binding Color}"
+                            Margin="3"
+                            PointerPressed="ColorButton_PointerPressed">
+                    <Border Width="8" Height="8" CornerRadius="4" Background="White"
+                            VerticalAlignment="Center" HorizontalAlignment="Center"
+                            IsVisible="{Binding IsSelected}">
+                    </Border>
+                </Border>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

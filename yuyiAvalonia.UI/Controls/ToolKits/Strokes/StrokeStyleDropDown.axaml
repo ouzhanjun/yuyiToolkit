@@ -1,0 +1,125 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="170"
+             d:DesignHeight="30"
+             x:Class="yuyiAvalonia.UI.Controls.StrokeStyleDropDown"
+             x:Name="This">
+
+    <UserControl.Styles>
+        <Style Selector="Button.DropDownTrigger">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="Button.DropDownTrigger:pointerover">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="Button.DropDownTrigger:pressed">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0,1"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="ListBoxItem:selected">
+            <Setter Property="Background" Value="{DynamicResource BgToolbar}"/>
+        </Style>
+        <Style Selector="Border.DropDownItemSurface">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="Border.DropDownItemSurface:pointerover">
+            <Setter Property="Background" Value="{DynamicResource BgToolbar}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Panel>
+        <common:PropertyBorder x:Name="PART_PropertyBorder"
+                               Background="{DynamicResource BgProperty}"
+                               CornerRadius="{Binding #This.CornerRadius}"
+                               ClipToBounds="True">
+            <Button x:Name="PART_Trigger"
+                    Classes="DropDownTrigger"
+                    Click="Trigger_Click"
+                    KeyDown="Trigger_KeyDown"
+                    ToolTip.Tip="{Binding #This.SelectedItem.ToolTip}">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Path Stroke="{DynamicResource TextSecondary}"
+                          StrokeThickness="1"
+                          StrokeDashArray="{Binding #This.SelectedItem.DashArray, Converter={x:Static conv:StrokeStyleDashArrayConverter.Instance}}"
+                          StrokeLineCap="Flat"
+                          Stretch="Fill"
+                          Margin="10,0"
+                          Data="M0,0 L24,0"
+                          VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="1"
+                               Text="&#9662;"
+                               FontSize="12"
+                               Foreground="{DynamicResource TextSecondary}"
+                               Opacity="0.75"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                </Grid>
+            </Button>
+        </common:PropertyBorder>
+
+        <Popup x:Name="PART_Popup"
+            PlacementTarget="{Binding #PART_Trigger}"
+            PlacementMode="AnchorAndGravity"
+            PlacementAnchor="BottomLeft"
+            PlacementGravity="BottomRight"
+            HorizontalOffset="0"
+            VerticalOffset="5"
+            IsLightDismissEnabled="True"
+            Width="170"
+            IsOpen="{Binding #This.IsOpen, Mode=TwoWay}">
+            <Border Background="{DynamicResource BgContent}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1"
+                CornerRadius="4"
+                BoxShadow="0 4 12 0 #40000000"
+                Padding="4"
+                MinWidth="170">
+                <ListBox x:Name="PART_ItemsListBox"
+                         ItemsSource="{Binding #This.ItemsSource}"
+                         SelectedItem="{Binding #This.SelectedItem, Mode=TwoWay}"
+                         SelectionMode="Single"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         MaxHeight="240"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         PointerReleased="ItemsListBox_PointerReleased"
+                         KeyDown="ItemsListBox_KeyDown">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="local:StrokeStyleDropDownItem">
+                            <Border Classes="DropDownItemSurface"
+                                    Padding="12,12"
+                                    CornerRadius="3"
+                                    Cursor="Hand"
+                                    ToolTip.Tip="{Binding ToolTip}">
+                                <Path Stroke="{DynamicResource TextPrimary}"
+                                      StrokeThickness="1"
+                                      StrokeDashArray="{Binding DashArray, Converter={x:Static conv:StrokeStyleDashArrayConverter.Instance}}"
+                                      StrokeLineCap="Flat"
+                                      Stretch="Fill"
+                                      Height="1"
+                                      VerticalAlignment="Center"
+                                      Data="M0,0 L24,0"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Popup>
+    </Panel>
+</UserControl>

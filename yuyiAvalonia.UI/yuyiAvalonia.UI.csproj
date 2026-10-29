@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Remove="ElementHtml\**" />
+    <Compile Remove="ElementHtml\**" />
+    <EmbeddedResource Remove="ElementHtml\**" />
+    <None Remove="ElementHtml\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Remove="Controls\ToolKits\AlignmentEditor.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controls\ToolKits\AlignmentEditor.axaml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\yuyiAvalonia.Base\yuyiAvalonia.Base.csproj" />
+    <PackageReference Include="Markdig" Version="0.35.0" />
+    <PackageReference Include="Markdown.Avalonia" Version="11.0.1" />
+    <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.4.1" />
+    <PackageReference Include="Markdown.Avalonia.Tight" Version="11.0.2" />
+    <PackageReference Include="SkiaSharp" Version="2.88.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\CanvasElementProperty.axaml.cs">
+      <DependentUpon>CanvasElementProperty.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\CanvasPageProperty.axaml.cs">
+      <DependentUpon>CanvasPageProperty.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\CardElementProperty.axaml.cs">
+      <DependentUpon>CardElementProperty.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ButtonElementProperty.axaml.cs">
+      <DependentUpon>ButtonElementProperty.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\RoundEllipsePropertyEditor.axaml.cs">
+      <DependentUpon>RoundEllipsePropertyEditor.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\RoundEllipseElementProperty.axaml.cs">
+      <DependentUpon>RoundEllipseElementProperty.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\StackPanelElementProperty.axaml.cs">
+      <DependentUpon>StackPanelElementProperty.axaml</DependentUpon>
+    </Compile>
+	  <Compile Update="Controls\PanelElementProperty.axaml.cs">
+		  <DependentUpon>PanelElementProperty.axaml</DependentUpon>
+	  </Compile>
+    <Compile Update="Controls\ToolKits\Basic\BoundsEditor.axaml.cs">
+      <DependentUpon>BoundsEditor.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Page\FillCanvasPropertyEditor.axaml.cs">
+      <DependentUpon>FillCanvasPropertyEditor.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Fills\SimpleColorInput.axaml.cs">
+      <DependentUpon>SimpleColorInput.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Fills\GradientStopMarker.axaml.cs">
+      <DependentUpon>GradientStopMarker.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Fills\SolidColorPickerPanel.axaml.cs">
+      <DependentUpon>SolidColorPickerPanel.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Basic\PaddingEditor.axaml.cs">
+      <DependentUpon>PaddingEditor.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Strokes\StrokeEditor.axaml.cs">
+      <DependentUpon>StrokeEditor.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Basic\MarginEditor.axaml.cs">
+      <DependentUpon>MarginEditor.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\GridDimensionMarker.axaml.cs">
+      <DependentUpon>GridDimensionMarker.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ToolKits\Basic\Layout.axaml.cs">
+      <DependentUpon>Layout.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\WebEditor\EditorComponentPanel.axaml.cs">
+      <DependentUpon>EditorComponentPanel.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\WebEditor\EditorTemplatePanel.axaml.cs">
+      <DependentUpon>EditorTemplatePanel.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\WebEditor\ElementTreeControl.axaml.cs">
+      <DependentUpon>ElementTreeControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\WebEditor\ElementTreeNode.axaml.cs">
+      <DependentUpon>ElementTreeNode.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\UITabPagesVIew.axaml.cs">
+      <DependentUpon>UITabPagesVIew.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\FlowEditorView.axaml.cs">
+      <DependentUpon>FlowEditorView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+
+</Project>

@@ -1,0 +1,189 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:models="using:yuyiAvalonia.UI.Models"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             mc:Ignorable="d"
+             x:Class="yuyiAvalonia.UI.Controls.FillItemsControl">
+
+    <UserControl.Resources>
+        <conv:StringToColorConverter x:Key="StrToColor"/>
+        <conv:ImagePathToBitmapConverter x:Key="ImagePathToBitmap"/>
+        <conv:StringNullOrEmptyToBoolConverter x:Key="ImagePathEmpty"/>
+    </UserControl.Resources>
+
+    <!-- 填充项列表（外层 Panel 控可见性，避免最后一项被删除时项容器仍在视觉树中残留导致 DataContext/Tag 失效） -->
+    <Panel IsVisible="{Binding HasFills, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <ItemsControl x:Name="FillsItemsControl"
+            ItemsSource="{Binding Fills, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="models:FillItem">
+                <Grid x:Name="ItemRoot" ColumnDefinitions="*,25,25" ColumnSpacing="1"
+                    Margin="0,0,0,5" 
+                    Tag="{Binding .}">
+                    <Border x:Name="ItemBorder" Grid.Column="0"
+                        Padding="3"
+                        Background="{DynamicResource BgToolbar}"
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="1"
+                        CornerRadius="4"
+                        Cursor="Hand"
+                        Tag="{Binding #ItemRoot.Tag}"
+                        PointerPressed="FillItem_Click">
+                        <!-- 填充预览和名称 -->
+                        <Grid ColumnDefinitions="Auto,*,25" ColumnSpacing="1">
+                            <!-- 填充类型图标/预览 -->
+                            <Border Width="28" Height="28" Grid.Column="0"
+                                CornerRadius="3"
+                                ClipToBounds="True"
+                                Background="{DynamicResource BgContent}"
+                                BorderBrush="{DynamicResource BorderColor}"
+                                BorderThickness="1">
+                                <Panel>
+                                    <!-- 无填充 -->
+                                    <PathIcon Data="{x:Static icon:Icon.Clear}"
+                                        Width="14" Height="14"
+                                        Foreground="{DynamicResource TextSecondary}"
+                                        IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillEditor.FillTypeNoneConverter}}"/>
+                                    <!-- 纯色预览 -->
+                                    <Border CornerRadius="2" IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillEditor.FillTypeSolidConverter}}">
+                                        <Border.Background>
+                                            <SolidColorBrush Opacity="{Binding #ItemRoot.Tag.Opacity}" Color="{Binding #ItemRoot.Tag.BackgroundColor, Converter={StaticResource StrToColor}}"/>
+                                        </Border.Background>
+                                    </Border>
+                                    <!-- 渐变预览 -->
+                                    <Border CornerRadius="2" IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillEditor.FillTypeGradientConverter}}">
+                                        <local:GradientPreviewControl FillItem="{Binding #ItemRoot.Tag}" />
+                                    </Border>
+                                    <!-- 图片预览 -->
+                                    <Panel IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillEditor.FillTypeImageConverter}}"
+                                           ClipToBounds="True">
+                                        <Image Stretch="Uniform" Opacity="{Binding #ItemRoot.Tag.Opacity}">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource ImagePathToBitmap}">
+                                                    <Binding Path="#ItemRoot.Tag.ImagePath"/>
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                        <!-- 图片为空时的占位图标 -->
+                                        <Border IsVisible="{Binding #ItemRoot.Tag.ImagePath, Converter={StaticResource ImagePathEmpty}}">
+                                            <PathIcon x:Name="PART_Button"
+                                                Data="{x:Static icon:Icon.Image}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="{DynamicResource TextSecondary}"/>
+                                        </Border>
+                                    </Panel>
+                                </Panel>
+                            </Border>
+
+                            <!-- 名称 / 类型相关文本：参考 FillPropertyEditor 按 FillType 显示不同内容（纯色/渐变/图片/无） -->
+                            <StackPanel VerticalAlignment="Center" Grid.Column="1">
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- 纯色：显示 BackgroundColor 颜色值（#FF0000 等） -->
+                                    <TextBlock FontSize="11"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        TextTrimming="CharacterEllipsis"
+                                        IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillPropertyEditor.FillTypeSolidConverter}}">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{x:Static local:FillPropertyEditor.FillTypeSolidTextConverter}">
+                                                <Binding Path="#ItemRoot.Tag.FillType"/>
+                                                <Binding Path="#ItemRoot.Tag"/>
+                                                <!-- 触发器：MultiBinding 只在某个子 Binding 推送时重算 converter，
+                                                     这里把 BackgroundColor 也接进来，色值一变就重新生成文本。 -->
+                                                <Binding Path="#ItemRoot.Tag.BackgroundColor"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <!-- 渐变：显示渐变类型（线性 / 径向 / 角度 / 菱形） -->
+                                    <TextBlock FontSize="11"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillPropertyEditor.FillTypeGradientConverter}}">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{x:Static local:FillPropertyEditor.FillTypeGradientTextConverter}">
+                                                <Binding Path="#ItemRoot.Tag.FillType"/>
+                                                <Binding Path="#ItemRoot.Tag"/>
+                                                <!-- 触发器：GradientKind 变化时通知 MultiBinding 重算。 -->
+                                                <Binding Path="#ItemRoot.Tag.GradientKind"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                    <!-- 图片：显示 ImagePath -->
+                                    <TextBlock FontSize="11"
+                                        TextTrimming="CharacterEllipsis"
+                                        TextWrapping="NoWrap"
+                                        MaxWidth="120"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        Text="{Binding #ItemRoot.Tag.ImagePath}"
+                                        IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillPropertyEditor.FillTypeImageConverter}}"/>
+                                    <!-- 无填充：显示 Name 作为可辨识的标题 -->
+                                    <TextBlock FontSize="11"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        TextTrimming="CharacterEllipsis"
+                                        MaxWidth="120"
+                                        Text="{Binding #ItemRoot.Tag.Name}"
+                                        IsVisible="{Binding #ItemRoot.Tag.FillType, Converter={x:Static local:FillPropertyEditor.FillTypeNoneConverter}}"/>
+                                </StackPanel>
+                                <Grid ColumnDefinitions="Auto,Auto,*">
+                                    <TextBlock Text="{Binding #ItemRoot.Tag.Opacity, Converter={x:Static conv:OpacityToPercentConverter.Instance}}"
+                                        Grid.Column="0"
+                                        FontSize="10"
+                                        Foreground="{DynamicResource TextSecondary}"/>
+                                    <TextBlock Text="% - "
+                                        Grid.Column="1"
+                                        FontSize="10"
+                                        Foreground="{DynamicResource TextSecondary}"/>
+                                    <TextBlock Text="{Binding #ItemRoot.Tag.FillType}"
+                                        Grid.Column="2"
+                                        FontSize="10"
+                                        Foreground="{DynamicResource TextSecondary}"/>
+
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- 上移 -->
+                            <Button Grid.Column="2"
+                                Background="Transparent"
+                                Width="24" 
+                                Height="24"
+                                Padding="3"
+                                Cursor="Hand"
+                                Tag="{Binding #ItemRoot.Tag}"
+                                Click="MoveUpFill_Click"
+                                ToolTip.Tip="上移">
+                                <PathIcon Data="{x:Static icon:Icon.TopDock}" Width="11" Height="11" Foreground="{DynamicResource TextSecondary}"/>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <!-- 可见性切换按钮 -->
+                    <controls:VisibilityToggle Grid.Column="1"
+                        IconSize="13"
+                        Width="24" 
+                        Height="24"
+                        Cursor="Hand"
+                        Tag="{Binding #ItemRoot.Tag}"
+                        IsVisible="{Binding #ItemRoot.Tag.IsEnabled, Mode=TwoWay}"
+                        ToggleOnClick="True"
+                        Toggled="VisibilityToggle_Toggled"/>
+
+                    <!-- 删除 -->
+                    <Button Grid.Column="2"
+                        Width="24" 
+                        Height="24"
+                        Cursor="Hand"
+                        Background="Transparent"
+                        Tag="{Binding #ItemRoot.Tag}"
+                        Click="RemoveFill_Click"
+                        ToolTip.Tip="删除">
+                        <PathIcon Data="{x:Static icon:Icon.Delete}" Width="11" Height="11" Foreground="{DynamicResource TextSecondary}"/>
+                    </Button>
+                </Grid>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    </Panel>
+</UserControl>

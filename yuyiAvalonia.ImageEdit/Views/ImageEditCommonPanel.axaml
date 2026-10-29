@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Name="Root"
+             x:Class="yuyiAvalonia.ImageEdit.Views.ImageEditCommonPanel">
+   <ScrollViewer VerticalScrollBarVisibility="Auto">
+      <StackPanel Classes="UCSettings">
+        <TextBlock Text="{Binding Title, ElementName=Root}" Classes="Title"/>
+
+        <ItemsControl ItemsSource="{Binding IntensityBasic, ElementName=Root}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <StackPanel Orientation="Horizontal" Margin="0,2" HorizontalAlignment="Center">
+                <TextBlock Text="{Binding Name}" Width="45" VerticalAlignment="Center" FontSize="11"/>
+               
+                <Slider Classes="ImageEdit"
+                        Value="{Binding Value}" 
+                        Minimum="{Binding Minimum}"
+                        Maximum="{Binding Maximum}"
+                        Tag="{Binding}"
+                        ValueChanged="Slider_ValueChanged" 
+                        PointerCaptureLost="Slider_PointerCaptureLost">
+                </Slider>
+                <TextBlock Text="{Binding Value}" Width="25" TextAlignment="Left" VerticalAlignment="Center" FontSize="10"/>
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </StackPanel>
+  </ScrollViewer>
+</UserControl>

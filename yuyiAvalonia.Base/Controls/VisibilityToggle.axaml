@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers"
+             mc:Ignorable="d" d:DesignWidth="28" d:DesignHeight="28"
+             x:Class="yuyiAvalonia.Base.Controls.VisibilityToggle"
+             x:Name="This">
+
+    <Button x:Name="PART_Button"
+            Background="Transparent"
+            Padding="4"
+            Width="{Binding Width, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Height="{Binding Height, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Cursor="Hand"
+            ToolTip.Tip="{Binding ToolTip, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Click="OnButtonClick">
+        <Panel>
+            <PathIcon IsVisible="{Binding IsVisible, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Data="{x:Static icon:Icon.Display}"
+                      Foreground="{DynamicResource TextPrimary}"
+                      Width="{Binding IconSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Height="{Binding IconSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+            <PathIcon IsVisible="{Binding !IsVisible, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Data="{x:Static icon:Icon.Hide}"
+                      Foreground="{DynamicResource TextSecondary}"
+                      Width="{Binding IconSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Height="{Binding IconSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      Opacity="0.5"/>
+        </Panel>
+    </Button>
+</UserControl>

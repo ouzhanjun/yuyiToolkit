@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="yuyiAvalonia.UI.Controls.GradientStopMarker"
+             x:Name="Root"
+             ToolTip.Tip="拖动调整位置，双击删除">
+
+    <!-- 整体形状（外部）：矩形 + 底部向下小尖角的五边形 -->
+    <!-- 内部包含一个较小的矩形用于显示停止点的颜色（专业软件风格） -->
+    <Grid Width="14" Height="22"
+          Background="Transparent"
+          ClipToBounds="True"
+          PointerPressed="OnPointerPressed"
+          PointerMoved="OnPointerMoved"
+          PointerReleased="OnPointerReleased"
+          DoubleTapped="OnDoubleTapped">
+
+        <!-- 外部轮廓（五边形：rect + 下指三角形） -->
+        <Path x:Name="PART_OuterPath"
+              Data="M 1,0 H 13 V 13 L 7,21 L 1,13 Z"
+              Fill="{DynamicResource BgContent}"
+              Stroke="{DynamicResource BorderColor}"
+              StrokeThickness="1"
+              StrokeJoin="Round"
+              IsHitTestVisible="False"/>
+
+        <!-- 内部颜色小矩形（显示停止点颜色） -->
+        <Border x:Name="PART_ColorRect"
+                Width="8" Height="7"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Margin="0,2,0,0"
+                CornerRadius="1"
+                IsHitTestVisible="False"/>
+    </Grid>
+</UserControl>

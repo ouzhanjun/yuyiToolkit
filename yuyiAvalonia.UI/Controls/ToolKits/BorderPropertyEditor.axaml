@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="100"
+             x:Class="yuyiAvalonia.UI.Controls.BorderPropertyEditor">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+            <TextBlock Text="边框宽度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <controls:NumericUpDownEx Value="{Binding BorderWidth, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="0" Maximum="10" Height="30"/>
+        </StackPanel>
+        
+        <StackPanel Grid.Column="1" Margin="0,0,5,0">
+            <TextBlock Text="圆角" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <controls:NumericUpDownEx Value="{Binding CornerRadius, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="0" Maximum="50" Height="30"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Margin="0,0,0,0">
+            <TextBlock Text="边框颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <controls:ColorInput x:Name="PART_BorderColorInput" Text="{Binding BorderColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="10" Height="30"/>
+        </StackPanel>
+
+    </Grid>
+</UserControl>

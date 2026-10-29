@@ -1,0 +1,649 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             xmlns:icon="using:yuyiAvalonia.UI.Helpers"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:yuyiAvalonia.UI.ViewModels"
+             xmlns:models="using:yuyiAvalonia.UI.Models"
+             xmlns:controls="using:yuyiAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
+             x:Class="yuyiAvalonia.UI.Views.FlowEditorView"
+             x:DataType="vm:FlowEditorViewModel">
+    
+    <UserControl.Resources>
+        <conv:StringToBrushConverter x:Key="StrToBrush"/>
+        <conv:StringToColorConverter x:Key="StrToColor"/>
+        <conv:EnumToBoolConverter x:Key="EnumToBool"/>
+        <conv:IsTextElementConverter x:Key="IsTextElement"/>
+        <conv:IsCardElementConverter x:Key="IsCardElement"/>
+        <conv:IsButtonElementConverter x:Key="IsButtonElement"/>
+        <conv:IsImageElementConverter x:Key="IsImageElement"/>
+        <conv:CategoryBackgroundColorConverter x:Key="CatBg"/>
+        <conv:CategoryForeColorConverter x:Key="CatForeColor"/>
+        <conv:ComponentTypeBackgroundConverter x:Key="TypeBg"/>
+        <conv:ComponentTypeIconConverter x:Key="TypeIcon"/>
+        <conv:BorderColorConverter x:Key="SelBorder"/>
+        <conv:IsStackPanelElementConverter x:Key="IsStackPanelElement"/>
+        <conv:IsPanelElementConverter x:Key="IsPanelElement"/>
+        <conv:IsGridElementConverter x:Key="IsGridElement"/>
+        <conv:IsCanvasContainerElementConverter x:Key="IsCanvasContainerElement"/>
+        <conv:IsShapeElementConverter x:Key="IsShapeElement"/>
+        <conv:IsRoundedRectangleElementConverter x:Key="IsRoundedRectangleElement"/>
+        <conv:IsRoundedRectangleStackPanelElementConverter x:Key="IsRoundedRectangleStackPanelElement"/>
+        <conv:IsRoundedRectangleGridElementConverter x:Key="IsRoundedRectangleGridElement"/>
+        <conv:IsRoundedRectangleCanvasElementConverter x:Key="IsRoundedRectangleCanvasElement"/>
+        <conv:IsRoundedStarElementConverter x:Key="IsRoundedStarElement"/>
+        <conv:IsRoundedPolygonElementConverter x:Key="IsRoundedPolygonElement"/>
+        <conv:IsSectorElementConverter x:Key="IsSectorElement"/>
+        <conv:VisibilityIconConverter x:Key="VisibilityIconConverter"/>
+        <conv:VisibilityToColorConverter x:Key="VisibilityToColorConverter"/>
+        <conv:ExpandIconConverter x:Key="ExpandIconConverter"/>
+    </UserControl.Resources>
+
+    <Canvas x:Name="MainCanvas" Background="#2D2D30" SizeChanged="MainCanvas_SizeChanged">
+        <Grid Background="{DynamicResource BgToolbar}"
+              ColumnDefinitions="220,3,*,3,300"
+              x:Name="MainGrid"
+              Canvas.Left="0"
+              Canvas.Top="0">
+
+            <!-- 左侧工具面板 -->
+            <Border Grid.Column="0"
+                x:Name="LeftToolbox"
+                BorderBrush="{DynamicResource BorderColor}" 
+                BorderThickness="0" 
+                Background="{DynamicResource BgContent}"
+                CornerRadius="0"
+                Padding="5">
+                <DockPanel>
+                    <!-- 标题区域 -->
+                    <StackPanel DockPanel.Dock="Top" Margin="8,8,8,12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Border Width="28" Height="28" CornerRadius="6" Background="#007BFF">
+                                <TextBlock Text="{Binding TemplateItem.Icon}"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Foreground="White"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="{Binding TemplateItem.Name}"
+                                FontWeight="Bold"
+                                FontSize="15"
+                                Foreground="{DynamicResource TextPrimary}"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock Text="拖拽组件到画布"
+                            FontSize="11"
+                            Foreground="{DynamicResource TextSecondary}"
+                            Margin="36,4,0,0"/>
+                    </StackPanel>
+
+                    <!-- TabControl 切换组件和模板 -->
+                    <TabControl>
+                        <TabItem Header="组件">
+                            <controls:EditorComponentPanel x:Name="ComponentPanel"/>
+                        </TabItem>
+                        <TabItem Header="模板">
+                            <controls:EditorTemplatePanel x:Name="TemplatePanel"/>
+                        </TabItem>
+                    </TabControl>
+                </DockPanel>
+            </Border>
+
+            <!-- 分隔条 -->
+            <GridSplitter Grid.Column="1"
+                HorizontalAlignment="Center"
+                Width="5"
+                Background="{DynamicResource BorderColor}"/>
+
+            <!-- 中间画布区域 -->
+            <Border Grid.Column="2"
+                    Background="{DynamicResource BgContent}"
+                    CornerRadius="0"
+                    Padding="3">
+                <DockPanel>
+                    <!-- 工具栏 -->
+                    <Border DockPanel.Dock="Top"
+                            BorderBrush="{DynamicResource BorderColor}" 
+                            BorderThickness="1" 
+                            Background="{DynamicResource BgToolbar}"
+                            CornerRadius="0"
+                            Padding="3"
+                            Margin="0,0,0,5">
+                        <StackPanel Orientation="Horizontal">
+                            <Button ToolTip.Tip="回退"
+                                    Command="{Binding UndoCommand}"
+                                    Classes="Outline"
+                                    Width="28" Height="28"
+                                    IsEnabled="{Binding CanUndo}"
+                                    >
+                                <Path Data="{x:Static icon:IconHelper.Undo}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"/>
+                            </Button>
+                            <Button ToolTip.Tip="撤销"
+                                    Command="{Binding RedoCommand}"
+                                    Classes="Outline"
+                                    Width="28" Height="28"
+                                    IsEnabled="{Binding CanRedo}"
+                                    >
+                                <Path Data="{x:Static icon:IconHelper.Redo}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"/>
+                            </Button>
+
+                            <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="2,0"/>
+
+                            <Button ToolTip.Tip="清空"
+                                    Command="{Binding ClearCanvasCommand}"
+                                    Classes="Outline"
+                                    Width="28" Height="28"
+                                    >
+                                <Path Data="{x:Static icon:IconHelper.ClearGeometry}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"/>
+                            </Button>
+                            <Button ToolTip.Tip="删除选中"
+                                    Click="DeleteElement_Click"
+                                    Classes="Outline"
+                                    Width="28" Height="28"
+                                    Margin="2,0"
+                                    >
+                                <Path Data="{x:Static icon:IconHelper.DeleteGeometry}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"/>
+                            </Button>
+
+                            <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="2,0"/>
+                            <!-- 对齐按钮组 -->
+                            <StackPanel Orientation="Horizontal" Margin="4,0">
+                                <Button ToolTip.Tip="左对齐"
+                                        Command="{Binding AlignLeftCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        >
+                                    <Path Data="{x:Static icon:IconHelper.AlignLeftGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Button ToolTip.Tip="水平居中"
+                                        Command="{Binding AlignHorizontalCenterCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.AlignHorizontalCenterGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Button ToolTip.Tip="右对齐"
+                                        Command="{Binding AlignRightCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.AlignRightGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="6,0" VerticalAlignment="Center"/>
+                                <Button ToolTip.Tip="顶对齐"
+                                        Command="{Binding AlignTopCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.AlignTopGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Button ToolTip.Tip="垂直居中"
+                                        Command="{Binding AlignVerticalCenterCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.AlignVerticalCenterGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Button ToolTip.Tip="底对齐"
+                                        Command="{Binding AlignBottomCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.AlignBottomGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="6,0" VerticalAlignment="Center"/>
+                                <Button ToolTip.Tip="水平等距分布"
+                                        Command="{Binding DistributeHorizontalSpacingCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.HorizontalSpacingGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Button ToolTip.Tip="垂直等距分布"
+                                        Command="{Binding DistributeVerticalSpacingCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.VerticalSpacingGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="6,0" VerticalAlignment="Center"/>
+                                <Button ToolTip.Tip="等宽"
+                                        Command="{Binding MakeSameWidthCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.SameWidthGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Button ToolTip.Tip="等高"
+                                        Command="{Binding MakeSameHeightCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.SameHeightGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                                <Button ToolTip.Tip="等大小"
+                                        Command="{Binding MakeSameSizeCommand}"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.SameSizeGeometry}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                            </StackPanel>
+                            <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="2,0"/>
+                            <controls:ZoomControl ZoomFactor="{Binding ZoomFactor}"
+                                                  Height="28"
+                                                  MinZoom="0.25"
+                                                  MaxZoom="4.0"
+                                                  ZoomStep="0.1"/>
+                            
+
+                            <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="2,0"/>
+                            
+                                <Button ToolTip.Tip="上移"
+                                        Click="MoveUp_Click"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.MoveUp}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+                            
+                                <Button ToolTip.Tip="下移"
+                                        Click="MoveDown_Click"
+                                        Classes="Outline"
+                                        Width="28" Height="28"
+                                        
+                                        Margin="1,0,0,0">
+                                    <Path Data="{x:Static icon:IconHelper.MoveDown}"
+                                          Width="14" Height="14"
+                                          Fill="{DynamicResource TextPrimary}"
+                                          Stretch="Uniform"/>
+                                </Button>
+
+                            <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="2,0"/>
+                            <Button ToolTip.Tip="预览"
+                                    Command="{Binding PreviewCanvasCommand}"
+                                    Classes="Outline"
+                                    Width="28" Height="28"
+                                    Margin="1,0,0,0"
+                                    >
+                                <Path Data="{x:Static icon:IconHelper.Preview}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"/>
+                            </Button>
+                            
+                            <Button ToolTip.Tip="HTML"
+                                    Command="{Binding ExportHtmlCommand}"
+                                    Classes="Outline"
+                                    Margin="1,0,0,0"
+                                    Width="28" Height="28"
+                                    >
+                                <Path Data="{x:Static icon:IconHelper.ExportHtml}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"
+                                    IsEnabled="{Binding !IsExporting}"/>
+                            </Button>
+                            <Separator Width="1" Background="{DynamicResource BorderColor}" Margin="2,0,0,0"/>
+                            
+                            <Button ToolTip.Tip="保存画布"
+                                    Command="{Binding SaveCanvasCommand}"
+                                    Classes="Outline"
+                                    Width="28" Height="28"
+                                    
+                                    Margin="2,0,0,0">
+                                <Path Data="{x:Static icon:IconHelper.Save}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"/>
+                            </Button>
+                            
+                            <Button ToolTip.Tip="加载画布"
+                                    Command="{Binding LoadCanvasCommand}"
+                                    Classes="Outline"
+                                    Width="28" Height="28"
+                                    
+                                    Margin="1,0,0,0">
+                                <Path Data="{x:Static icon:IconHelper.LoadFile}"
+                                        Width="14" Height="14"
+                                        Fill="{DynamicResource TextPrimary}"
+                                        Stretch="Uniform"/>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+
+                    <Panel x:Name="ContentPanel">
+                        <!-- 画布尺寸提示 -->
+                        <Border Background="#80000000"
+                                CornerRadius="1"
+                                Padding="8,4"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                ZIndex="10001"
+                                Margin="0,30,5,5">
+                            <TextBlock Foreground="White" FontSize="10">
+                                <Run Text="{Binding CanvasProperty.CanvasWidth, StringFormat={}{0:F0}}"/>
+                                <Run Text=" x "/>
+                                <Run Text="{Binding CanvasProperty.CanvasHeight, StringFormat={}{0:F0}}"/>
+                            </TextBlock>
+                        </Border>
+                        <DockPanel>
+                            <!-- 水平刻度尺 -->
+                            <controls:PositionRuler x:Name="HorizontalRuler"
+                                Orientation="Horizontal"
+                                RulerSize="20"
+                                TickInterval="10"
+                                MajorTickInterval="5"
+                                ShowNumbers="True"
+                                ShowPositionLine="False"
+                                Height="25"
+                                DockPanel.Dock="Top"
+                                HorizontalAlignment="Stretch"
+                                RulerBrush="{DynamicResource AccentColor}"
+                                LineBrush="{DynamicResource TextSecondary}"
+                                BackgroundBrush="{DynamicResource BgContent}"
+                                MinorTickBrush="{DynamicResource TextSecondary}"
+                                NumberBrush="{DynamicResource TextSecondary}"/>
+
+                            <!-- 垂直刻度尺 -->
+                            <controls:PositionRuler x:Name="VerticalRuler"
+                                DockPanel.Dock="Left"
+                                Orientation="Vertical"
+                                RulerSize="20"
+                                TickInterval="10"
+                                MajorTickInterval="5"
+                                ShowNumbers="True"
+                                ShowPositionLine="False"
+                                Width="25"
+                                VerticalAlignment="Stretch"
+                                RulerBrush="{DynamicResource AccentColor}"
+                                LineBrush="{DynamicResource TextSecondary}"
+                                BackgroundBrush="{DynamicResource BgContent}"
+                                MinorTickBrush="{DynamicResource TextSecondary}"
+                                NumberBrush="{DynamicResource TextSecondary}"/>
+                            <!-- 画布 -->
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                                VerticalScrollBarVisibility="Auto"
+                                x:Name="CanvasScrollViewer">
+                                <Panel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Width="{Binding CanvasPanelWidth}"
+                                    Height="{Binding CanvasPanelHeight}"
+                                    x:Name="CanvasPanel">
+                        
+                                    <Border x:Name="CanvasBorder"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        ClipToBounds="False"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <Panel>
+                                            <!-- 缩放容器 -->
+                                            <Panel x:Name="ElementsPanel"
+                                                Background="Transparent"
+                                                DragDrop.AllowDrop="True"
+                                                PointerWheelChanged="OnCanvasPointerWheel">
+                                                <Panel.RenderTransform>
+                                                    <ScaleTransform ScaleX="{Binding ZoomFactor}" ScaleY="{Binding ZoomFactor}"/>
+                                                </Panel.RenderTransform>
+
+                                                <!-- 画布背景层 -->
+                                                <Border x:Name="CanvasBackgroundBorder"
+                                                    Width="{Binding CanvasProperty.CanvasWidth}"
+                                                    Height="{Binding CanvasProperty.CanvasHeight}"
+                                                    ClipToBounds="True"/>
+
+                                                <!-- 背景图叠加层 -->
+                                                <Border x:Name="CanvasBackgroundImageBorder"
+                                                    Width="{Binding CanvasProperty.CanvasWidth}"
+                                                    Height="{Binding CanvasProperty.CanvasHeight}"
+                                                    ClipToBounds="True"
+                                                    IsHitTestVisible="False"/>
+
+                                                <!-- 网格背景层 -->
+                                                <controls:GridCanvas x:Name="GridCanvas"
+                                                    Width="{Binding CanvasProperty.CanvasWidth}"
+                                                    Height="{Binding CanvasProperty.CanvasHeight}"
+                                                    Background="Transparent"
+                                                    ClipToBounds="True"
+                                                    IsHitTestVisible="False"/>
+
+                                                <!-- 元素层 -->
+                                                <Canvas x:Name="ElementsCanvas"
+                                                    Width="{Binding CanvasProperty.CanvasWidth}"
+                                                    Height="{Binding CanvasProperty.CanvasHeight}"
+                                                    Background="Transparent"
+                                                    ClipToBounds="False"/>
+
+                                                <!-- 多选覆盖层 -->
+                                                <controls:ComposeSelectionOverlay x:Name="MultiSelectionOverlay"
+                                                    Width="{Binding CanvasProperty.CanvasWidth}"
+                                                    Height="{Binding CanvasProperty.CanvasHeight}"
+                                                    IsHitTestVisible="True"
+                                                    Focusable="True"
+                                                    ClipToBounds="False"/>
+
+                                            </Panel>
+                                        </Panel>
+                                    </Border>
+
+                                    <!-- 空状态提示 -->
+                                    <Border IsVisible="{Binding !CanvasElements.Count}"
+                                        Background="Transparent"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        <StackPanel>
+                                            <TextBlock Text="点击左侧组件添加"
+                                                FontSize="16"
+                                                Foreground="{DynamicResource TextSecondary}"
+                                                Opacity="0.5"
+                                                HorizontalAlignment="Center"/>
+                                            <TextBlock Text="或拖拽组件到画布"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextSecondary}"
+                                                Opacity="0.3"
+                                                HorizontalAlignment="Center"
+                                                Margin="0,5,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Panel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Panel>
+                </DockPanel>
+            </Border>
+
+            <!-- 分隔条 -->
+            <GridSplitter Grid.Column="3"
+                HorizontalAlignment="Center"
+                Width="5"
+                Background="{DynamicResource BorderColor}"/>
+
+            <!-- 右侧属性面板 -->
+            <Border Grid.Column="4"
+                Background="{DynamicResource BgContent}"
+                CornerRadius="0"
+                Padding="5">
+                <TabControl SelectedIndex="{Binding RightPanelIndex}">
+                    <!-- 画布属性 -->
+                    <TabItem Header="画布">
+                        <controls:CanvasPageProperty x:Name="CanvasPageProperty" SelectedCanvasSize="{Binding SelectedCanvasSize}"/>
+                    </TabItem>
+
+                    <!-- 元素属性 -->
+                    <TabItem Header="元素">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="8">
+                                <Border IsVisible="{Binding !HasSelectedElement}"
+                                    BorderBrush="{DynamicResource BorderColor}"
+                                    BorderThickness="1"
+                                    CornerRadius="8"
+                                    Padding="16"
+                                    Margin="0,8">
+                                    <TextBlock Text="请先在画布上选择一个元素"
+                                        HorizontalAlignment="Center"
+                                        Foreground="{DynamicResource TextPrimary}"
+                                        Opacity="0.5"/>
+                                </Border>
+
+                                <StackPanel IsVisible="{Binding HasSelectedElement}">
+                                    <Border Background="{DynamicResource BgToolbar}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1"
+                                        Padding="10"
+                                        Margin="0,0,0,5">
+                                        <StackPanel>
+                                            <TextBlock Text="元素类型" FontSize="11" Opacity="0.7" Foreground="{DynamicResource TextPrimary}"/>
+                                            <TextBlock Text="{Binding SelectedElement.ElementType}"
+                                                FontWeight="Bold"
+                                                FontSize="13"
+                                                Foreground="{DynamicResource TextPrimary}"
+                                                Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- 文本属性 -->
+                                    <controls:TextElementProperty x:Name="TextElementControl" ElementProperty="{Binding SelectedElement}" IsVisible="{Binding SelectedElement, Converter={StaticResource IsTextElement}}"/>
+
+                                    <!-- 卡片属性 -->
+                                    <controls:CardElementProperty x:Name="CardElementControl" ElementProperty="{Binding SelectedElement}" IsVisible="{Binding SelectedElement, Converter={StaticResource IsCardElement}}"/>
+
+                                    <!-- 按钮属性 -->
+                                    <controls:ButtonElementProperty ElementProperty="{Binding SelectedElement}" IsVisible="{Binding SelectedElement, Converter={StaticResource IsButtonElement}}"/>
+
+                                    <!-- StackPanel容器属性 -->
+                                    <controls:StackPanelElementProperty ElementProperty="{Binding SelectedElement}" IsVisible="{Binding SelectedElement, Converter={StaticResource IsStackPanelElement}}"/>
+
+                                    <!-- Panel容器属性 -->
+                                    <controls:PanelElementProperty ElementProperty="{Binding SelectedElement}" IsVisible="{Binding SelectedElement, Converter={StaticResource IsPanelElement}}"/>
+
+                                    <!-- Grid容器属性 -->
+                                    <controls:GridElementProperty x:Name="PART_GridElementProperty"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsGridElement}}"/>
+
+                                    <!-- Canvas容器属性 -->
+                                    <controls:CanvasElementProperty ElementProperty="{Binding SelectedElement}" IsVisible="{Binding SelectedElement, Converter={StaticResource IsCanvasContainerElement}}"/>
+
+                                    <!-- 图片属性 -->
+                                    <controls:ImageElementProperty
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsImageElement}}"/>
+
+                                    <!-- 图形容器属性（FlowShapeElement，需要在普通图形属性之前） -->
+                                    <controls:FlowShapeElementProperty
+                                        x:Name="FlowShapeElementControl" 
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsShapeElement}}"/>
+
+                                    <!-- 圆角多边形属性 -->
+                                    <controls:RoundedPolygonElementProperty
+                                        x:Name="RoundedPolygonElementControl"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsRoundedPolygonElement}}"/>
+
+                                    <controls:RoundedStarElementProperty
+                                        x:Name="RoundedStarElementControl"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsRoundedStarElement}}"/>
+
+                                    <controls:RoundedRectangleElementProperty
+                                        x:Name="RoundedRectangleElementControl"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsRoundedRectangleElement}}"/>
+
+                                    <controls:RoundedRectangleStackPanelElementProperty
+                                        x:Name="RoundedRectangleStackPanelElementControl"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsRoundedRectangleStackPanelElement}}"/>
+
+                                    <controls:RoundedRectangleGridElementProperty
+                                        x:Name="RoundedRectangleGridElementControl"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsRoundedRectangleGridElement}}"/>
+
+                                    <controls:RoundedRectangleCanvasElementProperty
+                                        x:Name="RoundedRectangleCanvasElementControl"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsRoundedRectangleCanvasElement}}"/>
+
+                                    <controls:RoundEllipseElementProperty
+                                        x:Name="RoundEllipseElementControl"
+                                        ElementProperty="{Binding SelectedElement}"
+                                        IsVisible="{Binding SelectedElement, Converter={StaticResource IsSectorElement}}"/>
+
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <!-- 图层面板 -->
+                    <TabItem Header="图层">
+                        <controls:ElementTreeControl x:Name="ElementTree"/>
+                    </TabItem>
+                </TabControl>
+            </Border>
+        </Grid>
+    </Canvas>
+</UserControl>

@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="80" d:DesignHeight="30"
+             x:Class="yuyiAvalonia.ImageEdit.Controls.ZoomSelectorControl"
+             x:Name="ZoomSelectorRoot">
+    <Button x:Name="ZoomButton"
+            VerticalAlignment="Center"
+            Margin="5,0,5,0"
+            MinWidth="50"
+            Height="25"
+            Background="Transparent"
+            FontSize="10">
+        <Button.Flyout>
+            <MenuFlyout ItemsSource="{Binding #ZoomSelectorRoot.ZoomLevels}"
+                        Placement="BottomEdgeAlignedLeft">
+                <MenuFlyout.ItemTemplate>
+                    <DataTemplate x:DataType="x:Double">
+                        <MenuItem Header="{Binding StringFormat={}{0:P0}}"
+                                  Command="{Binding #ZoomSelectorRoot.ZoomCommand}"
+                                  CommandParameter="{Binding .}"/>
+                    </DataTemplate>
+                </MenuFlyout.ItemTemplate>
+            </MenuFlyout>
+        </Button.Flyout>
+    </Button>
+</UserControl>

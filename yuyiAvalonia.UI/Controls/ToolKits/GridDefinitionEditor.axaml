@@ -1,0 +1,90 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="100"
+             x:Class="yuyiAvalonia.UI.Controls.GridDefinitionEditor">
+
+    <StackPanel>
+        <!-- 标题和数量显示 -->
+        <Grid Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{Binding HintText, RelativeSource={RelativeSource AncestorType=local:GridDefinitionEditor}}"
+                       FontSize="10"
+                       Foreground="{DynamicResource TextSecondary}"
+                       VerticalAlignment="Center"/>
+        </Grid>
+
+        <!-- 输入区域 -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border Background="{DynamicResource BgProperty}"
+                    CornerRadius="4"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    ClipToBounds="True"
+                    Height="28">
+                <!-- 定义输入框 -->
+                <TextBox Grid.Column="0"
+                         x:Name="PART_DefinitionTextBox"
+                         Text="{Binding Definition, RelativeSource={RelativeSource AncestorType=local:GridDefinitionEditor}, Mode=TwoWay}"
+                         Watermark="*,*,* 或 2*,*,* 或 Auto,100,*"
+                         FontSize="10"
+                         Height="28"
+                         MinWidth="150"/>
+            </Border>
+            <!-- 自动生成按钮 -->
+            <Button Grid.Column="1"
+                    x:Name="PART_AutoGenerateButton"
+                    Content="自动"
+                    Margin="5,0,0,0"
+                    Padding="8,4"
+                    FontSize="10"
+                    ToolTip.Tip="根据数量自动生成平均分配的定义"/>
+
+            <!-- 应用按钮 -->
+            <Button Grid.Column="2"
+                    x:Name="PART_ApplyButton"
+                    Content="应用"
+                    Margin="5,0,0,0"
+                    Padding="8,4"
+                    FontSize="10"
+                    ToolTip.Tip="验证并应用当前定义"/>
+        </Grid>
+
+        <!-- 错误消息显示 -->
+        <TextBlock x:Name="PART_ErrorTextBlock"
+                   FontSize="9"
+                   Foreground="#FF5555"
+                   Margin="0,3,0,0"
+                   IsVisible="False"
+                   TextWrapping="Wrap"/>
+
+        <!-- 格式说明 -->
+        <TextBlock FontSize="9"
+                   Foreground="{DynamicResource TextSecondary}"
+                   Margin="0,5,0,0"
+                   TextWrapping="Wrap">
+            <Run Text="格式说明: "/>
+            <Run Text="* "/>
+            <Run Text="=平均分配, "/>
+            <Run Text="2* "/>
+            <Run Text="=2倍比例, "/>
+            <Run Text="Auto "/>
+            <Run Text="=自适应, "/>
+            <Run Text="100 "/>
+            <Run Text="=固定像素"/>
+        </TextBlock>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,83 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:controls="clr-namespace:yuyiAvalonia.Software.Controls"
+                    xmlns:vm="clr-namespace:yuyiAvalonia.Software.Controls;assembly=yuyiAvalonia.Software"
+                    mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+                    x:DataType="vm:SoftwareListItem">
+
+    <ControlTheme x:Key="SoftwareListItemStyle" TargetType="controls:SoftwareListItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:SoftwareListItem">
+                    <Border x:Name="PART_Root"
+                            Background="{TemplateBinding Background}"
+                            BorderThickness="0,0,0,1"
+                            BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                            Padding="{TemplateBinding Padding}">
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                            <!-- 状态指示器 -->
+                            <Ellipse Grid.Column="0"
+                                     Width="8" Height="8"
+                                     Margin="0,0,12,0"
+                                     VerticalAlignment="Center"
+                                     Fill="{Binding StatusBrush, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+                            <!-- 软件信息 -->
+                            <StackPanel Grid.Column="1" Spacing="2">
+                                <TextBlock Text="{Binding Software.Name, RelativeSource={RelativeSource TemplatedParent}}"
+                                           FontWeight="SemiBold"
+                                           FontSize="14"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{Binding Software.Version, RelativeSource={RelativeSource TemplatedParent}}"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                    <Border Background="#1A1890FF"
+                                            CornerRadius="3"
+                                            Padding="6,2">
+                                        <TextBlock Text="{Binding Software.Category, RelativeSource={RelativeSource TemplatedParent}}"
+                                                   FontSize="10"
+                                                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+                                    </Border>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- 大小信息 -->
+                            <TextBlock Grid.Column="2"
+                                       Text="{Binding Software.Size, RelativeSource={RelativeSource TemplatedParent}}"
+                                       VerticalAlignment="Center"
+                                       Margin="12,0"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+
+                            <!-- 操作按钮 -->
+                            <StackPanel Grid.Column="3"
+                                        Orientation="Horizontal"
+                                        Spacing="4"
+                                        VerticalAlignment="Center">
+                                <Button x:Name="PART_FavoriteButton"
+                                        Classes="IconButton"
+                                        ToolTip.Tip="收藏"
+                                        Background="Transparent">
+                                    <TextBlock Text="★" FontSize="16"/>
+                                </Button>
+                                <Button x:Name="PART_DownloadButton"
+                                        Classes="IconButton"
+                                        ToolTip.Tip="下载"
+                                        Background="Transparent">
+                                    <TextBlock Text="↓" FontSize="18" FontWeight="Bold"/>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </ControlTheme>
+
+</ResourceDictionary>

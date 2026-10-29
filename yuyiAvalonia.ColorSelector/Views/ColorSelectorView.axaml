@@ -1,0 +1,1402 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:yuyiAvalonia.ColorSelector.ViewModels"
+             xmlns:models="using:yuyiAvalonia.ColorSelector.Models"
+             xmlns:converters="using:yuyiAvalonia.Base.Converters"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="yuyiAvalonia.ColorSelector.Views.ColorSelectorView"
+             x:DataType="vm:ColorSelectorViewModel">
+    <Grid Background="{DynamicResource BgToolbar}" Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 顶部工具栏 -->
+        <Border Grid.Row="0" Background="{DynamicResource BgContent}" CornerRadius="6" Padding="12" Margin="0,0,0,6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <Button Content="新建" Command="{Binding NewThemeCommand}" Padding="12,6"
+                            Background="{DynamicResource AccentColor}" FontWeight="Medium"/>
+                    <Button Content="导入" Command="{Binding ImportThemeCommand}" Padding="12,6"/>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <ComboBox ItemsSource="{Binding ExportFormats}" SelectedItem="{Binding SelectedExportFormatItem}" MinWidth="80"/>
+                        <Button Content="导出" Command="{Binding ExportThemeCommand}" Padding="12,6"/>
+                    </StackPanel>
+                    <Button Content="HTML预览" Command="{Binding GenerateHtmlPreviewCommand}" Padding="12,6" ToolTip.Tip="为当前主题生成HTML预览"/>
+                    <Button Content="全部HTML" Command="{Binding GenerateAllHtmlPreviewsCommand}" Padding="12,6" ToolTip.Tip="为所有主题生成HTML预览"/>
+                </StackPanel>
+
+                <TextBox Grid.Column="1" Text="{Binding SearchKeyword}" Watermark="搜索主题..."
+                         Margin="16,0" VerticalContentAlignment="Center"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                    <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding CurrentCategory}" MinWidth="100"/>
+                    <Button Content="分类" Padding="8,6"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- 主内容区 -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 左侧主题列表 -->
+            <Border Grid.Column="0" Background="{DynamicResource BgContent}" CornerRadius="6" Margin="0,0,6,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="12,12,12,8">
+                        <TextBlock Text="主题列表" FontWeight="Bold" FontSize="15" Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="{Binding AllThemes.Count, StringFormat='共 {0} 个主题'}" FontSize="11" Opacity="0.6" Margin="0,2,0,0"/>
+                    </StackPanel>
+
+                    <ScrollViewer>
+                        <ListBox ItemsSource="{Binding FilteredThemes}" SelectedItem="{Binding SelectedTheme}" Background="Transparent" BorderThickness="0" Margin="6">
+                            <ListBox.Styles>
+                                <Style Selector="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource HoverColor}"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+                                </Style>
+                                <Style Selector="ListBoxItem:selected:pointerover /template/ ContentPresenter">
+                                    <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+                                    <Setter Property="Opacity" Value="0.85"/>
+                                </Style>
+                            </ListBox.Styles>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="models:ColorTheme">
+                                    <Border CornerRadius="6" Margin="4,2" Padding="10,8" Cursor="Hand">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0">
+                                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Medium" FontSize="13" Foreground="{DynamicResource TextPrimary}"/>
+                                                    <Border Background="{Binding PrimaryColor}" CornerRadius="2" Width="8" Height="8" VerticalAlignment="Center" IsVisible="{Binding IsBuiltIn}" ToolTip.Tip="内置主题"/>
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding Description}" FontSize="10" Opacity="0.5" Foreground="{DynamicResource TextPrimary}" TextTrimming="CharacterEllipsis" MaxWidth="220" Margin="0,2,0,0"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                    <Border Background="{Binding PrimaryColor}" Width="20" Height="12" CornerRadius="2" Margin="0,0,2,0"/>
+                                                    <Border Background="{Binding SuccessColor}" Width="20" Height="12" CornerRadius="2" Margin="0,0,2,0"/>
+                                                    <Border Background="{Binding WarningColor}" Width="20" Height="12" CornerRadius="2" Margin="0,0,2,0"/>
+                                                    <Border Background="{Binding ErrorColor}" Width="20" Height="12" CornerRadius="2" Margin="0,0,2,0"/>
+                                                    <Border Background="{Binding InfoColor}" Width="20" Height="12" CornerRadius="2"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <TextBlock Grid.Column="1" Text="{Binding Category}" FontSize="9" Opacity="0.4" VerticalAlignment="Top" Foreground="{DynamicResource TextPrimary}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+
+            <!-- 右侧编辑区 -->
+            <Border Grid.Column="1" Background="{DynamicResource BgContent}" CornerRadius="6">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- 标签页头部 -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="16,12,16,0">
+                        <RadioButton Content="基础颜色" GroupName="Tabs" IsChecked="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=0}" Padding="16,8"/>
+                        <RadioButton Content="组件样式" GroupName="Tabs" IsChecked="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=1}" Padding="16,8"/>
+                        <RadioButton Content="页面样式" GroupName="Tabs" IsChecked="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=2}" Padding="16,8"/>
+                        <RadioButton Content="完整预览" GroupName="Tabs" IsChecked="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=3}" Padding="16,8"/>
+                        <RadioButton Content="CSS代码" GroupName="Tabs" IsChecked="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=4}" Padding="16,8"/>
+                        <RadioButton Content="帮助" GroupName="Tabs" IsChecked="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=5}" Padding="16,8"/>
+                    </StackPanel>
+
+                    <!-- 标签页内容 -->
+                    <Grid Grid.Row="1">
+                        <!-- 基础颜色面板 -->
+                        <ScrollViewer Margin="16,8,16,16" IsVisible="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=0}">
+                            <StackPanel Spacing="20">
+                                <!-- 基础颜色 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="基础颜色" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                                            <!-- 主色 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,12">
+                                                <TextBlock Text="主色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PrimaryColor}" CornerRadius="4" Margin="0,0,8,0" PointerPressed="ColorSwatch_PointerPressed" Tag="PrimaryColor"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PrimaryColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PrimaryColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 次要色 -->
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="8,0,0,12">
+                                                <TextBlock Text="次要色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.SecondaryColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.SecondaryColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="SecondaryColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 成功色 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,12">
+                                                <TextBlock Text="成功色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.SuccessColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.SuccessColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="SuccessColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 警告色 -->
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="8,0,0,12">
+                                                <TextBlock Text="警告色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.WarningColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.WarningColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="WarningColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 错误色 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,8,12">
+                                                <TextBlock Text="错误色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.ErrorColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.ErrorColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="ErrorColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 信息色 -->
+                                            <StackPanel Grid.Column="1" Grid.Row="2" Margin="8,0,0,12">
+                                                <TextBlock Text="信息色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.InfoColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.InfoColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="InfoColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 强调色 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="3" Margin="0,0,8,0">
+                                                <TextBlock Text="强调色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.AccentColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.AccentColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="AccentColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 背景与文字 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="背景与文字" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,12">
+                                                <TextBlock Text="背景色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.BackgroundColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.BackgroundColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="BackgroundColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="8,0,0,12">
+                                                <TextBlock Text="前景色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.ForegroundColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.ForegroundColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="ForegroundColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,12">
+                                                <TextBlock Text="边框色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.BorderColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.BorderColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="BorderColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="8,0,0,12">
+                                                <TextBlock Text="分割线" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.DividerColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.DividerColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="DividerColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="0" Grid.Row="2" Margin="0,0,8,0">
+                                                <TextBlock Text="禁用色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.DisabledColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.DisabledColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="DisabledColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="2" Margin="8,0,0,0">
+                                                <TextBlock Text="悬停色" FontSize="11" Margin="0,0,0,4"/>
+                                                <Grid ColumnDefinitions="32,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.HoverColor}" CornerRadius="4" Margin="0,0,8,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.HoverColor}" FontSize="12"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="6,4" Margin="4,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="HoverColor" ToolTip.Tip="打开拾色器"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 灰度色板 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="灰度色板" FontWeight="Bold" FontSize="14"/>
+                                        <WrapPanel>
+                                            <Border Background="{Binding EditingTheme.Gray1}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 1"/>
+                                            <Border Background="{Binding EditingTheme.Gray2}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 2"/>
+                                            <Border Background="{Binding EditingTheme.Gray3}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 3"/>
+                                            <Border Background="{Binding EditingTheme.Gray4}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 4"/>
+                                            <Border Background="{Binding EditingTheme.Gray5}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 5"/>
+                                            <Border Background="{Binding EditingTheme.Gray6}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 6"/>
+                                            <Border Background="{Binding EditingTheme.Gray7}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 7"/>
+                                            <Border Background="{Binding EditingTheme.Gray8}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 8"/>
+                                            <Border Background="{Binding EditingTheme.Gray9}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 9"/>
+                                            <Border Background="{Binding EditingTheme.Gray10}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 10"/>
+                                            <Border Background="{Binding EditingTheme.Gray11}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 11"/>
+                                            <Border Background="{Binding EditingTheme.Gray12}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 12"/>
+                                            <Border Background="{Binding EditingTheme.Gray13}" Width="40" Height="24" CornerRadius="3" Margin="2" ToolTip.Tip="Gray 13"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 操作按钮 -->
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <Button Content="保存" Command="{Binding SaveThemeCommand}" Padding="24,10" Background="{DynamicResource AccentColor}" FontWeight="Medium"/>
+                                    <Button Content="另存为" Command="{Binding SaveAsNewThemeCommand}" Padding="20,10"/>
+                                    <Button Content="删除" Command="{Binding DeleteThemeCommand}" Padding="20,10" Background="#FF4D4F"/>
+                                    <Button Content="复制CSS" Command="{Binding CopyCssToClipboardCommand}" Padding="20,10"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- 组件样式面板 - 合并了组件和页面样式 -->
+                        <ScrollViewer Margin="16,8,16,16" IsVisible="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=1}">
+                            <StackPanel Spacing="20">
+                                <!-- 组件样式设置 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="组件样式设置" FontWeight="Bold" FontSize="14"/>
+
+                                        <!-- 主按钮样式 -->
+                                        <StackPanel Spacing="8">
+                                            <TextBlock Text="主按钮样式" FontWeight="SemiBold" FontSize="12"/>
+                                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                                <!-- 默认状态 -->
+                                                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                    <TextBlock Text="默认" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.PrimaryBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.PrimaryBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.PrimaryBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                    <TextBlock Text="前景色" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.PrimaryForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.PrimaryForegroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.PrimaryForegroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                    <TextBlock Text="边框色" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.PrimaryBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.PrimaryBorderColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.PrimaryBorderColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!-- 悬停状态 -->
+                                                <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                    <TextBlock Text="悬停背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.PrimaryHoverBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.PrimaryHoverBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.PrimaryHoverBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                    <TextBlock Text="选中背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.PrimaryActiveBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.PrimaryActiveBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.PrimaryActiveBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Grid.Row="1" Margin="4,0,0,8">
+                                                    <TextBlock Text="禁用背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.PrimaryDisabledBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.PrimaryDisabledBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.PrimaryDisabledBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!-- 实时预览 -->
+                                                <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0" Orientation="Horizontal" Spacing="8">
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.PrimaryBackgroundColor}" CornerRadius="4" Padding="12,6" BorderBrush="{Binding EditingTheme.FormElementStyle.PrimaryBorderColor}" BorderThickness="1">
+                                                        <TextBlock Text="主按钮" Foreground="{Binding EditingTheme.FormElementStyle.PrimaryForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.PrimaryHoverBackgroundColor}" CornerRadius="4" Padding="12,6" BorderBrush="{Binding EditingTheme.FormElementStyle.PrimaryBorderColor}" BorderThickness="1">
+                                                        <TextBlock Text="悬停" Foreground="{Binding EditingTheme.FormElementStyle.PrimaryForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.PrimaryActiveBackgroundColor}" CornerRadius="4" Padding="12,6" BorderBrush="{Binding EditingTheme.FormElementStyle.PrimaryBorderColor}" BorderThickness="1">
+                                                        <TextBlock Text="选中" Foreground="{Binding EditingTheme.FormElementStyle.PrimaryForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.PrimaryDisabledBackgroundColor}" CornerRadius="4" Padding="12,6" BorderBrush="{Binding EditingTheme.FormElementStyle.PrimaryBorderColor}" BorderThickness="1" Opacity="0.6">
+                                                        <TextBlock Text="禁用" Foreground="{Binding EditingTheme.FormElementStyle.PrimaryDisabledForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <!-- 次按钮样式 -->
+                                        <StackPanel Spacing="8">
+                                            <TextBlock Text="次按钮样式" FontWeight="SemiBold" FontSize="12"/>
+                                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                    <TextBlock Text="默认背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.SecondaryBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.SecondaryBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.SecondaryBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                    <TextBlock Text="悬停背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.SecondaryHoverBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.SecondaryHoverBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.SecondaryHoverBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                    <TextBlock Text="禁用背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.SecondaryDisabledBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.SecondaryDisabledBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.SecondaryDisabledBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                    <TextBlock Text="前景色" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.SecondaryForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.SecondaryForegroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.SecondaryForegroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                    <TextBlock Text="禁用前景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.SecondaryDisabledForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.SecondaryDisabledForegroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.SecondaryDisabledForegroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!-- 实时预览 -->
+                                                <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0" Orientation="Horizontal" Spacing="8">
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.SecondaryBackgroundColor}" CornerRadius="4" Padding="12,6" BorderBrush="{Binding EditingTheme.FormElementStyle.SecondaryBorderColor}" BorderThickness="1">
+                                                        <TextBlock Text="次按钮" Foreground="{Binding EditingTheme.FormElementStyle.SecondaryForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.SecondaryHoverBackgroundColor}" CornerRadius="4" Padding="12,6" BorderBrush="{Binding EditingTheme.FormElementStyle.SecondaryBorderColor}" BorderThickness="1">
+                                                        <TextBlock Text="悬停" Foreground="{Binding EditingTheme.FormElementStyle.SecondaryForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.SecondaryDisabledBackgroundColor}" CornerRadius="4" Padding="12,6" BorderBrush="{Binding EditingTheme.FormElementStyle.SecondaryBorderColor}" BorderThickness="1" Opacity="0.6">
+                                                        <TextBlock Text="禁用" Foreground="{Binding EditingTheme.FormElementStyle.SecondaryDisabledForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <!-- 输入框样式 -->
+                                        <StackPanel Spacing="8">
+                                            <TextBlock Text="输入框样式" FontWeight="SemiBold" FontSize="12"/>
+                                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                    <TextBlock Text="默认背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.InputBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.InputBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.InputBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                    <TextBlock Text="边框色" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.InputBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.InputBorderColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.InputBorderColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                    <TextBlock Text="聚焦边框" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.InputFocusBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.InputFocusBorderColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.InputFocusBorderColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                    <TextBlock Text="禁用背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.InputDisabledBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.InputDisabledBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.InputDisabledBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                    <TextBlock Text="占位符" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.InputPlaceholderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.InputPlaceholderColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.InputPlaceholderColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!-- 实时预览 -->
+                                                <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0" Orientation="Horizontal" Spacing="8">
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.InputBackgroundColor}" CornerRadius="4" Padding="8,6" BorderBrush="{Binding EditingTheme.FormElementStyle.InputBorderColor}" BorderThickness="1" MinWidth="100">
+                                                        <TextBlock Text="输入框" Foreground="{Binding EditingTheme.FormElementStyle.InputForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.InputBackgroundColor}" CornerRadius="4" Padding="8,6" BorderBrush="{Binding EditingTheme.FormElementStyle.InputFocusBorderColor}" BorderThickness="2" MinWidth="100">
+                                                        <TextBlock Text="聚焦状态" Foreground="{Binding EditingTheme.FormElementStyle.InputForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.InputDisabledBackgroundColor}" CornerRadius="4" Padding="8,6" BorderBrush="{Binding EditingTheme.FormElementStyle.InputDisabledBorderColor}" BorderThickness="1" MinWidth="100" Opacity="0.6">
+                                                        <TextBlock Text="禁用状态" Foreground="{Binding EditingTheme.FormElementStyle.InputDisabledForegroundColor}" FontSize="11"/>
+                                                    </Border>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <!-- 分割线样式 -->
+                                        <StackPanel Spacing="8">
+                                            <TextBlock Text="分割线样式" FontWeight="SemiBold" FontSize="12"/>
+                                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                                                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                    <TextBlock Text="默认颜色" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.DividerDefaultColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.DividerDefaultColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.DividerDefaultColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                    <TextBlock Text="淡化颜色" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.DividerDisabledColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.DividerDisabledColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.DividerDisabledColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!-- 实时预览 -->
+                                                <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,4,0,0">
+                                                    <Border Height="1" Background="{Binding EditingTheme.PagePanelStyle.DividerDefaultColor}" Margin="0,0,0,8"/>
+                                                    <Border Height="1" Background="{Binding EditingTheme.PagePanelStyle.DividerDisabledColor}" Opacity="0.5"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <!-- 复选框样式 -->
+                                        <StackPanel Spacing="8">
+                                            <TextBlock Text="复选框样式" FontWeight="SemiBold" FontSize="12"/>
+                                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                                                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                    <TextBlock Text="未选中背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.CheckboxUncheckedBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.CheckboxUncheckedBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.CheckboxUncheckedBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                    <TextBlock Text="选中背景" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.CheckboxCheckedBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.CheckboxCheckedBackgroundColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.CheckboxCheckedBackgroundColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                    <TextBlock Text="选中图标" FontSize="10" Margin="0,0,0,2"/>
+                                                    <Grid ColumnDefinitions="24,*,Auto">
+                                                        <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.CheckboxCheckedIconColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                        <TextBox Grid.Column="1" Text="{Binding EditingTheme.FormElementStyle.CheckboxCheckedIconColor}" FontSize="10"/>
+                                                        <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="FormElementStyle.CheckboxCheckedIconColor"/>
+                                                    </Grid>
+                                                </StackPanel>
+                                                <!-- 实时预览 -->
+                                                <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,4,0,0" Orientation="Horizontal" Spacing="16">
+                                                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                                        <Border Width="16" Height="16" Background="{Binding EditingTheme.FormElementStyle.CheckboxUncheckedBackgroundColor}" CornerRadius="3" BorderBrush="{Binding EditingTheme.FormElementStyle.CheckboxBorderColor}" BorderThickness="1"/>
+                                                        <TextBlock Text="未选中" Foreground="{Binding EditingTheme.FormElementStyle.CheckboxForegroundColor}" FontSize="11"/>
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                                        <Border Width="16" Height="16" Background="{Binding EditingTheme.FormElementStyle.CheckboxCheckedBackgroundColor}" CornerRadius="3" BorderBrush="{Binding EditingTheme.FormElementStyle.CheckboxBorderColor}" BorderThickness="1">
+                                                            <TextBlock Text="✓" Foreground="{Binding EditingTheme.FormElementStyle.CheckboxCheckedIconColor}" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <TextBlock Text="选中" Foreground="{Binding EditingTheme.FormElementStyle.CheckboxForegroundColor}" FontSize="11"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+
+
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <Button Content="保存" Command="{Binding SaveThemeCommand}" Padding="24,10" Background="{DynamicResource AccentColor}" FontWeight="Medium"/>
+                                    <Button Content="另存为" Command="{Binding SaveAsNewThemeCommand}" Padding="20,10"/>
+                                    <Button Content="复制CSS" Command="{Binding CopyCssToClipboardCommand}" Padding="20,10"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- 页面样式面板 -->
+                        <ScrollViewer Margin="16,8,16,16" IsVisible="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=2}">
+                            <StackPanel Spacing="20">
+                                <!-- 页面容器 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="页面容器" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                <TextBlock Text="背景色" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PageBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PageBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PageBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                <TextBlock Text="前景色" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PageForegroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                <TextBlock Text="边框色" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PageBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PageBorderColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PageBorderColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 实时预览 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" Margin="0,4,0,0">
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.PageBackgroundColor}" CornerRadius="6" Padding="20,16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PageBorderColor}" BorderThickness="1">
+                                                    <TextBlock Text="页面容器预览" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontSize="12"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 面板样式 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="面板/卡片样式" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                <TextBlock Text="默认背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PanelBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                <TextBlock Text="默认边框" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PanelBorderColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                <TextBlock Text="选中背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PanelSelectedBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PanelSelectedBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PanelSelectedBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                <TextBlock Text="悬停边框" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PanelHoverBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PanelHoverBorderColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PanelHoverBorderColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                <TextBlock Text="选中边框" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.PanelSelectedBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.PanelSelectedBorderColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.PanelSelectedBorderColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 实时预览 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0" Orientation="Horizontal" Spacing="12">
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="6" Padding="20,16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                                    <TextBlock Text="默认面板" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontSize="11"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.PanelSelectedBackgroundColor}" CornerRadius="6" Padding="20,16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelSelectedBorderColor}" BorderThickness="1">
+                                                    <TextBlock Text="选中面板" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontSize="11"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 标签页样式 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="标签页样式" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                <TextBlock Text="默认背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TabBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TabBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TabBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                <TextBlock Text="默认前景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TabForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TabForegroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TabForegroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                <TextBlock Text="选中前景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TabSelectedForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TabSelectedForegroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TabSelectedForegroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                <TextBlock Text="悬停背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TabHoverBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TabHoverBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TabHoverBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                <TextBlock Text="选中下划线" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TabSelectedUnderlineColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TabSelectedUnderlineColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TabSelectedUnderlineColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 实时预览 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0">
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.TabBackgroundColor}" CornerRadius="6,6,0,0" Padding="16,8" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1,1,1,0">
+                                                    <StackPanel Orientation="Horizontal" Spacing="1">
+                                                        <Border Padding="12,6" Background="{Binding EditingTheme.PagePanelStyle.TabSelectedBackgroundColor}" BorderBrush="{Binding EditingTheme.PagePanelStyle.TabSelectedUnderlineColor}" BorderThickness="0,0,0,2">
+                                                            <TextBlock Text="标签页1" Foreground="{Binding EditingTheme.PagePanelStyle.TabSelectedForegroundColor}" FontSize="11"/>
+                                                        </Border>
+                                                        <Border Padding="12,6">
+                                                            <TextBlock Text="标签页2" Foreground="{Binding EditingTheme.PagePanelStyle.TabForegroundColor}" FontSize="11"/>
+                                                        </Border>
+                                                        <Border Padding="12,6">
+                                                            <TextBlock Text="标签页3" Foreground="{Binding EditingTheme.PagePanelStyle.TabForegroundColor}" FontSize="11"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="0,0,6,6" Padding="20,16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1,0,1,1">
+                                                    <TextBlock Text="标签页内容区域" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontSize="12"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 列表项样式 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="列表项样式" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                <TextBlock Text="默认背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ListItemBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ListItemBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ListItemBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                <TextBlock Text="默认前景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ListItemForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ListItemForegroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ListItemForegroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                <TextBlock Text="悬停背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ListItemHoverBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ListItemHoverBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ListItemHoverBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                <TextBlock Text="选中背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ListItemSelectedBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ListItemSelectedBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ListItemSelectedBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                <TextBlock Text="选中前景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ListItemSelectedForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ListItemSelectedForegroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ListItemSelectedForegroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 实时预览 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0">
+                                                <Border Background="{Binding EditingTheme.PanelBackgroundColor}" CornerRadius="6" Padding="4" Width="300">
+                                                    <StackPanel>
+                                                        <Border Background="{Binding EditingTheme.PagePanelStyle.ListItemBackgroundColor}" Padding="12" BorderThickness="0,0,0,1" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}">
+                                                            <TextBlock Text="默认列表项" Foreground="{Binding EditingTheme.PagePanelStyle.ListItemForegroundColor}" FontSize="11"/>
+                                                        </Border>
+                                                        <Border Background="{Binding EditingTheme.PagePanelStyle.ListItemHoverBackgroundColor}" Padding="12" BorderThickness="0,0,0,1" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}">
+                                                            <TextBlock Text="悬停列表项" Foreground="{Binding EditingTheme.PagePanelStyle.ListItemForegroundColor}" FontSize="11"/>
+                                                        </Border>
+                                                        <Border Background="{Binding EditingTheme.PagePanelStyle.ListItemSelectedBackgroundColor}" Padding="12" BorderThickness="0,0,0,1" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}">
+                                                            <TextBlock Text="选中列表项" Foreground="{Binding EditingTheme.PagePanelStyle.ListItemSelectedForegroundColor}" FontSize="11"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 工具栏样式 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="工具栏样式" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                <TextBlock Text="背景色" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ToolbarBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ToolbarBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ToolbarBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                <TextBlock Text="悬停背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ToolbarItemHoverBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ToolbarItemHoverBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ToolbarItemHoverBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                <TextBlock Text="选中背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ToolbarItemSelectedBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ToolbarItemSelectedBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ToolbarItemSelectedBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                <TextBlock Text="前景色" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ToolbarForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ToolbarForegroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ToolbarForegroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                <TextBlock Text="选中前景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.ToolbarItemSelectedForegroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.ToolbarItemSelectedForegroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.ToolbarItemSelectedForegroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 实时预览 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0">
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.ToolbarBackgroundColor}" CornerRadius="4" Padding="12" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <Border Padding="8,4" CornerRadius="3">
+                                                            <TextBlock Text="工具栏项" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.ToolbarForegroundColor}"/>
+                                                        </Border>
+                                                        <Border Padding="8,4" CornerRadius="3" Background="{Binding EditingTheme.PagePanelStyle.ToolbarItemHoverBackgroundColor}">
+                                                            <TextBlock Text="悬停项" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.ToolbarForegroundColor}"/>
+                                                        </Border>
+                                                        <Border Padding="8,4" CornerRadius="3" Background="{Binding EditingTheme.PagePanelStyle.ToolbarItemSelectedBackgroundColor}">
+                                                            <TextBlock Text="选中项" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.ToolbarItemSelectedForegroundColor}" FontWeight="SemiBold"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 表格样式 -->
+                                <Border Background="{DynamicResource BgToolbar}" CornerRadius="8" Padding="16">
+                                    <StackPanel Spacing="12">
+                                        <TextBlock Text="表格样式" FontWeight="Bold" FontSize="14"/>
+                                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto">
+                                            <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,8,8">
+                                                <TextBlock Text="表头背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TableHeaderBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TableHeaderBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TableHeaderBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                                                <TextBlock Text="行悬停背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TableRowHoverBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TableRowHoverBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TableRowHoverBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                                                <TextBlock Text="行选中背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TableRowSelectedBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TableRowSelectedBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TableRowSelectedBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,8,8">
+                                                <TextBlock Text="单元格背景" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TableCellBackgroundColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TableCellBackgroundColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TableCellBackgroundColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Grid.Row="1" Margin="4,0,4,8">
+                                                <TextBlock Text="边框色" FontSize="10" Margin="0,0,0,2"/>
+                                                <Grid ColumnDefinitions="24,*,Auto">
+                                                    <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" CornerRadius="3" Margin="0,0,4,0"/>
+                                                    <TextBox Grid.Column="1" Text="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" FontSize="10"/>
+                                                    <Button Grid.Column="2" Content="..." Padding="4,2" Margin="2,0,0,0" Command="{Binding OpenColorPickerCommand}" CommandParameter="PagePanelStyle.TableCellBorderColor"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <!-- 实时预览 -->
+                                            <StackPanel Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="3" Margin="0,4,0,0">
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="4" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                                    <StackPanel>
+                                                        <!-- 表头 -->
+                                                        <Border Background="{Binding EditingTheme.PagePanelStyle.TableHeaderBackgroundColor}" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,0,1">
+                                                            <Grid ColumnDefinitions="*,*,*">
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="列1" FontSize="11" FontWeight="SemiBold" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="列2" FontSize="11" FontWeight="SemiBold" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                                <Border Padding="8,6">
+                                                                    <TextBlock Text="列3" FontSize="11" FontWeight="SemiBold" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                        <!-- 行1 -->
+                                                        <Border Background="{Binding EditingTheme.PagePanelStyle.TableCellBackgroundColor}" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,0,1">
+                                                            <Grid ColumnDefinitions="*,*,*">
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="数据1" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="数据2" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                                <Border Padding="8,6">
+                                                                    <TextBlock Text="数据3" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                        <!-- 行2 (悬停) -->
+                                                        <Border Background="{Binding EditingTheme.PagePanelStyle.TableRowHoverBackgroundColor}" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,0,1">
+                                                            <Grid ColumnDefinitions="*,*,*">
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="数据4" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="数据5" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                                <Border Padding="8,6">
+                                                                    <TextBlock Text="数据6" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                        <!-- 行3 (选中) -->
+                                                        <Border Background="{Binding EditingTheme.PagePanelStyle.TableRowSelectedBackgroundColor}" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,0,1">
+                                                            <Grid ColumnDefinitions="*,*,*">
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="数据7" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontWeight="SemiBold"/>
+                                                                </Border>
+                                                                <Border Padding="8,6" BorderBrush="{Binding EditingTheme.PagePanelStyle.TableCellBorderColor}" BorderThickness="0,0,1,0">
+                                                                    <TextBlock Text="数据8" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontWeight="SemiBold"/>
+                                                                </Border>
+                                                                <Border Padding="8,6">
+                                                                    <TextBlock Text="数据9" FontSize="11" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}" FontWeight="SemiBold"/>
+                                                                </Border>
+                                                            </Grid>
+                                                        </Border>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+
+
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <Button Content="保存" Command="{Binding SaveThemeCommand}" Padding="24,10" Background="{DynamicResource AccentColor}" FontWeight="Medium"/>
+                                    <Button Content="另存为" Command="{Binding SaveAsNewThemeCommand}" Padding="20,10"/>
+                                    <Button Content="复制CSS" Command="{Binding CopyCssToClipboardCommand}" Padding="20,10"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ScrollViewer>
+
+                        <!-- 完整预览面板 -->
+                        <ScrollViewer Margin="16,8,16,16" IsVisible="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=3}">
+                            <Border Background="{Binding EditingTheme.PagePanelStyle.PageBackgroundColor}" CornerRadius="8" Padding="20">
+                                <StackPanel Spacing="20">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding EditingTheme.Name}" FontWeight="Bold" FontSize="20" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                        <TextBlock Text="{Binding EditingTheme.Description}" FontSize="12" Opacity="0.7" Foreground="{Binding EditingTheme.PagePanelStyle.PageForegroundColor}"/>
+                                    </StackPanel>
+
+                                    <!-- 按钮预览 -->
+                                    <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="8" Padding="16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                        <StackPanel Spacing="12">
+                                            <TextBlock Text="按钮样式" FontWeight="Bold" FontSize="14" Foreground="{Binding EditingTheme.PagePanelStyle.PanelForegroundColor}"/>
+                                            <WrapPanel>
+                                                <Border Background="{Binding EditingTheme.FormElementStyle.PrimaryBackgroundColor}" CornerRadius="4" Padding="16,8" Margin="4">
+                                                    <TextBlock Text="主要" Foreground="{Binding EditingTheme.FormElementStyle.PrimaryForegroundColor}"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.FormElementStyle.SecondaryBackgroundColor}" CornerRadius="4" Padding="16,8" Margin="4" BorderBrush="{Binding EditingTheme.FormElementStyle.SecondaryBorderColor}" BorderThickness="1">
+                                                    <TextBlock Text="次要" Foreground="{Binding EditingTheme.FormElementStyle.SecondaryForegroundColor}"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.SuccessColor}" CornerRadius="4" Padding="16,8" Margin="4">
+                                                    <TextBlock Text="成功" Foreground="White"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.WarningColor}" CornerRadius="4" Padding="16,8" Margin="4">
+                                                    <TextBlock Text="警告" Foreground="White"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.ErrorColor}" CornerRadius="4" Padding="16,8" Margin="4">
+                                                    <TextBlock Text="错误" Foreground="White"/>
+                                                </Border>
+                                            </WrapPanel>
+                                            <WrapPanel Margin="0,8,0,0">
+                                                <Border Background="{Binding EditingTheme.FormElementStyle.PrimaryDisabledBackgroundColor}" CornerRadius="4" Padding="16,8" Margin="4" Opacity="0.6">
+                                                    <TextBlock Text="禁用" Foreground="{Binding EditingTheme.FormElementStyle.PrimaryDisabledForegroundColor}"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.FormElementStyle.PrimaryHoverBackgroundColor}" CornerRadius="4" Padding="16,8" Margin="4">
+                                                    <TextBlock Text="悬停" Foreground="{Binding EditingTheme.FormElementStyle.PrimaryHoverForegroundColor}"/>
+                                                </Border>
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- 卡片预览 -->
+                                    <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="8" Padding="16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                        <StackPanel Spacing="12">
+                                            <TextBlock Text="卡片与面板" FontWeight="Bold" FontSize="14" Foreground="{Binding EditingTheme.PagePanelStyle.PanelForegroundColor}"/>
+                                            <Border Background="{Binding EditingTheme.Gray1}" CornerRadius="6" Padding="12">
+                                                <StackPanel Spacing="8">
+                                                    <TextBlock Text="卡片标题" FontWeight="SemiBold" FontSize="13" Foreground="{Binding EditingTheme.PagePanelStyle.PanelForegroundColor}"/>
+                                                    <TextBlock Text="卡片内容示例文本。" TextWrapping="Wrap" FontSize="12" Foreground="{Binding EditingTheme.PagePanelStyle.PanelForegroundColor}"/>
+                                                    <Border Height="1" Background="{Binding EditingTheme.PagePanelStyle.DividerDefaultColor}" Margin="0,4"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- 输入框预览 -->
+                                    <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="8" Padding="16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                        <StackPanel Spacing="12">
+                                            <TextBlock Text="表单元素" FontWeight="Bold" FontSize="14" Foreground="{Binding EditingTheme.PagePanelStyle.PanelForegroundColor}"/>
+                                            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                                                <Border Grid.Column="0" Classes="ColorItem" Background="{Binding EditingTheme.FormElementStyle.InputBackgroundColor}" CornerRadius="4" Padding="8,6" Margin="0,0,8,0" BorderBrush="{Binding EditingTheme.FormElementStyle.InputBorderColor}" BorderThickness="1">
+                                                    <TextBlock Text="输入框" Foreground="{Binding EditingTheme.FormElementStyle.InputForegroundColor}" FontSize="12"/>
+                                                </Border>
+                                                <Border Grid.Column="1" Background="{Binding EditingTheme.FormElementStyle.InputBackgroundColor}" CornerRadius="4" Padding="8,6" Margin="4,0,4,0" BorderBrush="{Binding EditingTheme.FormElementStyle.InputFocusBorderColor}" BorderThickness="2">
+                                                    <TextBlock Text="聚焦状态" Foreground="{Binding EditingTheme.FormElementStyle.InputForegroundColor}" FontSize="12"/>
+                                                </Border>
+                                                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="4,0,0,0" Spacing="8">
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.CheckboxUncheckedBackgroundColor}" CornerRadius="2" Width="16" Height="16" BorderBrush="{Binding EditingTheme.FormElementStyle.CheckboxUncheckedBorderColor}" BorderThickness="1"/>
+                                                    <Border Background="{Binding EditingTheme.FormElementStyle.CheckboxCheckedBackgroundColor}" CornerRadius="2" Width="16" Height="16">
+                                                        <TextBlock Text="✓" Foreground="{Binding EditingTheme.FormElementStyle.CheckboxCheckedIconColor}" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- 标签页预览 -->
+                                    <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="8" Padding="16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                        <StackPanel Spacing="12">
+                                            <TextBlock Text="标签页" FontWeight="Bold" FontSize="14" Foreground="{Binding EditingTheme.PagePanelStyle.PanelForegroundColor}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.TabSelectedBackgroundColor}" CornerRadius="4" Padding="12,8">
+                                                    <TextBlock Text="选中" Foreground="{Binding EditingTheme.PagePanelStyle.TabSelectedForegroundColor}" FontSize="12"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.TabBackgroundColor}" CornerRadius="4" Padding="12,8">
+                                                    <TextBlock Text="未选中" Foreground="{Binding EditingTheme.PagePanelStyle.TabForegroundColor}" FontSize="12"/>
+                                                </Border>
+                                                <Border Background="{Binding EditingTheme.PagePanelStyle.TabBackgroundColor}" CornerRadius="4" Padding="12,8">
+                                                    <TextBlock Text="禁用" Foreground="{Binding EditingTheme.PagePanelStyle.TabDisabledForegroundColor}" FontSize="12" Opacity="0.5"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- 分割线预览 -->
+                                    <Border Background="{Binding EditingTheme.PagePanelStyle.PanelBackgroundColor}" CornerRadius="8" Padding="16" BorderBrush="{Binding EditingTheme.PagePanelStyle.PanelBorderColor}" BorderThickness="1">
+                                        <StackPanel Spacing="8">
+                                            <TextBlock Text="分割线" FontWeight="Bold" FontSize="14" Foreground="{Binding EditingTheme.PagePanelStyle.PanelForegroundColor}"/>
+                                            <Border Height="1" Background="{Binding EditingTheme.PagePanelStyle.DividerDefaultColor}"/>
+                                            <Border Height="1" Background="{Binding EditingTheme.PagePanelStyle.DividerDisabledColor}" Opacity="0.5"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </ScrollViewer>
+
+                        <!-- CSS代码面板 -->
+                        <Grid Margin="16,8,16,16" IsVisible="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=4}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="8" Margin="0,0,0,12">
+                                <TextBlock Text="CSS代码" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" Foreground="{Binding EditingTheme.ForegroundColor}"/>
+                                <Button Content="复制代码" Command="{Binding CopyCssToClipboardCommand}" Padding="12,6" Background="{Binding EditingTheme.PrimaryColor}" Foreground="White"/>
+                            </StackPanel>
+
+                            <Border Grid.Row="1" Background="{Binding EditingTheme.Gray1}" CornerRadius="8" Padding="16" BorderBrush="{Binding EditingTheme.BorderColor}" BorderThickness="1">
+                                <ScrollViewer>
+                                    <TextBlock Text="{Binding CssPreview}" FontFamily="Consolas, Courier New, monospace" FontSize="12" TextWrapping="Wrap" Foreground="#000000"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Grid>
+
+                        <!-- 帮助面板 -->
+                        <ScrollViewer Margin="16,8,16,16" IsVisible="{Binding CurrentTabIndex, Converter={x:Static converters:IntToBoolConverter.Instance}, ConverterParameter=5}">
+                            <StackPanel Spacing="24">
+                                <!-- 标题 -->
+                                <TextBlock Text="颜色主题样式指南" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource TextPrimary}"/>
+                                <TextBlock Text="本文档展示 ColorTheme 生成的样式效果及其调用方式" FontSize="14" Opacity="0.7" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                
+                                <!-- 基础颜色 -->
+                                <Border Background="{DynamicResource BgContent}" CornerRadius="8" Padding="20" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="1. 基础颜色 (Semantic Colors)" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                        <TextBlock Text="用于定义应用的核心语义色彩，支持主色、次色、成功、警告、错误、信息等状态色。" FontSize="12" Opacity="0.6" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                        
+                                        <Grid ColumnDefinitions="*,*,*,*,*,*" RowDefinitions="Auto,Auto" Margin="0,8,0,0">
+                                            <StackPanel Grid.Column="0" Spacing="4">
+                                                <Border Background="#1890FF" Height="40" CornerRadius="6"/>
+                                                <TextBlock Text="PrimaryColor" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="#1890FF" FontSize="9" Opacity="0.6" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Spacing="4">
+                                                <Border Background="#722ED1" Height="40" CornerRadius="6"/>
+                                                <TextBlock Text="SecondaryColor" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="#722ED1" FontSize="9" Opacity="0.6" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" Spacing="4">
+                                                <Border Background="#52C41A" Height="40" CornerRadius="6"/>
+                                                <TextBlock Text="SuccessColor" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="#52C41A" FontSize="9" Opacity="0.6" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="3" Spacing="4">
+                                                <Border Background="#FAAD14" Height="40" CornerRadius="6"/>
+                                                <TextBlock Text="WarningColor" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="#FAAD14" FontSize="9" Opacity="0.6" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="4" Spacing="4">
+                                                <Border Background="#FF4D4F" Height="40" CornerRadius="6"/>
+                                                <TextBlock Text="ErrorColor" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="#FF4D4F" FontSize="9" Opacity="0.6" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="5" Spacing="4">
+                                                <Border Background="#1890FF" Height="40" CornerRadius="6"/>
+                                                <TextBlock Text="InfoColor" FontSize="10" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="#1890FF" FontSize="9" Opacity="0.6" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimary}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        
+                                        <Border Background="#1E1E1E" CornerRadius="6" Padding="12">
+                                            <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#D4D4D4" TextWrapping="Wrap" Text="// C# 调用示例&#x0a;var theme = new ColorTheme();&#x0a;theme.PrimaryColor = &quot;#1890FF&quot;;&#x0a;theme.SecondaryColor = &quot;#722ED1&quot;;&#x0a;theme.SuccessColor = &quot;#52C41A&quot;;"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- 按钮样式 -->
+                                <Border Background="{DynamicResource BgContent}" CornerRadius="8" Padding="20" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="2. 按钮样式 (FormElementStyle)" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                        <TextBlock Text="支持主按钮、次要按钮、虚线按钮等多种类型，包含默认、悬停、按下、禁用四种状态。" FontSize="12" Opacity="0.6" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                        
+                                        <StackPanel Spacing="12" Margin="0,8,0,0">
+                                            <TextBlock Text="主按钮 (Primary Button)" FontSize="12" FontWeight="Medium" Foreground="{DynamicResource TextPrimary}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <Button Content="默认状态" Background="#1890FF" Foreground="White" Padding="16,8" CornerRadius="6"/>
+                                                <Button Content="悬停状态" Background="#096DD9" Foreground="White" Padding="16,8" CornerRadius="6"/>
+                                                <Button Content="按下状态" Background="#0050B3" Foreground="White" Padding="16,8" CornerRadius="6"/>
+                                                <Button Content="禁用状态" Background="#D9D9D9" Foreground="White" Padding="16,8" CornerRadius="6" IsEnabled="False"/>
+                                            </StackPanel>
+                                            
+                                            <TextBlock Text="次要按钮 (Secondary Button)" FontSize="12" FontWeight="Medium" Margin="0,8,0,0" Foreground="{DynamicResource TextPrimary}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <Button Content="默认状态" Background="White" Foreground="#333333" BorderBrush="#D9D9D9" BorderThickness="1" Padding="16,8" CornerRadius="6"/>
+                                                <Button Content="悬停状态" Background="#F5F5F5" Foreground="#333333" BorderBrush="#1890FF" BorderThickness="1" Padding="16,8" CornerRadius="6"/>
+                                                <Button Content="禁用状态" Background="#F5F5F5" Foreground="#BFBFBF" BorderBrush="#D9D9D9" BorderThickness="1" Padding="16,8" CornerRadius="6" IsEnabled="False"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <Border Background="#1E1E1E" CornerRadius="6" Padding="12">
+                                            <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#D4D4D4" TextWrapping="Wrap" Text="// C# 调用示例&#x0a;var formStyle = theme.FormElementStyle;&#x0a;var primaryBg = formStyle.PrimaryBackgroundColor;&#x0a;var primaryHoverBg = formStyle.PrimaryHoverBackgroundColor;"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- 输入框样式 -->
+                                <Border Background="{DynamicResource BgContent}" CornerRadius="8" Padding="20" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="3. 输入框样式 (Input Style)" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                        <TextBlock Text="包含文本输入框、下拉选择框、复选框、单选框、开关等表单元素。" FontSize="12" Opacity="0.6" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                        
+                                        <StackPanel Spacing="12" Margin="0,8,0,0">
+                                            <TextBlock Text="文本输入框" FontSize="12" FontWeight="Medium" Foreground="{DynamicResource TextPrimary}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBox Text="默认状态" Width="150" Padding="8,6" CornerRadius="6"/>
+                                                <TextBox Text="聚焦状态" Width="150" Padding="8,6" CornerRadius="6" BorderBrush="#1890FF"/>
+                                                <TextBox Text="禁用状态" Width="150" Padding="8,6" CornerRadius="6" IsEnabled="False"/>
+                                            </StackPanel>
+                                            
+                                            <TextBlock Text="复选框 &amp; 单选框 &amp; 开关" FontSize="12" FontWeight="Medium" Margin="0,8,0,0" Foreground="{DynamicResource TextPrimary}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="24">
+                                                <CheckBox Content="复选框" IsChecked="True"/>
+                                                <RadioButton Content="单选框" IsChecked="True"/>
+                                                <ToggleSwitch IsChecked="True"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <Border Background="#1E1E1E" CornerRadius="6" Padding="12">
+                                            <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#D4D4D4" TextWrapping="Wrap" Text="// C# 调用示例&#x0a;var formStyle = theme.FormElementStyle;&#x0a;var inputBg = formStyle.InputBackgroundColor;&#x0a;var inputBorder = formStyle.InputBorderColor;"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- 面板样式 -->
+                                <Border Background="{DynamicResource BgContent}" CornerRadius="8" Padding="20" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="4. 面板样式 (PagePanelStyle)" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                        <TextBlock Text="用于页面容器、卡片、标签页、工具栏、侧边栏、列表、表格等容器元素。" FontSize="12" Opacity="0.6" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                        
+                                        <StackPanel Spacing="12" Margin="0,8,0,0">
+                                            <TextBlock Text="卡片面板" FontSize="12" FontWeight="Medium" Foreground="{DynamicResource TextPrimary}"/>
+                                            <Grid ColumnDefinitions="*,*,*" Margin="0,4,0,0">
+                                                <Border Grid.Column="0" Classes="ColorItem" Background="White" BorderBrush="#E8E8E8" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,8,0">
+                                                    <StackPanel>
+                                                        <TextBlock Text="默认面板" FontWeight="Medium" Foreground="#333333"/>
+                                                        <TextBlock Text="这是面板内容示例" FontSize="12" Opacity="0.6" Margin="0,4,0,0" Foreground="#333333"/>
+                                                    </StackPanel>
+                                                </Border>
+                                                <Border Grid.Column="1" Background="White" BorderBrush="#40A9FF" BorderThickness="1" CornerRadius="8" Padding="16" Margin="8,0,8,0">
+                                                    <StackPanel>
+                                                        <TextBlock Text="悬停面板" FontWeight="Medium" Foreground="#333333"/>
+                                                        <TextBlock Text="边框变为主色" FontSize="12" Opacity="0.6" Margin="0,4,0,0" Foreground="#333333"/>
+                                                    </StackPanel>
+                                                </Border>
+                                                <Border Grid.Column="2" Background="#E6F7FF" BorderBrush="#1890FF" BorderThickness="1" CornerRadius="8" Padding="16" Margin="8,0,0,0">
+                                                    <StackPanel>
+                                                        <TextBlock Text="选中面板" FontWeight="Medium" Foreground="#1890FF"/>
+                                                        <TextBlock Text="背景和边框都变为主色" FontSize="12" Opacity="0.6" Margin="0,4,0,0" Foreground="#1890FF"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Grid>
+                                            
+                                            <TextBlock Text="标签页" FontSize="12" FontWeight="Medium" Margin="0,12,0,0" Foreground="{DynamicResource TextPrimary}"/>
+                                            <Border Background="White" BorderBrush="#E8E8E8" BorderThickness="0,0,0,1">
+                                                <StackPanel Orientation="Horizontal" Spacing="0">
+                                                    <Border Padding="16,12" BorderBrush="#1890FF" BorderThickness="0,0,0,2">
+                                                        <TextBlock Text="选中标签" Foreground="#1890FF" FontWeight="Medium"/>
+                                                    </Border>
+                                                    <Border Padding="16,12">
+                                                        <TextBlock Text="未选中标签" Foreground="#666666"/>
+                                                    </Border>
+                                                    <Border Padding="16,12">
+                                                        <TextBlock Text="禁用标签" Foreground="#BFBFBF"/>
+                                                    </Border>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                        
+                                        <Border Background="#1E1E1E" CornerRadius="6" Padding="12">
+                                            <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#D4D4D4" TextWrapping="Wrap" Text="// C# 调用示例&#x0a;var pageStyle = theme.PagePanelStyle;&#x0a;var panelBg = pageStyle.PanelBackgroundColor;&#x0a;var panelBorder = pageStyle.PanelBorderColor;"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- CSS 导出 -->
+                                <Border Background="{DynamicResource BgContent}" CornerRadius="8" Padding="20" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="5. CSS 导出" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                        <TextBlock Text="主题支持导出为 CSS 变量、SCSS 变量、JSON 格式。" FontSize="12" Opacity="0.6" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                        
+                                        <Border Background="#1E1E1E" CornerRadius="6" Padding="12">
+                                            <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#D4D4D4" TextWrapping="Wrap" Text="// C# 导出示例&#x0a;var theme = new ColorTheme();&#x0a;string cssVariables = theme.ToCssVariables();&#x0a;string fullCss = theme.ToFullCss();"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- 自动同步机制 -->
+                                <Border Background="{DynamicResource BgContent}" CornerRadius="8" Padding="20" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="6. 自动同步机制" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                                        <TextBlock Text="当修改基础颜色时，相关组件样式会自动更新。" FontSize="12" Opacity="0.6" Foreground="{DynamicResource TextPrimary}" TextWrapping="Wrap"/>
+                                        
+                                        <Border Background="#1E1E1E" CornerRadius="6" Padding="12">
+                                            <TextBlock FontFamily="Consolas" FontSize="11" Foreground="#D4D4D4" TextWrapping="Wrap" Text="// C# 示例&#x0a;var theme = new ColorTheme();&#x0a;theme.PrimaryColor = &quot;#FF6600&quot;;&#x0a;// 自动更新按钮样式&#x0a;theme.BackgroundColor = &quot;#1F1F1F&quot;;&#x0a;// 自动更新面板样式"/>
+                                        </Border>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- 新建主题对话框 -->
+        <Border Grid.RowSpan="2" IsVisible="{Binding ShowNewThemeDialog}" Background="#60000000">
+            <Border Background="{DynamicResource BgContent}" CornerRadius="10" Padding="24" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="380">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="新建主题" FontWeight="Bold" FontSize="18"/>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="主题名称"/>
+                        <TextBox Text="{Binding NewThemeName}" Watermark="输入主题名称" Height="36"/>
+                    </StackPanel>
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="主题描述"/>
+                        <TextBox Text="{Binding NewThemeDescription}" Watermark="输入描述" AcceptsReturn="True" MinHeight="60"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,8,0,0">
+                        <Button Content="取消" Command="{Binding CancelNewThemeCommand}" Padding="16,8"/>
+                        <Button Content="创建" Command="{Binding ConfirmNewThemeCommand}" Padding="20,8" Background="{DynamicResource AccentColor}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <!-- 拾色器弹出层 -->
+        <Border Grid.RowSpan="2" IsVisible="{Binding ShowColorPicker}" Background="#40000000" PointerPressed="ColorPickerOverlay_PointerPressed">
+            <Border Background="{DynamicResource BgContent}" CornerRadius="10" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="320" MaxWidth="400">
+                <StackPanel Spacing="16">
+                    <Grid>
+                        <TextBlock Text="选择颜色" FontWeight="Bold" FontSize="16"/>
+                        <Button Content="✕" HorizontalAlignment="Right" Padding="4" Command="{Binding CloseColorPickerCommand}"/>
+                    </Grid>
+
+                    <!-- 颜色预览 -->
+                    <Border Height="60" CornerRadius="6" Background="{Binding EditingColorPreview}"/>
+
+                    <!-- 颜色滑块 -->
+                    <StackPanel Spacing="8">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="R:" VerticalAlignment="Center" Width="20"/>
+                            <Slider Minimum="0" Maximum="255" Value="{Binding ColorPickerRed}" Width="200"/>
+                            <TextBox Text="{Binding ColorPickerRed, Mode=TwoWay}" Width="50" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="G:" VerticalAlignment="Center" Width="20"/>
+                            <Slider Minimum="0" Maximum="255" Value="{Binding ColorPickerGreen}" Width="200"/>
+                            <TextBox Text="{Binding ColorPickerGreen, Mode=TwoWay}" Width="50" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <TextBlock Text="B:" VerticalAlignment="Center" Width="20"/>
+                            <Slider Minimum="0" Maximum="255" Value="{Binding ColorPickerBlue}" Width="200"/>
+                            <TextBox Text="{Binding ColorPickerBlue, Mode=TwoWay}" Width="50" HorizontalAlignment="Right"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- HEX输入 -->
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="HEX:" VerticalAlignment="Center"/>
+                        <TextBox Text="{Binding ColorPickerHex, Mode=TwoWay}" Width="100"/>
+                    </StackPanel>
+
+                    <!-- 预设颜色 -->
+                    <WrapPanel>
+                        <Border Background="#FF0000" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#FF0000" Cursor="Hand"/>
+                        <Border Background="#FF6600" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#FF6600" Cursor="Hand"/>
+                        <Border Background="#FFCC00" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#FFCC00" Cursor="Hand"/>
+                        <Border Background="#00CC00" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#00CC00" Cursor="Hand"/>
+                        <Border Background="#00CCCC" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#00CCCC" Cursor="Hand"/>
+                        <Border Background="#0066FF" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#0066FF" Cursor="Hand"/>
+                        <Border Background="#6600FF" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#6600FF" Cursor="Hand"/>
+                        <Border Background="#FF00CC" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#FF00CC" Cursor="Hand"/>
+                        <Border Background="#000000" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#000000" Cursor="Hand"/>
+                        <Border Background="#666666" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#666666" Cursor="Hand"/>
+                        <Border Background="#CCCCCC" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#CCCCCC" Cursor="Hand"/>
+                        <Border Background="#FFFFFF" Width="24" Height="24" CornerRadius="4" Margin="2" PointerPressed="PresetColor_PointerPressed" Tag="#FFFFFF" Cursor="Hand" BorderBrush="#E0E0E0" BorderThickness="1"/>
+                    </WrapPanel>
+
+                    <!-- 操作按钮 -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                        <Button Content="取消" Padding="16,8" Command="{Binding CloseColorPickerCommand}"/>
+                        <Button Content="确定" Padding="20,8" Background="{DynamicResource AccentColor}" Command="{Binding ConfirmColorPickerCommand}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

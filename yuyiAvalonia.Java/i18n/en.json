@@ -1,0 +1,18 @@
+{
+  "Menu": {
+    "Toolbar": {
+      "Java": "Java"
+    }
+  },
+  "Java": {
+    "Title": "Java Tools",
+    "Description": "Java environment management tool",
+    "InstalledVersions": "Installed Versions",
+    "AvailableVersions": "Download & Install",
+    "Settings": "Settings",
+    "Status": {
+      "Normal": "Java environment is normal",
+      "NotFound": "Java environment not detected"
+    }
+  }
+}

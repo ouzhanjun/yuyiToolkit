@@ -1,0 +1,121 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:tk="using:yuyiAvalonia.UI.Controls.ElementHtml"
+             xmlns:wb="using:yuyiAvalonia.UI.Controls"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             xmlns:baseControls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="32"
+             x:Class="yuyiAvalonia.UI.Controls.ElementTreeNode"
+             x:DataType="wb:ElementTreeItem">
+
+    <UserControl.Resources>
+        <conv:ExpandIconConverter x:Key="ExpandIconConverter"/>
+        <conv:SelectedBackgroundConverter x:Key="SelectedBackgroundConverter"/>
+        <conv:SelectedForegroundConverter x:Key="SelectedForegroundConverter"/>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Border Background="{Binding IsSelected, Converter={StaticResource SelectedBackgroundConverter}}"
+                CornerRadius="4"
+                Padding="4,6"
+                Margin="0,1"
+                Cursor="Hand"
+                PointerPressed="OnItemPressed">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto">
+                <!-- 展开/折叠按钮 -->
+                <Button Grid.Column="0"
+                        Background="Transparent"
+                        Padding="2"
+                        MinWidth="20" MinHeight="20"
+                        Cursor="Hand"
+                        IsVisible="{Binding Element.IsContainer}"
+                        Click="ToggleExpand_Click"
+                        Margin="0,0,2,0">
+                    <TextBlock Text="{Binding IsExpanded, Converter={StaticResource ExpandIconConverter}}"
+                               FontFamily="{DynamicResource SymbolThemeFontFamily}"
+                               FontSize="10"
+                               Foreground="{DynamicResource TextSecondary}"/>
+                </Button>
+
+                <Border Grid.Column="0" Width="22" IsVisible="{Binding !Element.IsContainer}"/>
+
+                <!-- 可见性切换按钮 -->
+                <baseControls:VisibilityToggle Grid.Column="1"
+                        IsVisible="{Binding IsVisible}"
+                        ToggleOnClick="False"
+                        Toggled="OnVisibilityToggle_Click"
+                        Margin="0,0,4,0"/>
+
+                <!-- 类型图标 -->
+                <Border Grid.Column="2"
+                        Width="22" Height="22"
+                        CornerRadius="4"
+                        Margin="0,0,6,0"
+                        Background="{DynamicResource BgToolbar}">
+                    <TextBlock Text="{Binding TypeIcon}"
+                               FontFamily="{DynamicResource SymbolThemeFontFamily}"
+                               FontSize="11"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Foreground="{Binding IsSelected, Converter={StaticResource SelectedForegroundConverter}}"/>
+                </Border>
+
+                <!-- 元素名称 -->
+                <StackPanel Grid.Column="3" VerticalAlignment="Center" Margin="0,0,8,0">
+                    <TextBlock Text="{Binding DisplayName}"
+                           FontSize="12"
+                           Foreground="{Binding IsSelected, Converter={StaticResource SelectedForegroundConverter}}"
+                           TextTrimming="CharacterEllipsis"
+                           IsVisible="{Binding IsVisible}"/>
+                    <TextBlock FontSize="12"
+                           Foreground="{Binding IsSelected, Converter={StaticResource SelectedForegroundConverter}}"
+                           TextTrimming="CharacterEllipsis"
+                           Opacity="0.5"
+                           IsVisible="{Binding !IsVisible}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} (已隐藏)">
+                                <Binding Path="DisplayName"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <TextBlock Text="{Binding ElementId}"
+                           FontSize="9"
+                           Foreground="{Binding IsSelected, Converter={StaticResource SelectedForegroundConverter}}"
+                           Opacity="0.6"
+                           TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+
+                <!-- 子元素数量 -->
+                <Border Grid.Column="4"
+                        Background="{DynamicResource BgToolbar}"
+                        CornerRadius="8"
+                        Padding="6,2"
+                        Margin="6,0,0,0"
+                        IsVisible="{Binding Element.IsContainer}">
+                    <TextBlock FontSize="10"
+                               Foreground="{DynamicResource TextSecondary}">
+                        <Run Text="{Binding Element.Children.Count, Mode=OneWay}"/>
+                        <Run Text="项"/>
+                    </TextBlock>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- 子节点 -->
+        <ItemsControl ItemsSource="{Binding Children}"
+                      IsVisible="{Binding IsExpanded}"
+                      Margin="16,0,0,0">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="wb:ElementTreeItem">
+                    <wb:ElementTreeNode DataContext="{Binding}"
+                                        ItemSelected="OnChildItemSelected"
+                                        ItemCtrlSelected="OnChildItemCtrlSelected"
+                                        ItemShiftSelected="OnChildItemShiftSelected"
+                                        VisibilityToggled="OnChildVisibilityToggled"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,145 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="yuyiAvalonia.Java.Views.JavaView2"
+             Background="#10141D">
+  <Grid RowDefinitions="Auto,*">
+    <Border Grid.Row="0" Background="#171D29" BorderBrush="#2B3446" BorderThickness="0,0,0,1" Padding="24,18">
+      <Grid ColumnDefinitions="*,Auto">
+        <StackPanel Spacing="4">
+          <TextBlock Text="直线转二次 / 三次贝塞尔曲线" FontSize="22" FontWeight="Bold" Foreground="#F5F7FB" />
+          <TextBlock Text="使用 GeometryHelper 的 LineToQuadratic / LineToCubic 与 ShapeDrawStream 构建几何图形" FontSize="13" Foreground="#8E9BB0" />
+        </StackPanel>
+        <Border Grid.Column="1" Background="#202B3E" CornerRadius="14" Padding="12,6" VerticalAlignment="Center">
+          <TextBlock Text="GeometryHelper" Foreground="#6EC8FF" FontWeight="SemiBold" />
+        </Border>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="20" ColumnSpacing="16">
+      <!-- ============ 左侧：直线 → 二次贝塞尔 ============ -->
+      <Border Grid.Column="0" Background="#171D29" BorderBrush="#2B3446" BorderThickness="1" CornerRadius="12" Padding="18">
+        <Grid RowDefinitions="Auto,*">
+          <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="2,0,2,12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="直线转二次贝塞尔曲线" FontSize="16" FontWeight="Bold" Foreground="#F5F7FB" />
+              <TextBlock Text="LineToQuadratic：控制点 = 线段中点 + 偏移" FontSize="12" Foreground="#748197" />
+            </StackPanel>
+            <Border Grid.Column="1" Background="#1F3550" CornerRadius="10" Padding="10,4" VerticalAlignment="Center">
+              <TextBlock x:Name="QStatusText" Text="当前：直线段（L）" Foreground="#6EC8FF" FontWeight="SemiBold" />
+            </Border>
+          </Grid>
+
+          <Grid Grid.Row="1" ColumnDefinitions="230,*">
+            <Border Grid.Column="0" Background="#0D121B" BorderBrush="#263044" BorderThickness="1" CornerRadius="9" Padding="14">
+              <StackPanel Spacing="14">
+                <StackPanel Spacing="6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="控制点偏移" Foreground="#D9E0EC" />
+                    <TextBlock Grid.Column="1" Text="{Binding #QOffsetSlider.Value, StringFormat='{}{0:0} px'}" Foreground="#6EC8FF" />
+                  </Grid>
+                  <Slider x:Name="QOffsetSlider" Minimum="-220" Maximum="220" Value="-110" ValueChanged="QOffsetSlider_ValueChanged" />
+                  <TextBlock Text="负值向上、正值向下" FontSize="12" Foreground="#748197" />
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="描边宽度" Foreground="#D9E0EC" />
+                    <TextBlock Grid.Column="1" Text="{Binding #QStrokeSlider.Value, StringFormat='{}{0:0.0}'}" Foreground="#6EC8FF" />
+                  </Grid>
+                  <Slider x:Name="QStrokeSlider" Minimum="1" Maximum="12" Value="4" ValueChanged="QStrokeSlider_ValueChanged" />
+                </StackPanel>
+
+                <CheckBox x:Name="QGuideCheckBox" Content="显示控制线" IsChecked="True" Checked="QGuideCheckBox_Changed" Unchecked="QGuideCheckBox_Changed" Foreground="#D9E0EC" />
+
+                <Button x:Name="QConvertButton" Content="转换为二次贝塞尔曲线" Click="QConvertButton_Click" HorizontalAlignment="Stretch" Padding="14,10" Background="#2476B9" Foreground="White" FontWeight="SemiBold" />
+                <Button Content="重置端点" Click="QResetButton_Click" HorizontalAlignment="Stretch" Padding="14,9" />
+
+                <Border Background="#111722" CornerRadius="8" Padding="10">
+                  <StackPanel Spacing="6">
+                    <TextBlock Text="SVG d" Foreground="#8E9BB0" FontSize="11" />
+                    <TextBlock x:Name="QPathDataText" TextWrapping="Wrap" FontFamily="Consolas" FontSize="12" Foreground="#B8E4FF" />
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Margin="14,0,0,0" Background="#0D121B" BorderBrush="#263044" BorderThickness="1" CornerRadius="9" ClipToBounds="True">
+              <Canvas x:Name="QDrawingCanvas"
+                      MinWidth="420" MinHeight="420"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      PointerPressed="QDrawingCanvas_PointerPressed"
+                      PointerMoved="QDrawingCanvas_PointerMoved"
+                      PointerReleased="QDrawingCanvas_PointerReleased" />
+            </Border>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <!-- ============ 右侧：直线 → 三次贝塞尔 ============ -->
+      <Border Grid.Column="1" Background="#171D29" BorderBrush="#2B3446" BorderThickness="1" CornerRadius="12" Padding="18">
+        <Grid RowDefinitions="Auto,*">
+          <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="2,0,2,12">
+            <StackPanel Spacing="2">
+              <TextBlock Text="直线转三次贝塞尔曲线" FontSize="16" FontWeight="Bold" Foreground="#F5F7FB" />
+              <TextBlock Text="LineToCubic：两个控制点 = 线段三等分点 + 各自偏移" FontSize="12" Foreground="#748197" />
+            </StackPanel>
+            <Border Grid.Column="1" Background="#3A2D4E" CornerRadius="10" Padding="10,4" VerticalAlignment="Center">
+              <TextBlock x:Name="CStatusText" Text="当前：直线段（L）" Foreground="#C799FF" FontWeight="SemiBold" />
+            </Border>
+          </Grid>
+
+          <Grid Grid.Row="1" ColumnDefinitions="230,*">
+            <Border Grid.Column="0" Background="#0D121B" BorderBrush="#263044" BorderThickness="1" CornerRadius="9" Padding="14">
+              <StackPanel Spacing="14">
+                <StackPanel Spacing="6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="C1 控制点偏移" Foreground="#D9E0EC" />
+                    <TextBlock Grid.Column="1" Text="{Binding #C1OffsetSlider.Value, StringFormat='{}{0:0} px'}" Foreground="#C799FF" />
+                  </Grid>
+                  <Slider x:Name="C1OffsetSlider" Minimum="-220" Maximum="220" Value="-130" ValueChanged="C1OffsetSlider_ValueChanged" />
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="C2 控制点偏移" Foreground="#D9E0EC" />
+                    <TextBlock Grid.Column="1" Text="{Binding #C2OffsetSlider.Value, StringFormat='{}{0:0} px'}" Foreground="#C799FF" />
+                  </Grid>
+                  <Slider x:Name="C2OffsetSlider" Minimum="-220" Maximum="220" Value="130" ValueChanged="C2OffsetSlider_ValueChanged" />
+                </StackPanel>
+
+                <StackPanel Spacing="6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="描边宽度" Foreground="#D9E0EC" />
+                    <TextBlock Grid.Column="1" Text="{Binding #CStrokeSlider.Value, StringFormat='{}{0:0.0}'}" Foreground="#C799FF" />
+                  </Grid>
+                  <Slider x:Name="CStrokeSlider" Minimum="1" Maximum="12" Value="4" ValueChanged="CStrokeSlider_ValueChanged" />
+                </StackPanel>
+
+                <CheckBox x:Name="CGuideCheckBox" Content="显示控制线" IsChecked="True" Checked="CGuideCheckBox_Changed" Unchecked="CGuideCheckBox_Changed" Foreground="#D9E0EC" />
+
+                <Button x:Name="CConvertButton" Content="转换为三次贝塞尔曲线" Click="CConvertButton_Click" HorizontalAlignment="Stretch" Padding="14,10" Background="#7E4FCC" Foreground="White" FontWeight="SemiBold" />
+                <Button Content="重置端点" Click="CResetButton_Click" HorizontalAlignment="Stretch" Padding="14,9" />
+
+                <Border Background="#111722" CornerRadius="8" Padding="10">
+                  <StackPanel Spacing="6">
+                    <TextBlock Text="SVG d" Foreground="#8E9BB0" FontSize="11" />
+                    <TextBlock x:Name="CPathDataText" TextWrapping="Wrap" FontFamily="Consolas" FontSize="12" Foreground="#DCC3FF" />
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1" Margin="14,0,0,0" Background="#0D121B" BorderBrush="#263044" BorderThickness="1" CornerRadius="9" ClipToBounds="True">
+              <Canvas x:Name="CDrawingCanvas"
+                      MinWidth="420" MinHeight="420"
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                      PointerPressed="CDrawingCanvas_PointerPressed"
+                      PointerMoved="CDrawingCanvas_PointerMoved"
+                      PointerReleased="CDrawingCanvas_PointerReleased" />
+            </Border>
+          </Grid>
+        </Grid>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>

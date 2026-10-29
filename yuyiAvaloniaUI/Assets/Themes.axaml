@@ -1,0 +1,134 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <ResourceDictionary.ThemeDictionaries>
+
+    <!-- ??????????????????????????????????????????????????????????????????????? -->
+    <!--  Dawn Light Theme - Fresh and bright daytime theme                      -->
+    <!-- ??????????????????????????????????????????????????????????????????????? -->
+    <ResourceDictionary x:Key="Light">
+
+      <!-- Border -->
+      <SolidColorBrush x:Key="BorderColor" Color="#E5E7EB" />
+
+      <!-- Background -->
+      <SolidColorBrush x:Key="BgBody" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="BgContent" Color="#F3F4F6" />
+      <SolidColorBrush x:Key="BgToolbar" Color="#FAFAFA" />
+      <SolidColorBrush x:Key="BgProperty" Color="#FEFEFE"/>
+
+      <!-- Sidebar -->
+      <SolidColorBrush x:Key="BgSidebarItemHover" Color="#F3F4F6" />
+      <SolidColorBrush x:Key="BgSidebarItemPressed" Color="#E5E7EB" />
+      <SolidColorBrush x:Key="BgSearchInput" Color="#F9FAFB" />
+
+      <!-- Text -->
+      <SolidColorBrush x:Key="TextPrimary" Color="#111827" />
+      <SolidColorBrush x:Key="TextSecondary" Color="#6B7280" />
+      <SolidColorBrush x:Key="TextForeground" Color="#111827" />
+
+      <!-- Button -->
+      <SolidColorBrush x:Key="BtnDefault" Color="#FFFFFF" />
+      <SolidColorBrush x:Key="BtnDefaultHover" Color="#F3F4F6" />
+      <SolidColorBrush x:Key="BtnDefaultActive" Color="#E5E7EB" />
+
+      <!-- Selected/Highlight - Sky Blue -->
+      <SolidColorBrush x:Key="BgSelected" Color="#3B82F6" />
+      <SolidColorBrush x:Key="BorderSelected" Color="#3B82F6" />
+      <SolidColorBrush x:Key="BtnSelected" Color="#3B82F6" />
+
+      <!-- Accent Color -->
+      <SolidColorBrush x:Key="AccentColor" Color="#3B82F6" />
+      <SolidColorBrush x:Key="AccentColorHover" Color="#2563EB" />
+      <SolidColorBrush x:Key="AccentColorActive" Color="#1D4ED8" />
+      <SolidColorBrush x:Key="AccentColorLight" Color="#DBEAFE" />
+
+      <!-- Status Color -->
+      <SolidColorBrush x:Key="SuccessColor" Color="#10B981" />
+      <SolidColorBrush x:Key="SuccessColorLight" Color="#D1FAE5" />
+      <SolidColorBrush x:Key="WarningColor" Color="#F59E0B" />
+      <SolidColorBrush x:Key="WarningColorLight" Color="#FEF3C7" />
+      <SolidColorBrush x:Key="ErrorColor" Color="#EF4444" />
+      <SolidColorBrush x:Key="ErrorColorLight" Color="#FEE2E2" />
+      <SolidColorBrush x:Key="InfoColor" Color="#06B6D4" />
+      <SolidColorBrush x:Key="InfoColorLight" Color="#CFFAFE" />
+
+      <!-- Divider -->
+      <SolidColorBrush x:Key="DividerColor" Color="#E5E7EB" />
+
+      <!-- Disabled -->
+      <SolidColorBrush x:Key="DisabledColor" Color="#D1D5DB" />
+      <SolidColorBrush x:Key="DisabledBg" Color="#F3F4F6" />
+
+      <!-- Hover/Active -->
+      <SolidColorBrush x:Key="HoverColor" Color="#F3F4F6" />
+      <SolidColorBrush x:Key="ActiveColor" Color="#E5E7EB" />
+
+    </ResourceDictionary>
+
+    <!-- ??????????????????????????????????????????????????????????????????????? -->
+    <!--  Midnight Dark Theme - Elegant and deep night theme                      -->
+    <!-- ??????????????????????????????????????????????????????????????????????? -->
+    <ResourceDictionary x:Key="Dark">
+
+      <!-- Border -->
+      <SolidColorBrush x:Key="BorderColor" Color="#374151" />
+
+      <!-- Background -->
+      <SolidColorBrush x:Key="BgBody" Color="#0F172A" />
+      <SolidColorBrush x:Key="BgContent" Color="#192435" />
+      <SolidColorBrush x:Key="BgToolbar" Color="#1E293B" />
+      <SolidColorBrush x:Key="BgProperty" Color="#0F172A"/>
+
+      <!-- Sidebar -->
+      <SolidColorBrush x:Key="BgSidebarItemHover" Color="#334155" />
+      <SolidColorBrush x:Key="BgSidebarItemPressed" Color="#475569" />
+      <SolidColorBrush x:Key="BgSearchInput" Color="#1E293B" />
+
+      <!-- Text -->
+      <SolidColorBrush x:Key="TextPrimary" Color="#F1F5F9" />
+      <SolidColorBrush x:Key="TextSecondary" Color="#94A3B8" />
+      <SolidColorBrush x:Key="TextForeground" Color="#F1F5F9" />
+
+      <!-- Button -->
+      <SolidColorBrush x:Key="BtnDefault" Color="#334155" />
+      <SolidColorBrush x:Key="BtnDefaultHover" Color="#475569" />
+      <SolidColorBrush x:Key="BtnDefaultActive" Color="#64748B" />
+
+      <!-- Selected/Highlight - Star Blue -->
+      <SolidColorBrush x:Key="BgSelected" Color="#3B82F6" />
+      <SolidColorBrush x:Key="BorderSelected" Color="#3B82F6" />
+      <SolidColorBrush x:Key="BtnSelected" Color="#3B82F6" />
+
+      <!-- Accent Color -->
+      <SolidColorBrush x:Key="AccentColor" Color="#60A5FA" />
+      <SolidColorBrush x:Key="AccentColorHover" Color="#93C5FD" />
+      <SolidColorBrush x:Key="AccentColorActive" Color="#3B82F6" />
+      <SolidColorBrush x:Key="AccentColorLight" Color="#1E3A5F" />
+
+      <!-- Status Color -->
+      <SolidColorBrush x:Key="SuccessColor" Color="#34D399" />
+      <SolidColorBrush x:Key="SuccessColorLight" Color="#064E3B" />
+      <SolidColorBrush x:Key="WarningColor" Color="#FBBF24" />
+      <SolidColorBrush x:Key="WarningColorLight" Color="#451A03" />
+      <SolidColorBrush x:Key="ErrorColor" Color="#F87171" />
+      <SolidColorBrush x:Key="ErrorColorLight" Color="#450A0A" />
+      <SolidColorBrush x:Key="InfoColor" Color="#22D3EE" />
+      <SolidColorBrush x:Key="InfoColorLight" Color="#164E63" />
+
+      <!-- Divider -->
+      <SolidColorBrush x:Key="DividerColor" Color="#374151" />
+
+      <!-- Disabled -->
+      <SolidColorBrush x:Key="DisabledColor" Color="#475569" />
+      <SolidColorBrush x:Key="DisabledBg" Color="#1E293B" />
+
+      <!-- Hover/Active -->
+      <SolidColorBrush x:Key="HoverColor" Color="#334155" />
+      <SolidColorBrush x:Key="ActiveColor" Color="#475569" />
+
+    </ResourceDictionary>
+
+  </ResourceDictionary.ThemeDictionaries>
+
+</ResourceDictionary>

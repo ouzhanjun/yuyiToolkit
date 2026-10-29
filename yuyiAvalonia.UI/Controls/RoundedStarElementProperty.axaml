@@ -1,0 +1,185 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="700"
+             x:Class="yuyiAvalonia.UI.Controls.RoundedStarElementProperty">
+
+    <UserControl.Styles>
+        <Style Selector="ToggleButton">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="ToggleButton:checked">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel IsVisible="{Binding ElementProperty, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                <ToggleButton x:Name="BasicTab"
+                    Content="基本"
+                    IsChecked="True"
+                    Padding="10,4"
+                    FontSize="12"
+                    CornerRadius="10"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"/>
+                <ToggleButton x:Name="StrokeTab"
+                    Content="描边"
+                    IsChecked="False"
+                    Margin="4,0,0,0"
+                    Padding="10,4"
+                    FontSize="12"
+                    CornerRadius="10"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"/>
+                <ToggleButton x:Name="FillTab"
+                    Content="填充"
+                    IsChecked="False"
+                    Margin="4,0,0,0"
+                    Padding="10,4"
+                    FontSize="12"
+                    CornerRadius="10"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"/>
+                <ToggleButton x:Name="EffectTab"
+                    Content="效果"
+                    IsChecked="False"
+                    Margin="4,0,0,0"
+                    Padding="10,4"
+                    FontSize="12"
+                    CornerRadius="10"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"/>
+                <ToggleButton x:Name="ShapeTab"
+                    Content="星形"
+                    IsChecked="False"
+                    Margin="4,0,0,0"
+                    Padding="10,4"
+                    FontSize="12"
+                    CornerRadius="10"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"/>
+            </StackPanel>
+
+            <StackPanel>
+
+                <!-- 基本 -->
+                <StackPanel IsVisible="{Binding #BasicTab.IsChecked}">
+                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,5" Padding="5" CornerRadius="3">
+                        <StackPanel>
+                            <local:IdPropertyEditor Margin="0,0,0,5"
+                                Id="{Binding ElementProperty.Id, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Icon="{x:Static icon:Icon.Identity}"
+                                Title="标识"
+                                ShowIdLabel="{Binding ElementProperty.ShowIdLabel, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Opacity="{Binding ElementProperty.Opacity, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                IsElementVisible="{Binding ElementProperty.IsVisible, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                            <local:BoundsEditor
+                                Margin="0,0,0,5"
+                                X="{Binding ElementProperty.X, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Y="{Binding ElementProperty.Y, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Width="{Binding ElementProperty.Width, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Height="{Binding ElementProperty.Height, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Rotation="{Binding ElementProperty.Rotation, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Opacity="{Binding ElementProperty.Opacity, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,5" Padding="5" CornerRadius="3">
+                        <StackPanel>
+                            <TextBlock Text="布局"
+                                    FontWeight="Bold"
+                                    FontSize="12"
+                                    Margin="0,0,0,5"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource TextPrimary}"/>
+
+                            <local:Layout x:Name="PART_Layout" ElementProperty="{Binding ElementProperty, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 描边 -->
+                <StackPanel IsVisible="{Binding #StrokeTab.IsChecked}">
+                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,5" Padding="5" CornerRadius="3">
+                        <StackPanel>
+                            <TextBlock  Margin="0,0,0,5"
+                                Text="描边"
+                                FontSize="12"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                VerticalAlignment="Center"/>
+                            <local:StrokeEditor x:Name="StrokeEditorCtrl"
+                                StrokeFills="{Binding ElementProperty.StrokeFills, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeDashOffset="{Binding ElementProperty.StrokeDashOffset, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeWidth="{Binding ElementProperty.StrokeWidth, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeType="{Binding ElementProperty.StrokeType, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeStyle="{Binding ElementProperty.StrokeStyle, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokePosition="{Binding ElementProperty.StrokePosition, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeEndpoint="{Binding ElementProperty.StrokeEndpoint, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeJoin="{Binding ElementProperty.StrokeJoin, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeMiterLimit="{Binding ElementProperty.StrokeMiterLimit, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeDashArrayString="{Binding ElementProperty.StrokeDashArrayString, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Opacity="{Binding ElementProperty.StrokeOpacity, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeColor="{Binding ElementProperty.StrokeColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 填充 -->
+                <StackPanel IsVisible="{Binding #FillTab.IsChecked}">
+                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,5" Padding="5" CornerRadius="3">
+                        <StackPanel>
+                            <TextBlock  Margin="0,0,0,5"
+                                Text="填充"
+                                FontSize="12"
+                                FontWeight="Bold"
+                                Foreground="{DynamicResource TextPrimary}"
+                                VerticalAlignment="Center"/>
+                            <local:FillEditor x:Name="FillEditorCtrl"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 效果 -->
+                <StackPanel IsVisible="{Binding #EffectTab.IsChecked}">
+                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,5" Padding="5" CornerRadius="3">
+                        <StackPanel>
+                            <local:ShadowEditor x:Name="ShadowEditorCtrl"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+                
+                <StackPanel IsVisible="{Binding #ShapeTab.IsChecked}">
+                    <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,5" Padding="5" CornerRadius="3">
+                   
+                        <local:RoundedStarShapeEditor x:Name="ShapeEditor"
+                            ElementProperty="{Binding ElementProperty, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

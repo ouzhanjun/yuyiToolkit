@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:yuyiavaloniaui="using:yuyiAvaloniaUI"
+            xmlns:vm="using:yuyiAvaloniaUI.ViewModels"
+            x:DataType="vm:MainContainerTwoViewModel"
+            xmlns:menu="using:yuyiAvalonia.Base.ViewModels.Menu"
+            xmlns:controls="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls"
+            xmlns:mm ="using:yuyiAvalonia.Base.Helpers"
+             x:Class="yuyiAvaloniaUI.Views.MainContainerTwoView">
+<Grid Background="{DynamicResource BgToolbar}"  x:Name="mainGrid">
+    <Grid.RowDefinitions>
+        <RowDefinition/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+        <ColumnDefinition  Width="40"/>
+        <ColumnDefinition />
+        <ColumnDefinition  Width="5"/>
+    </Grid.ColumnDefinitions>
+        
+    <Border x:Name="AppToolbar"
+        Width="40"
+        Grid.Row="0"
+        Grid.Column="0"
+        HorizontalAlignment="Left"
+        Background="{DynamicResource BgToolbar}"
+        BorderBrush="{DynamicResource BorderColor}"
+        BorderThickness="0,0,0,0">
+        <yuyiavaloniaui:SideToolBar x:Name="sideToolbar"></yuyiavaloniaui:SideToolBar>
+                
+    </Border>
+
+	<Border Grid.Column="1" Grid.Row="0" x:Name="CenterContent"
+        Margin="0,0,0,0"
+        CornerRadius="5"
+        Background="{DynamicResource BgContent}">
+        <TransitioningContentControl Content="{Binding CurrentPage}"/>
+    </Border>
+    
+    
+	<Border Grid.Column="2" Grid.Row="0" x:Name="RightContent"
+        Margin="0,0,5,0"
+        Background="{DynamicResource BgContent}">
+    </Border>
+</Grid>
+</UserControl>

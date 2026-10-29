@@ -1,0 +1,168 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:yuyiAvalonia.ColorSelector.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
+             x:Class="yuyiAvalonia.ColorSelector.Views.ColorPickerPopup"
+             x:DataType="vm:ColorPickerPopupViewModel">
+    <Border Background="{DynamicResource BgContent}" CornerRadius="8" Padding="12" BoxShadow="0 4 12 0 #40000000">
+        <StackPanel Spacing="12">
+            <!-- 色调-饱和度选择区域 -->
+            <Border CornerRadius="6" Height="180" ClipToBounds="True" x:Name="HueSaturationCanvas">
+                <Panel>
+                    <!-- 饱和度渐变背景 (白到透明) -->
+                    <Rectangle Height="180">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                <GradientStop Color="#FFFFFF" Offset="0"/>
+                                <GradientStop Color="#FFFFFF" Offset="0"/>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                    <LinearGradientBrush.GradientStops>
+                                        <GradientStop Color="#FF0000" Offset="0"/>
+                                        <GradientStop Color="#FFFF00" Offset="0.167"/>
+                                        <GradientStop Color="#00FF00" Offset="0.333"/>
+                                        <GradientStop Color="#00FFFF" Offset="0.5"/>
+                                        <GradientStop Color="#0000FF" Offset="0.667"/>
+                                        <GradientStop Color="#FF00FF" Offset="0.833"/>
+                                        <GradientStop Color="#FF0000" Offset="1"/>
+                                    </LinearGradientBrush.GradientStops>
+                                </LinearGradientBrush>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <!-- 亮度覆盖 (黑到透明垂直渐变) -->
+                    <Rectangle Height="180">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                <GradientStop Color="#00000000" Offset="0"/>
+                                <GradientStop Color="#FF000000" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <!-- 选择器圆形 -->
+                    <Ellipse Width="16" Height="16" Stroke="White" StrokeThickness="2"
+                             HorizontalAlignment="Left" VerticalAlignment="Top" x:Name="SelectorCircle"/>
+                </Panel>
+            </Border>
+
+            <!-- 色相滑块 -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="色相" FontSize="11" Opacity="0.7"/>
+                <Border Height="14" CornerRadius="7" ClipToBounds="True" x:Name="HueSliderTrack">
+                    <Panel>
+                        <Rectangle Height="14">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                    <GradientStop Color="#FF0000" Offset="0"/>
+                                    <GradientStop Color="#FFFF00" Offset="0.167"/>
+                                    <GradientStop Color="#00FF00" Offset="0.333"/>
+                                    <GradientStop Color="#00FFFF" Offset="0.5"/>
+                                    <GradientStop Color="#0000FF" Offset="0.667"/>
+                                    <GradientStop Color="#FF00FF" Offset="0.833"/>
+                                    <GradientStop Color="#FF0000" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Rectangle Width="6" Height="14" Fill="White" Stroke="#333" StrokeThickness="0.5" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Stretch" x:Name="HueSliderThumb"/>
+                    </Panel>
+                </Border>
+            </StackPanel>
+
+            <!-- Alpha 滑块 -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="透明度" FontSize="11" Opacity="0.7"/>
+                <Border Height="14" CornerRadius="7" ClipToBounds="True" x:Name="AlphaSliderTrack">
+                    <Panel>
+                        <!-- 棋盘格背景表示透明 -->
+                        <Canvas Width="280" Height="14">
+                            <Rectangle Fill="#CCC" Width="7" Height="7"/>
+                            <Rectangle Fill="#FFF" Width="7" Height="7" Canvas.Left="7"/>
+                            <Rectangle Fill="#FFF" Width="7" Height="7" Canvas.Top="7"/>
+                            <Rectangle Fill="#CCC" Width="7" Height="7" Canvas.Left="7" Canvas.Top="7"/>
+                        </Canvas>
+                        <Rectangle Height="14">
+                            <Rectangle.Fill>
+                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,0%">
+                                    <GradientStop Color="#00000000" Offset="0"/>
+                                    <GradientStop Color="#1890FF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <Rectangle Width="6" Height="14" Fill="White" Stroke="#333" StrokeThickness="0.5" 
+                                   HorizontalAlignment="Center" VerticalAlignment="Stretch" x:Name="AlphaSliderThumb"/>
+                    </Panel>
+                </Border>
+            </StackPanel>
+
+            <!-- 颜色预览和十六进制输入 -->
+            <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,4,0,0">
+                <Border Grid.Column="0" Width="40" Height="40" CornerRadius="6" 
+                        BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,12,0">
+                    <Panel>
+                        <Canvas Width="40" Height="40">
+                            <Rectangle Fill="#CCC" Width="10" Height="10"/>
+                            <Rectangle Fill="#FFF" Width="10" Height="10" Canvas.Left="10"/>
+                            <Rectangle Fill="#FFF" Width="10" Height="10" Canvas.Top="10"/>
+                            <Rectangle Fill="#CCC" Width="10" Height="10" Canvas.Left="10" Canvas.Top="10"/>
+                        </Canvas>
+                        <Rectangle x:Name="ColorPreview"/>
+                    </Panel>
+                </Border>
+                
+                <StackPanel Grid.Column="1" Spacing="4" VerticalAlignment="Center">
+                    <TextBlock Text="十六进制" FontSize="10" Opacity="0.6"/>
+                    <TextBox Text="{Binding HexColor}" Watermark="#RRGGBB" Height="28" 
+                             FontFamily="Consolas" FontSize="13"/>
+                </StackPanel>
+
+                <Button Grid.Column="2" Content="✓" Padding="10,6" Margin="8,0,0,0"
+                        Background="{DynamicResource AccentColor}" ToolTip.Tip="确认选择"
+                        x:Name="ConfirmButton"/>
+            </Grid>
+
+            <!-- RGB 数值输入 -->
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" Margin="0,4,0,0">
+                <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,4,8">
+                    <TextBlock Text="R" FontSize="10" Foreground="#FF6B6B" Margin="0,0,0,2"/>
+                    <NumericUpDown Value="{Binding Red}" Minimum="0" Maximum="255" 
+                                   Height="28" ShowButtonSpinner="False"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Grid.Row="0" Margin="4,0,4,8">
+                    <TextBlock Text="G" FontSize="10" Foreground="#51CF66" Margin="0,0,0,2"/>
+                    <NumericUpDown Value="{Binding Green}" Minimum="0" Maximum="255" 
+                                   Height="28" ShowButtonSpinner="False"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2" Grid.Row="0" Margin="4,0,0,8">
+                    <TextBlock Text="B" FontSize="10" Foreground="#339AF0" Margin="0,0,0,2"/>
+                    <NumericUpDown Value="{Binding Blue}" Minimum="0" Maximum="255" 
+                                   Height="28" ShowButtonSpinner="False"/>
+                </StackPanel>
+                <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,4,0">
+                    <TextBlock Text="透明度" FontSize="10" Opacity="0.7" Margin="0,0,0,2"/>
+                    <NumericUpDown Value="{Binding Alpha}" Minimum="0" Maximum="255" Height="30" ShowButtonSpinner="False"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 预设颜色快捷选择 -->
+            <StackPanel Spacing="4">
+                <TextBlock Text="预设颜色" FontSize="11" Opacity="0.7"/>
+                <WrapPanel>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#FF4D4F" Cursor="Hand" Tag="#FF4D4F"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#FA8C16" Cursor="Hand" Tag="#FA8C16"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#F7B500" Cursor="Hand" Tag="#F7B500"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#52C41A" Cursor="Hand" Tag="#52C41A"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#1890FF" Cursor="Hand" Tag="#1890FF"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#722ED1" Cursor="Hand" Tag="#722ED1"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#EB2F96" Cursor="Hand" Tag="#EB2F96"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#FFFFFF" BorderBrush="#DDD" BorderThickness="1" Cursor="Hand" Tag="#FFFFFF"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#000000" Cursor="Hand" Tag="#000000"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#333333" Cursor="Hand" Tag="#333333"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#666666" Cursor="Hand" Tag="#666666"/>
+                    <Border Width="20" Height="20" CornerRadius="3" Margin="2" Background="#999999" Cursor="Hand" Tag="#999999"/>
+                </WrapPanel>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

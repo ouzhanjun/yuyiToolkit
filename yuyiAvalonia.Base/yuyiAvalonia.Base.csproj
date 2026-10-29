@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.11" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\NumericEditUpDownEx.axaml.cs">
+      <DependentUpon>NumericEditUpDownEx.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\ThreeButtonGroup.axaml.cs">
+      <DependentUpon>ThreeButtonGroup.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\NumericLockUpDownEx.axaml.cs">
+      <DependentUpon>NumericLockUpDownEx.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\NumericSpecUpDownEx.axaml.cs">
+      <DependentUpon>NumericSpecUpDownEx.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Controls\NumericPercentUpDownEx.axaml.cs">
+      <DependentUpon>NumericPercentUpDownEx.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

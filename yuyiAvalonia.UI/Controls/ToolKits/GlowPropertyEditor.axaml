@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="250"
+             x:Class="yuyiAvalonia.UI.Controls.GlowPropertyEditor">
+
+    <StackPanel>
+        <!-- 发光开关 -->
+        <ToggleSwitch FontSize="11" 
+                IsChecked="{Binding HasGlow, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                OnContent="启用发光"
+                OffContent="关闭发光"
+                Margin="0,0,0,10"/>
+        
+        <!-- 偏移X/Y 和 透明度 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                <TextBlock Text="偏移X" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding GlowOffsetX, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="-20" Maximum="20" Height="28"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                <TextBlock Text="偏移Y" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding GlowOffsetY, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="-20" Maximum="20" Height="28"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                <TextBlock Text="光晕大小" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding GlowBlurRadius, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="0" Maximum="50" Height="28"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="3" Margin="5,0,0,0">
+                <TextBlock Text="亮度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding GlowOpacity, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="0" Maximum="1" Step="0.1" Height="28"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 发光颜色和模糊半径 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                <TextBlock Text="发光颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:ColorInput Text="{Binding GlowColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="10" Height="28"/>
+            </StackPanel>
+        </Grid>
+
+    </StackPanel>
+</UserControl>

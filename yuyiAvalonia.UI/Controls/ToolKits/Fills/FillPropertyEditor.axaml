@@ -1,0 +1,268 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:models="using:yuyiAvalonia.UI.Models"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             mc:Ignorable="d" d:DesignWidth="180" d:DesignHeight="100"
+             x:Class="yuyiAvalonia.UI.Controls.FillPropertyEditor">
+
+    <UserControl.Resources>
+        <conv:StringToBrushConverter x:Key="StrToBrush"/>
+        <conv:StringToColorConverter x:Key="StrToColor"/>
+        <conv:ImagePathToBitmapConverter x:Key="ImagePathToBitmap"/>
+        <conv:StringNullOrEmptyToBoolConverter x:Key="ImagePathEmpty"/>
+        <conv:GradientStopsToPreviewBrushConverter x:Key="GradientPreviewBrush"/>
+    </UserControl.Resources>
+
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid ColumnDefinitions="*,25" ColumnSpacing="1">
+            <!-- 单个填充预览卡：点击打开弹窗编辑（与 FillEditor 的列表项风格保持一致） -->
+            <Border Grid.Column="0"
+                Padding="3"
+                Background="{DynamicResource BgToolbar}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1"
+                CornerRadius="3"
+                ClipToBounds="True"
+                Cursor="Hand"
+                PointerPressed="FillItem_Click"
+                x:Name="PART_PreviewBorder"
+                IsVisible="{Binding Fill, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <!-- 填充类型图标/预览 + 名称 -->
+                <Grid 
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="5">
+                    <Border Width="28" Height="28"
+                        Grid.Column="0"
+                        CornerRadius="3"
+                        ClipToBounds="True"
+                        Background="{DynamicResource BgContent}"
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="1">
+                        <Panel>
+                            <PathIcon Data="{x:Static icon:Icon.Clear}"
+                                Width="14" Height="14"
+                                Foreground="{DynamicResource TextSecondary}"
+                                IsVisible="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:FillPropertyEditor.FillTypeNoneConverter}}"/>
+                            <Border CornerRadius="2"
+                                IsVisible="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:FillPropertyEditor.FillTypeSolidConverter}}">
+                                <Border.Background>
+                                    <SolidColorBrush Opacity="{Binding Fill.Opacity, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        Color="{Binding Fill.BackgroundColor, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource StrToColor}}"/>
+                                </Border.Background>
+                            </Border>
+                            <Border CornerRadius="2"
+                                    IsVisible="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:FillPropertyEditor.FillTypeGradientConverter}}">
+                                <local:GradientPreviewControl FillItem="{Binding Fill, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                            </Border>
+                            <Panel IsVisible="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:FillPropertyEditor.FillTypeImageConverter}}"
+                                    ClipToBounds="True">
+                                <Image Stretch="Uniform" Opacity="{Binding Fill.Opacity, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                    <Image.Source>
+                                        <MultiBinding Converter="{StaticResource ImagePathToBitmap}">
+                                            <Binding Path="Fill.ImagePath" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                        </MultiBinding>
+                                    </Image.Source>
+                                </Image>
+                                <Border IsVisible="{Binding Fill.ImagePath, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource ImagePathEmpty}}">
+                                    <PathIcon Data="{x:Static icon:Icon.Image}"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource TextSecondary}"/>
+                                </Border>
+                            </Panel>
+                        </Panel>
+                    </Border>
+                    <Border Grid.Column="1" ClipToBounds="True">
+                        <Grid RowDefinitions="*,*">
+                            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                <!-- 第一行：纯色显示颜色值 / 渐变显示渐变类型 / 图像显示 Image（按 FillType） -->
+                                <TextBlock FontSize="10"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    TextTrimming="CharacterEllipsis"
+                                    IsVisible="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:FillPropertyEditor.FillTypeSolidConverter}}">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{x:Static local:FillPropertyEditor.FillTypeSolidTextConverter}">
+                                            <Binding Path="Fill.FillType" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                            <Binding Path="Fill" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                            <!-- 触发器：让 MultiBinding 在 BackgroundColor 变化时重算。 -->
+                                            <Binding Path="Fill.BackgroundColor" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock FontSize="10"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    IsVisible="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:FillPropertyEditor.FillTypeGradientConverter}}">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{x:Static local:FillPropertyEditor.FillTypeGradientTextConverter}">
+                                            <Binding Path="Fill.FillType" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                            <Binding Path="Fill" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                            <!-- 触发器：让 MultiBinding 在 GradientKind 变化时重算。 -->
+                                            <Binding Path="Fill.GradientKind" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <TextBlock FontSize="11"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="NoWrap"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    Text="{Binding Fill.ImagePath, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    IsVisible="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:FillPropertyEditor.FillTypeImageConverter}}"/>
+                            </StackPanel>
+                            <!-- 第二行：透明度 + 填充类型（格式与 FillEditor 列表项一致） -->
+                            <Grid ColumnDefinitions="Auto,Auto,*" Grid.Row="1">
+                                <TextBlock Text="{Binding Fill.Opacity, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static conv:OpacityToPercentConverter.Instance}}"
+                                    Grid.Column="0"
+                                    FontSize="10"
+                                    Foreground="{DynamicResource TextSecondary}"/>
+                                <TextBlock Text="% - "
+                                    Grid.Column="1"
+                                    FontSize="10"
+                                    Foreground="{DynamicResource TextSecondary}"/>
+                                <TextBlock Text="{Binding Fill.FillType, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Grid.Column="2"
+                                    FontSize="10"
+                                    Foreground="{DynamicResource TextSecondary}"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+                
+            <!-- 可见性切换 -->
+            <controls:VisibilityToggle Grid.Column="1"
+                Width="24" 
+                Height="24"
+                IconSize="13"
+                Cursor="Hand"
+                IsVisible="{Binding Fill.IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" ToggleOnClick="True"/>
+        </Grid>
+        <!-- 统一填充编辑器 Popup（点击预览卡时打开） -->
+        <Popup x:Name="FillEditorPopup"
+            PlacementMode="AnchorAndGravity"
+            PlacementTarget="{Binding #PART_PreviewBorder}"
+            PlacementAnchor="Left"
+            PlacementGravity="Left"
+            IsLightDismissEnabled="True"
+            IsOpen="{Binding $parent[UserControl].IsFillEditorOpen, Mode=TwoWay}">
+            <Border Background="{DynamicResource BgContent}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    x:Name="DragHost"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    BoxShadow="0 4 16 0 #60000000"
+                    Padding="12">
+                <StackPanel Width="250">
+                    <!-- 标题栏 + 类型图标切换 -->
+                    <Grid Margin="0,0,0,10" ColumnDefinitions="Auto,*,Auto,Auto">
+                      
+                        <!-- 类型图标按钮组 -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                            <ToggleButton Classes="FillTypeToggle"
+                                IsChecked="{Binding $parent[UserControl].Fill.FillType, Converter={x:Static local:FillEditor.FillTypeSolidConverter}, Mode=OneWay}"
+                                Click="SelectFillType_Click"
+                                ToolTip.Tip="纯色"
+                                Tag="{x:Static models:FillType.Solid}"
+                                Padding="6"
+                                Width="24" Height="24"
+                                BorderThickness="0"
+                                CornerRadius="4">
+                                <!-- 实心圆：填充色为选中 FillItem 的纯色（带 2px 边线） -->
+                                <Border Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Background="{Binding $parent[UserControl].Fill.BackgroundColor, Converter={StaticResource StrToBrush}}"
+                                    BorderBrush="{DynamicResource TextPrimary}"
+                                    BorderThickness="1"/>
+                            </ToggleButton>
+                            <ToggleButton Classes="FillTypeToggle"
+                                IsChecked="{Binding $parent[UserControl].Fill.FillType, Converter={x:Static local:FillEditor.FillTypeGradientConverter}, Mode=OneWay}"
+                                Click="SelectFillType_Click"
+                                ToolTip.Tip="渐变"
+                                Tag="{x:Static models:FillType.Gradient}"
+                                Padding="6"
+                                Width="24" Height="24"
+                                BorderThickness="0"
+                                CornerRadius="4">
+                                <!-- 实心圆：填充色为选中 FillItem 渐变首/末色（左上 80% → 右下 20% 透明度） -->
+                                <Border Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Background="{Binding $parent[UserControl].Fill, Converter={StaticResource GradientPreviewBrush}}"
+                                    BorderBrush="{DynamicResource TextPrimary}"
+                                    BorderThickness="1"/>
+                            </ToggleButton>
+                            <ToggleButton Classes="FillTypeToggle"
+                                IsChecked="{Binding $parent[UserControl].Fill.FillType, Converter={x:Static local:FillEditor.FillTypeImageConverter}, Mode=OneWay}"
+                                Click="SelectFillType_Click"
+                                ToolTip.Tip="图片"
+                                Tag="{x:Static models:FillType.Image}"
+                                Padding="6"
+                                Width="24" Height="24"
+                                BorderThickness="0"
+                                CornerRadius="4">
+                                <PathIcon Width="18" Height="18"
+                                    CornerRadius="9"
+                                    Data="{x:Static icon:Icon.Image}"
+                                    Foreground="{DynamicResource TextPrimary}"/>
+                            </ToggleButton>
+                        </StackPanel>
+
+
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center"/>
+
+                        <controls:VisibilityToggle Grid.Column="2"
+                                                   IsVisible="{Binding $parent[UserControl].Fill.IsEnabled}"
+                                                   ToggleOnClick="True"
+                                                   Margin="0,0,4,0"/>
+
+                        <Button Grid.Column="3"
+                                Content="✕"
+                                Padding="6,2"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="CloseFillEditor_Click"
+                                FontSize="10"
+                                Foreground="{DynamicResource TextSecondary}"/>
+                    </Grid>
+                    <!-- 纯色编辑器 -->
+                    <StackPanel IsVisible="{Binding $parent[UserControl].Fill.FillType, Converter={x:Static local:FillPropertyEditor.FillTypeSolidConverter}}">
+                        <local:SolidFillPropertyEditor
+                            x:Name="PART_SolidFillPropertyEditor"
+                            FillColor="{Binding $parent[UserControl].Fill.BackgroundColor, Mode=TwoWay}"
+                            Opacity="{Binding $parent[UserControl].Fill.Opacity, Mode=TwoWay}"/>
+                    </StackPanel>
+
+                    <!-- 渐变编辑器 -->
+                    <StackPanel IsVisible="{Binding $parent[UserControl].Fill.FillType, Converter={x:Static local:FillPropertyEditor.FillTypeGradientConverter}}">
+                        <local:GradientFillPropertyEditor
+                            x:Name="GradientFillPropertyEditor"
+                            GradientKindEnum="{Binding $parent[UserControl].Fill.GradientKind, Mode=TwoWay}"
+                            GradientStops="{Binding $parent[UserControl].Fill.GradientStops, Mode=TwoWay}"
+                            GradientAngle="{Binding $parent[UserControl].Fill.GradientAngle, Mode=TwoWay}"
+                            RadialCenterX="{Binding $parent[UserControl].Fill.RadialCenterX, Mode=TwoWay}"
+                            RadialCenterY="{Binding $parent[UserControl].Fill.RadialCenterY, Mode=TwoWay}"
+                            Opacity="{Binding $parent[UserControl].Fill.Opacity, Mode=TwoWay}"/>
+                    </StackPanel>
+
+                    <!-- 图片编辑器 -->
+                    <StackPanel IsVisible="{Binding $parent[UserControl].Fill.FillType, Converter={x:Static local:FillPropertyEditor.FillTypeImageConverter}}">
+                        <local:ImageFillPropertyEditor
+                            ImagePath="{Binding $parent[UserControl].Fill.ImagePath, Mode=TwoWay}"
+                            ImageStretch="{Binding $parent[UserControl].Fill.ImageStretch, Mode=TwoWay}"
+                            ImageTileMode="{Binding $parent[UserControl].Fill.ImageTileMode, Mode=TwoWay}"
+                            ImageAlignmentX="{Binding $parent[UserControl].Fill.ImageAlignmentX, Mode=TwoWay}"
+                            ImageAlignmentY="{Binding $parent[UserControl].Fill.ImageAlignmentY, Mode=TwoWay}"
+                            Opacity="{Binding $parent[UserControl].Fill.Opacity, Mode=TwoWay}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

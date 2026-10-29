@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../yuyiAvalonia.Base/yuyiAvalonia.Base.csproj" Id="fc9e85d2-5af8-4bd6-a160-a48641ed2343" />
+  <Project Path="../yuyiAvalonia.Java/yuyiAvalonia.Java.csproj" />
+  <Project Path="../yuyiAvalonia.UI/yuyiAvalonia.UI.csproj" />
+  <Project Path="yuyiAvaloniaUI.csproj" />
+</Solution>

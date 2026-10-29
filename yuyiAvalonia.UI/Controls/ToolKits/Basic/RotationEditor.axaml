@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             mc:Ignorable="d" d:DesignWidth="150" d:DesignHeight="50"
+             x:Class="yuyiAvalonia.UI.Controls.RotationEditor">
+
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0"  VerticalAlignment="Center">
+                <TextBlock Text="旋转角度" FontSize="11" Margin="0,0,0,5" Foreground="{DynamicResource TextSecondary}" IsVisible="{Binding IsShowTitle, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                
+                <controls:NumericSpecUpDownEx
+                    x:Name="AnglePickerButton"
+                    CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    UseAngleButton="True"
+                    Icon="{x:Static icon:Icon.Rotation}"
+                    ButtonIcon="{x:Static icon:Icon.RotationMove}"
+                    Value="{Binding Rotation, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="0" Maximum="360"/>
+            </StackPanel>
+        </Grid>
+
+    </StackPanel>
+</UserControl>

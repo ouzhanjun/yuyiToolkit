@@ -1,0 +1,318 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  复选框样式                                                          -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="CheckBox">
+        <!-- 基础 -->
+        <Setter Property="Height" Value="20" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+
+        <!-- 勾选框（未选中） -->
+        <Style Selector="^ /template/ Border#NormalRectangle">
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Background" Value="{DynamicResource BgBody}" />
+        </Style>
+
+        <!-- 勾选框（悬停） -->
+        <Style Selector="^:pointerover /template/ Border#NormalRectangle">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        </Style>
+
+        <!-- 勾选框（选中） -->
+        <Style Selector="^:checked /template/ Border#NormalRectangle">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        </Style>
+
+        <!-- 勾选标记 -->
+        <Style Selector="^ /template/ Path#CheckGlyph">
+            <Setter Property="Fill" Value="White" />
+        </Style>
+
+        <!-- 禁用状态 -->
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  图片编辑滑块样式                                                     -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="Slider.ImageEdit">
+        <Setter Property="Margin" Value="3,0,3,0"/>
+        <Setter Property="Width" Value="110"/>
+        <Setter Property="IsHitTestVisible" Value="True"/>
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  垂直滑块样式                                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="Slider:vertical">
+        <Style Selector="^ Track">
+            <Style Selector="^ Thumb">
+                <Setter Property="Width" Value="16"/>
+                <Setter Property="Height" Value="16"/>
+                <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+                <Setter Property="BorderThickness" Value="2"/>
+                <Setter Property="CornerRadius" Value="8"/>
+            </Style>
+        </Style>
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  通用设置面板样式                                                     -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="StackPanel.UCSettings">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="8" />
+
+        <Style Selector="^ TextBlock.Title">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,8,0,12" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        </Style>
+
+        <Style Selector="^ TextBlock.Content">
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Margin" Value="0,6,0,6" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+        </Style>
+
+        <Style Selector="^ TextBlock.Tips">
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,12,0,0" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+        </Style>
+
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  单选按钮样式                                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="RadioButton">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+
+        <Style Selector="^ /template/ Border#NormalRectangle">
+            <Setter Property="Width" Value="18" />
+            <Setter Property="Height" Value="18" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="CornerRadius" Value="9" />
+            <Setter Property="Background" Value="{DynamicResource BgBody}" />
+        </Style>
+
+        <Style Selector="^:pointerover /template/ Border#NormalRectangle">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        </Style>
+
+        <Style Selector="^:checked /template/ Border#NormalRectangle">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        </Style>
+
+        <Style Selector="^:checked /template/ Ellipse#CheckGlyph">
+            <Setter Property="Fill" Value="{DynamicResource AccentColor}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Opacity" Value="0.5" />
+        </Style>
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  开关按钮样式                                                         -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="ToggleSwitch">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  进度条样式                                                           -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="ProgressBar">
+        <Setter Property="Height" Value="8" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Background" Value="{DynamicResource BorderColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentColor}" />
+    </Style>
+
+    <Style Selector="ProgressBar.Success">
+        <Setter Property="Foreground" Value="{DynamicResource SuccessColor}" />
+    </Style>
+
+    <Style Selector="ProgressBar.Warning">
+        <Setter Property="Foreground" Value="{DynamicResource WarningColor}" />
+    </Style>
+
+    <Style Selector="ProgressBar.Error">
+        <Setter Property="Foreground" Value="{DynamicResource ErrorColor}" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  按钮样式                                                            -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <!-- Outline 按钮 -->
+    <Style Selector="Button.Outline">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="8,4" />
+
+    </Style>
+
+    <Style Selector="Button.Outline:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BgToolbar}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+    </Style>
+
+    <Style Selector="Button.Outline:pressed">
+        <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- Danger 按钮 -->
+    <Style Selector="Button.Danger">
+        <Setter Property="Background" Value="#E74C3C" />
+        <Setter Property="BorderBrush" Value="#E74C3C" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="8,4" />
+    </Style>
+
+    <Style Selector="Button.Danger:pointerover">
+        <Setter Property="Background" Value="#C0392B" />
+        <Setter Property="BorderBrush" Value="#C0392B" />
+    </Style>
+
+    <Style Selector="Button.Danger:pressed">
+        <Setter Property="Background" Value="#A93226" />
+    </Style>
+
+    <!-- TabItem 样式 -->
+    <Style Selector="RadioButton.TabItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="RadioButton.TabItem:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BgContent}" />
+    </Style>
+
+    <Style Selector="RadioButton.TabItem:checked">
+        <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  停靠位置编辑器按钮样式                                                -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="Button.dock-btn">
+        <Setter Property="Background" Value="{DynamicResource BgInput}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="2" />
+    </Style>
+
+    <Style Selector="Button.dock-btn:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BgToolbar}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Setter Property="Cursor" Value="Hand"></Setter>
+    </Style>
+
+    <Style Selector="Button.dock-btn.selected PathIcon">
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.dock-btn.selected Border">
+        <Setter Property="Background" Value="White" />
+    </Style>
+
+    <Style Selector="TabItem">
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+    <!--  标签按钮样式                                                          -->
+    <!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+    <Style Selector="Button.TagButton">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondary}" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Button.TagButton:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BgToolbar}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+    </Style>
+
+    <Style Selector="Button.TagButton.Active">
+        <Setter Property="Background" Value="{DynamicResource AccentColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <!-- 填充类型切换按钮 -->
+    <Style Selector="ToggleButton.FillTypeToggle">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Cursor" Value="Hand"/>
+    </Style>
+
+    <Style Selector="ToggleButton.FillTypeToggle:pointerover">
+        <Setter Property="Background" Value="{DynamicResource BgToolbar}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+    </Style>
+
+    <Style Selector="ToggleButton.FillTypeToggle:checked">
+        <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+    </Style>
+
+    <Style Selector="ToggleButton.FillTypeToggle:checked PathIcon">
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+</Styles>

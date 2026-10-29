@@ -1,0 +1,88 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="100" d:DesignHeight="28"
+             x:Class="yuyiAvalonia.Base.Controls.AlignmentButtonGroup"
+             x:Name="This">
+
+    <common:PropertyBorder Background="{DynamicResource BgProperty}"
+            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            x:Name="PART_PropertyBorder"
+            ClipToBounds="True">
+        <Grid ColumnDefinitions="*,*,*,*">
+            <Border ClipToBounds="True" Grid.Column="0" Padding="-2">
+                <Button x:Name="PART_Button1"
+                        FontFamily="Segoe MDL2 Assets, Consolas"
+                        FontSize="11"
+                        Height="{Binding Height, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="Button1_Click">
+				    <PathIcon Data="{Binding Icon1, RelativeSource={RelativeSource AncestorType=UserControl}}" Foreground="{DynamicResource TextSecondary}" Width="12" ToolTip.Tip="{Binding Text}"/>
+                </Button>
+            </Border>
+            <Border ClipToBounds="True" Grid.Column="1" Padding="-2">
+                <Button x:Name="PART_Button2"
+                        Grid.Column="2"
+                        FontFamily="Segoe MDL2 Assets, Consolas"
+                        FontSize="11"
+                        Padding="4,0"
+                        MinWidth="28"
+                        Height="{Binding Height, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="Button2_Click">
+				    <PathIcon Data="{Binding Icon2, RelativeSource={RelativeSource AncestorType=UserControl}}" Foreground="{DynamicResource TextSecondary}" Width="12" ToolTip.Tip="{Binding Text}"/>
+                </Button>
+            </Border>
+            <Border ClipToBounds="True" Grid.Column="2" Padding="-2">
+                <Button x:Name="PART_Button3"
+                        Grid.Column="4"
+                        FontFamily="Segoe MDL2 Assets, Consolas"
+                        FontSize="11"
+                        Padding="4,0"
+                        MinWidth="28"
+                        Height="{Binding Height, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="Button3_Click"
+                        IsVisible="{Binding ShowThirdButton, RelativeSource={RelativeSource AncestorType=UserControl}}">
+				    <PathIcon Data="{Binding Icon3, RelativeSource={RelativeSource AncestorType=UserControl}}" Foreground="{DynamicResource TextSecondary}" Width="12" ToolTip.Tip="{Binding Text}"/>
+                </Button>
+            </Border>
+            <Border ClipToBounds="True" Grid.Column="3" Padding="-2">
+                <Button x:Name="PART_Button4"
+                        Grid.Column="6"
+                        FontFamily="Segoe MDL2 Assets, Consolas"
+                        FontSize="11"
+                        Padding="4,0"
+                        MinWidth="28"
+                        Height="{Binding Height, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Click="Button4_Click"
+                        IsVisible="{Binding Show4Button, RelativeSource={RelativeSource AncestorType=UserControl}}">
+				    <PathIcon Data="{Binding Icon4, RelativeSource={RelativeSource AncestorType=UserControl}}" Foreground="{DynamicResource TextSecondary}" Width="12" ToolTip.Tip="{Binding Text}"/>
+                </Button>
+            </Border>
+        </Grid>
+    </common:PropertyBorder>
+</UserControl>

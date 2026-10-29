@@ -1,0 +1,40 @@
+
+namespace yuyiAvalonia.Base.Models.Menu;
+
+public enum MenuClickCommandType
+{
+    /// <summary>
+    /// 无效
+    /// </summary>
+    None = 0,
+
+    /// <summary>
+    /// 激活菜单命令
+    /// </summary>
+    Active,
+
+    /// <summary>
+    /// 切换主题命令
+    /// </summary>
+    SwitchTheme,
+
+    /// <summary>
+    /// 超链接
+    /// </summary>
+    Link,
+    
+    /// <summary>
+    /// 切换语言命令
+    /// </summary>
+    SwitchLanguage,
+
+    /// <summary>
+    /// 导航命令
+    /// </summary>
+    Navigate,
+
+    /// <summary>
+    /// 环境菜单
+    /// </summary>
+    PopupMenu
+}

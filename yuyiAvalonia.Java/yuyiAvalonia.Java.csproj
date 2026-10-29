@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.11" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\yuyiAvalonia.Base\yuyiAvalonia.Base.csproj" />
+    <ProjectReference Include="..\yuyiAvalonia.UI\yuyiAvalonia.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="i18n\zh-Hans.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="i18n\en.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Remove="Assets - 复制\**" />
+    <AvaloniaXaml Remove="Commands - 复制\**" />
+    <AvaloniaXaml Remove="Controls - 复制\**" />
+    <AvaloniaXaml Remove="Services - 复制\**" />
+    <Compile Remove="Assets - 复制\**" />
+    <Compile Remove="Commands - 复制\**" />
+    <Compile Remove="Controls - 复制\**" />
+    <Compile Remove="Services - 复制\**" />
+    <EmbeddedResource Remove="Assets - 复制\**" />
+    <EmbeddedResource Remove="Commands - 复制\**" />
+    <EmbeddedResource Remove="Controls - 复制\**" />
+    <EmbeddedResource Remove="Services - 复制\**" />
+    <None Remove="Assets - 复制\**" />
+    <None Remove="Commands - 复制\**" />
+    <None Remove="Controls - 复制\**" />
+    <None Remove="Services - 复制\**" />
+  </ItemGroup>
+
+</Project>

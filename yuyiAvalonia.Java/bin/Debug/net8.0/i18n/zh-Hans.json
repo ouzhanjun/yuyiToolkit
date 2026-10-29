@@ -1,0 +1,18 @@
+{
+  "Menu": {
+    "Toolbar": {
+      "Java": "Java"
+    }
+  },
+  "Java": {
+    "Title": "Java 工具",
+    "Description": "Java 环境管理工具",
+    "InstalledVersions": "已安装版本",
+    "AvailableVersions": "下载安装",
+    "Settings": "环境配置",
+    "Status": {
+      "Normal": "Java 环境正常",
+      "NotFound": "未检测到 Java 环境"
+    }
+  }
+}

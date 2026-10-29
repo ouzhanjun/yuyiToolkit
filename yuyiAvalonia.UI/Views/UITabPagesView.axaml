@@ -1,0 +1,124 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:yuyiAvalonia.UI.ViewModels"
+             xmlns:views="using:yuyiAvalonia.UI.Views"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+             x:Class="yuyiAvalonia.UI.Views.UITabPagesView"
+             x:DataType="vm:UITabPagesViewModel">
+
+    <Grid Background="{DynamicResource BgBody}">
+        <TabControl x:Name="MainTabControl"
+                    ItemsSource="{Binding Tabs}"
+                    SelectedItem="{Binding SelectedTab}"
+                    Background="{DynamicResource BgToolbar}">
+            <TabControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:TabItemViewModel">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock Text="{Binding Icon}"
+                                    FontSize="13"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource TextSecondary}"/>
+                        <TextBlock Text="{Binding Title}"
+                                    FontSize="12"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource TextPrimary}"
+                                    MaxWidth="120"
+                                    TextTrimming="CharacterEllipsis"/>
+                        <Button x:Name="CloseButton"
+                                Padding="4"
+                                Margin="4,0,0,0"
+                                Classes="TabCloseButton"
+                                IsVisible="{Binding CanClose}"
+                                Click="CloseButton_Click"
+                                Tag="{Binding}"
+                                ToolTip.Tip="关闭">
+                            <TextBlock Text="&#xE711;"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        FontSize="10"
+                                        Foreground="{DynamicResource TextSecondary}"/>
+                        </Button>
+                    </StackPanel>  
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate x:DataType="vm:TabItemViewModel">
+                    <ContentControl Content="{Binding Content}"/>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+
+        </TabControl>
+
+        <!-- 无标签页时的提示 -->
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    IsVisible="{Binding !Tabs.Count}">
+            <Border Width="72" Height="72"
+                    CornerRadius="18"
+                    Background="{DynamicResource BgToolbar}"
+                    Margin="0,0,0,20">
+                <TextBlock Text="&#xE8A7;"
+                           FontFamily="Segoe MDL2 Assets"
+                           FontSize="32"
+                           Foreground="{DynamicResource TextSecondary}"
+                           Opacity="0.4"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Border>
+            <TextBlock Text="暂无打开的页面"
+                       FontSize="15"
+                       Foreground="{DynamicResource TextSecondary}"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="从左侧选择模板开始创建"
+                       FontSize="12"
+                       Foreground="{DynamicResource TextSecondary}"
+                       Opacity="0.6"
+                       HorizontalAlignment="Center"
+                       Margin="0,8,0,0"/>
+        </StackPanel>
+    </Grid>
+
+    <UserControl.Styles>
+        <!-- TabControl 基础样式 -->
+        <Style Selector="TabControl">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+        </Style>
+
+        <Style Selector="TabControl /template/ TabItem">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+        </Style>
+
+        <Style Selector="TabControl /template/ TabItem:selected">
+            <Setter Property="Background" Value="{DynamicResource BgContent}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+        </Style>
+
+        <Style Selector="TabControl /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource BgContent}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="0,1,0,0"/>
+        </Style>
+
+        <!-- 关闭按钮样式 -->
+        <Style Selector="Button.TabCloseButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+
+        <Style Selector="Button.TabCloseButton:pointerover">
+            <Setter Property="Background" Value="{DynamicResource HoverColor}"/>
+        </Style>
+
+        <Style Selector="Button.TabCloseButton:pressed">
+            <Setter Property="Background" Value="{DynamicResource ActiveColor}"/>
+        </Style>
+    </UserControl.Styles>
+</UserControl>

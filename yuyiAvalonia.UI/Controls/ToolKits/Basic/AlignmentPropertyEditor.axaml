@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="100"
+             x:Class="yuyiAvalonia.UI.Controls.AlignmentPropertyEditor">
+
+    <Grid ColumnDefinitions="*,*,30" ColumnSpacing="1">
+        <!-- 水平对齐 -->
+        <StackPanel Grid.Column="0">
+            <TextBlock Text="水平对齐" FontSize="11" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5" HorizontalAlignment="Center"/>
+            <controls:AlignmentButtonGroup x:Name="PART_HorizontalGroup"
+                Height="30"
+                Cursor="Hand"
+                Icon1="{x:Static icon:Icon.LRStretch}"
+                Icon2="{x:Static icon:Icon.LeftDock}"
+                Icon3="{x:Static icon:Icon.CenterDock}"
+                Icon4="{x:Static icon:Icon.RightDock}"/>
+        </StackPanel>
+
+        <!-- 垂直对齐 -->
+        <StackPanel Grid.Column="1">
+            <TextBlock Text="垂直对齐" FontSize="11" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5" HorizontalAlignment="Center"/>
+            <controls:AlignmentButtonGroup x:Name="PART_VerticalGroup"
+                Height="30"
+                Cursor="Hand"
+                Icon1="{x:Static icon:Icon.TBStretch}"
+                Icon2="{x:Static icon:Icon.TopDock}"
+                Icon3="{x:Static icon:Icon.MiddleDock}"
+                Icon4="{x:Static icon:Icon.BottomDock}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

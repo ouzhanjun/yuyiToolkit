@@ -1,0 +1,85 @@
+is_global = true
+build_property.AvaloniaNameGeneratorIsEnabled = true
+build_property.AvaloniaNameGeneratorBehavior = InitializeComponent
+build_property.AvaloniaNameGeneratorDefaultFieldModifier = internal
+build_property.AvaloniaNameGeneratorFilterByPath = *
+build_property.AvaloniaNameGeneratorFilterByNamespace = *
+build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
+build_property.AvaloniaNameGeneratorAttachDevTools = true
+build_property.TargetFramework = net10.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EntryPointFilePath = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = yuyiAvalonia.Base
+build_property.ProjectDir = D:\我的项目\yuyiToolkits\yuyiToolkits_V0.90\yuyiToolkits_V0.19\yuyiAvalonia.Base\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 10.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/AlignmentButtonGroup.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/ColorHexInput.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/ColorInput.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/ColorPickerPanel.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/ColorSelectorControl.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/ComboBox/EnumComboBox.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/FontComboBox.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/FourButtonGroup.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/IconTextDropDown.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/LineSpacingComboBox.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/MarginTypeButtonGroup.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/NumericEditUpDownEx.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/NumericLockUpDownEx.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/NumericPercentUpDownEx.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/NumericSpecUpDownEx.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/NumericUpDownEx.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/TextFormatButtonGroup.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/TextInput.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/ThreeButtonGroup.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkits_V0.90/yuyiToolkits_V0.19/yuyiAvalonia.Base/Controls/VisibilityToggle.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

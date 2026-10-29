@@ -1,0 +1,428 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:yuyiAvalonia.Java.Views"
+             x:Class="yuyiAvalonia.Java.Views.JavaView">
+
+  <Grid RowDefinitions="Auto,*">
+    <!-- 顶部标签切换按钮 -->
+    <Border Grid.Row="0" Background="#1A1A1A" Padding="20,12">
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <TextBlock Text="圆角图形测试面板" Foreground="#888" FontSize="13"
+                   VerticalAlignment="Center" Margin="0,0,20,0" />
+        <Button x:Name="BtnTabStar" Content="圆角星形" Click="BtnShowStar_Click"
+                Padding="20,8" FontWeight="Bold" />
+        <Button x:Name="BtnTabPolygon" Content="圆角多边形" Click="BtnShowPolygon_Click"
+                Padding="20,8" />
+        <Button x:Name="BtnTabRect" Content="圆角矩形" Click="BtnShowRect_Click"
+                Padding="20,8" />
+        <Button x:Name="BtnTabSector" Content="扇形/弧/椭圆" Click="BtnShowSector_Click"
+                Padding="20,8" />
+        <Button x:Name="BtnTabBezier" Content="Bezier 演示" Click="BtnShowBezier_Click"
+                Padding="20,8" />
+      </StackPanel>
+    </Border>
+
+    <!-- ============ 圆角星形面板 ============ -->
+    <Border x:Name="PanelStar" Grid.Row="1" Background="#2D2D2D">
+      <Grid ColumnDefinitions="380,*">
+        <!-- 参数面板 -->
+        <Border Grid.Column="0" Background="#1E1E1E" Padding="16" Margin="0,0,1,0">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+
+              <TextBlock Text="圆角星形" Foreground="White" FontWeight="Bold" FontSize="16" />
+
+              <!-- 尺寸 -->
+              <TextBlock Text="尺寸" Foreground="#AAA" FontSize="12" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="宽" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="StarWSlider" Width="220" Minimum="80" Maximum="500" Value="300" />
+                <TextBlock Text="{Binding #StarWSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="44" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="高" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="StarHSlider" Width="220" Minimum="80" Maximum="500" Value="300" />
+                <TextBlock Text="{Binding #StarHSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="44" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 外尖数 -->
+              <TextBlock Text="外尖数（2-32）" Foreground="#FFF" FontWeight="SemiBold" FontSize="13" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Slider x:Name="StarPointSlider" Width="220" Minimum="2" Maximum="32"
+                        TickFrequency="1" IsSnapToTickEnabled="True" Value="5" />
+                <Border Background="#1A1A1A" Padding="10,4" MinWidth="40">
+                  <TextBlock x:Name="StarPointText" Text="5" Foreground="#FFD080"
+                             FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" />
+                </Border>
+              </StackPanel>
+
+              <!-- 预设角数 -->
+              <WrapPanel>
+                <Button Content="2角"  Click="BtnStarPreset2_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="3角"  Click="BtnStarPreset3_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="4角"  Click="BtnStarPreset4_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="5角"  Click="BtnStarPreset5_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="6角"  Click="BtnStarPreset6_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="8角"  Click="BtnStarPreset8_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="10角" Click="BtnStarPreset10_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="12角" Click="BtnStarPreset12_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="16角" Click="BtnStarPreset16_Click"  Margin="0,0,4,4" Padding="8,4" />
+              </WrapPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 内凹比例 -->
+              <TextBlock Text="内凹比例（0=多边形）" Foreground="#FFF" FontSize="13" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="内凹" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="StarInnerRatioSlider" Width="220" Minimum="0" Maximum="0.9" TickFrequency="0.01" Value="0.42" />
+                <TextBlock Text="{Binding #StarInnerRatioSlider.Value, StringFormat='{}{0:0.00}'}"
+                           Width="44" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 圆角半径（16个点） -->
+              <TextBlock Text="圆角半径（外尖* / 内凹）" Foreground="#FFD080" FontSize="12" />
+              <UniformGrid x:Name="StarRadiiGrid" Rows="2" Columns="16" MinHeight="140">
+                <Slider x:Name="SR0"  Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR1"  Minimum="0" Maximum="60" Value="6" />
+                <Slider x:Name="SR2"  Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR3"  Minimum="0" Maximum="60" Value="6" />
+                <Slider x:Name="SR4"  Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR5"  Minimum="0" Maximum="60" Value="6" />
+                <Slider x:Name="SR6"  Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR7"  Minimum="0" Maximum="60" Value="6" />
+                <Slider x:Name="SR8"  Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR9"  Minimum="0" Maximum="60" Value="6" />
+                <Slider x:Name="SR10" Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR11" Minimum="0" Maximum="60" Value="6" />
+                <Slider x:Name="SR12" Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR13" Minimum="0" Maximum="60" Value="6" />
+                <Slider x:Name="SR14" Minimum="0" Maximum="60" Value="12" />
+                <Slider x:Name="SR15" Minimum="0" Maximum="60" Value="6" />
+              </UniformGrid>
+
+              <!-- 快捷按钮 -->
+              <WrapPanel>
+                <Button Content="全尖"     Click="BtnStarSharp_Click"       Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="外尖大圆" Click="BtnStarOuterRound_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="全圆角"   Click="BtnStarAllRound_Click"    Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="恢复默认" Click="BtnStarReset_Click"        Margin="0,0,4,4" Padding="8,4" />
+              </WrapPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 描边 -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="描边" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="StarStrokeSlider" Width="220" Minimum="0" Maximum="10" Value="2" />
+                <TextBlock Text="{Binding #StarStrokeSlider.Value, StringFormat='{}{0:0.0}'}"
+                           Width="44" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <TextBlock x:Name="StarInfoText" Foreground="#888" FontSize="11" TextWrapping="Wrap" />
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+
+        <!-- 预览 -->
+        <Border Grid.Column="1" Background="#252525" Margin="1,0,0,0">
+          <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Background="#1A1A1A" Padding="40">
+            <Panel x:Name="StarHost" Width="500" Height="460" />
+          </Border>
+        </Border>
+      </Grid>
+    </Border>
+
+    <!-- ============ 圆角多边形面板 ============ -->
+    <Border x:Name="PanelPolygon" Grid.Row="1" Background="#2D2D2D" IsVisible="False">
+      <Grid ColumnDefinitions="380,*">
+        <Border Grid.Column="0" Background="#1E1E1E" Padding="16" Margin="0,0,1,0">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+
+              <TextBlock Text="圆角多边形" Foreground="White" FontWeight="Bold" FontSize="16" />
+
+              <!-- 尺寸 -->
+              <TextBlock Text="尺寸" Foreground="#AAA" FontSize="12" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="宽" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="PolyWSlider" Width="220" Minimum="80" Maximum="500" Value="260" />
+                <TextBlock Text="{Binding #PolyWSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="44" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="高" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="PolyHSlider" Width="220" Minimum="80" Maximum="500" Value="260" />
+                <TextBlock Text="{Binding #PolyHSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="44" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 边数 -->
+              <TextBlock Text="边数（3-32）" Foreground="#FFF" FontWeight="SemiBold" FontSize="13" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <Slider x:Name="PolyPointSlider" Width="220" Minimum="3" Maximum="32"
+                        TickFrequency="1" IsSnapToTickEnabled="True" Value="3" />
+                <Border Background="#1A1A1A" Padding="10,4" MinWidth="40">
+                  <TextBlock x:Name="PolyPointText" Text="3" Foreground="#4FC3F7"
+                             FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" />
+                </Border>
+              </StackPanel>
+
+              <!-- 预设边数 -->
+              <WrapPanel>
+                <Button Content="三角形" Click="BtnPoly3_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="四边形" Click="BtnPoly4_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="五边形" Click="BtnPoly5_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="六边形" Click="BtnPoly6_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="八边形" Click="BtnPoly8_Click"  Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="十边形" Click="BtnPoly10_Click" Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="十二边形" Click="BtnPoly12_Click" Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="十六边形" Click="BtnPoly16_Click" Margin="0,0,4,4" Padding="8,4" />
+              </WrapPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 圆角半径（最多16个点） -->
+              <TextBlock Text="圆角半径（每个顶点）" Foreground="#4FC3F7" FontSize="12" />
+              <UniformGrid x:Name="PolyRadiiGrid" Rows="2" Columns="16" MinHeight="140">
+                <Slider x:Name="PR0"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR1"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR2"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR3"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR4"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR5"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR6"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR7"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR8"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR9"  Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR10" Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR11" Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR12" Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR13" Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR14" Minimum="0" Maximum="80" Value="0" />
+                <Slider x:Name="PR15" Minimum="0" Maximum="80" Value="0" />
+              </UniformGrid>
+
+              <WrapPanel>
+                <Button Content="全尖"     Click="BtnPolySharp_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="全圆角"   Click="BtnPolyAllRound_Click" Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="恢复默认" Click="BtnPolyReset_Click"    Margin="0,0,4,4" Padding="8,4" />
+              </WrapPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 描边 -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="描边" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="PolyStrokeSlider" Width="220" Minimum="0" Maximum="10" Value="2" />
+                <TextBlock Text="{Binding #PolyStrokeSlider.Value, StringFormat='{}{0:0.0}'}"
+                           Width="44" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <TextBlock x:Name="PolyInfoText" Foreground="#888" FontSize="11" TextWrapping="Wrap" />
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+
+        <Border Grid.Column="1" Background="#252525" Margin="1,0,0,0">
+          <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Background="#1A1A1A" Padding="40">
+            <Panel x:Name="PolyHost" Width="500" Height="460" />
+          </Border>
+        </Border>
+      </Grid>
+    </Border>
+
+    <!-- ============ 圆角矩形面板 ============ -->
+    <Border x:Name="PanelRect" Grid.Row="1" Background="#2D2D2D" IsVisible="False">
+      <Grid ColumnDefinitions="340,*">
+        <Border Grid.Column="0" Background="#1E1E1E" Padding="16" Margin="0,0,1,0">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+
+              <TextBlock Text="圆角矩形" Foreground="White" FontWeight="Bold" FontSize="16" />
+
+              <!-- 尺寸 -->
+              <TextBlock Text="尺寸" Foreground="#AAA" FontSize="12" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="宽" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="RectWSlider" Width="200" Minimum="80" Maximum="500" Value="280" />
+                <TextBlock Text="{Binding #RectWSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="40" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="高" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="RectHSlider" Width="200" Minimum="80" Maximum="500" Value="180" />
+                <TextBlock Text="{Binding #RectHSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="40" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 四角半径 -->
+              <TextBlock Text="四角半径" Foreground="#FFF" FontWeight="SemiBold" FontSize="13" />
+              <UniformGrid Rows="2" Columns="4">
+                <StackPanel Margin="2">
+                  <TextBlock Text="R0 左上" Foreground="#FFD080" FontSize="11" Margin="0,0,0,4" />
+                  <Slider x:Name="RR0" Minimum="0" Maximum="100" Value="20" />
+                </StackPanel>
+                <StackPanel Margin="2">
+                  <TextBlock Text="R1 右上" Foreground="#FFD080" FontSize="11" Margin="0,0,0,4" />
+                  <Slider x:Name="RR1" Minimum="0" Maximum="100" Value="20" />
+                </StackPanel>
+                <StackPanel Margin="2">
+                  <TextBlock Text="R2 右下" Foreground="#FFD080" FontSize="11" Margin="0,0,0,4" />
+                  <Slider x:Name="RR2" Minimum="0" Maximum="100" Value="20" />
+                </StackPanel>
+                <StackPanel Margin="2">
+                  <TextBlock Text="R3 左下" Foreground="#FFD080" FontSize="11" Margin="0,0,0,4" />
+                  <Slider x:Name="RR3" Minimum="0" Maximum="100" Value="20" />
+                </StackPanel>
+              </UniformGrid>
+
+              <!-- 快捷预设 -->
+              <WrapPanel>
+                <Button Content="全尖"      Click="BtnRectSharp_Click"       Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="全圆角"    Click="BtnRectAllRound_Click"    Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="仅上圆"    Click="BtnRectTopRound_Click"    Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="仅左圆"    Click="BtnRectLeftRound_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="对角圆"    Click="BtnRectDiagRound_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="恢复默认"  Click="BtnRectReset_Click"        Margin="0,0,4,4" Padding="8,4" />
+              </WrapPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 描边 -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="描边" Width="36" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="RectStrokeSlider" Width="200" Minimum="0" Maximum="10" Value="2" />
+                <TextBlock Text="{Binding #RectStrokeSlider.Value, StringFormat='{}{0:0.0}'}"
+                           Width="40" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <TextBlock x:Name="RectInfoText" Foreground="#888" FontSize="11" TextWrapping="Wrap" />
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+
+        <Border Grid.Column="1" Background="#252525" Margin="1,0,0,0">
+          <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Background="#1A1A1A" Padding="40">
+            <Panel x:Name="RectHost" Width="500" Height="460" />
+          </Border>
+        </Border>
+      </Grid>
+    </Border>
+
+    <!-- ============ 扇形/弧/椭圆面板 ============ -->
+    <Border x:Name="PanelSector" Grid.Row="1" Background="#2D2D2D" IsVisible="False">
+      <Grid ColumnDefinitions="380,*">
+        <Border Grid.Column="0" Background="#1E1E1E" Padding="16" Margin="0,0,1,0">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="10">
+
+              <TextBlock Text="扇形 / 弧 / 椭圆 / 圆环" Foreground="White" FontWeight="Bold" FontSize="16" />
+
+              <!-- 尺寸 -->
+              <TextBlock Text="尺寸" Foreground="#AAA" FontSize="12" />
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="宽" Width="40" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="SectorWSlider" Width="200" Minimum="60" Maximum="600" Value="320" />
+                <TextBlock Text="{Binding #SectorWSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="40" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="高" Width="40" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="SectorHSlider" Width="200" Minimum="60" Maximum="600" Value="220" />
+                <TextBlock Text="{Binding #SectorHSlider.Value, StringFormat='{}{0:0}'}"
+                           Width="40" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 角度参数 -->
+              <TextBlock Text="角度（0°=正右，CCW为正）" Foreground="#FFF" FontWeight="SemiBold" FontSize="13" />
+
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="起始角" Width="50" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="SectorStartSlider" Width="180" Minimum="-360" Maximum="720" Value="0" />
+                <TextBlock Text="{Binding #SectorStartSlider.Value, StringFormat='{}{0:0}°'}"
+                           Width="56" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="扫描角" Width="50" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="SectorSweepSlider" Width="180" Minimum="-360" Maximum="360" Value="360" />
+                <TextBlock Text="{Binding #SectorSweepSlider.Value, StringFormat='{}{0:0}°'}"
+                           Width="56" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="内圈占比" Width="50" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="SectorInnerSlider" Width="180" Minimum="0" Maximum="0.95" TickFrequency="0.01" Value="0" />
+                <TextBlock Text="{Binding #SectorInnerSlider.Value, StringFormat='{}{0:0.00}'}"
+                           Width="56" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="尖角圆角" Width="50" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="SectorCornerSlider" Width="180" Minimum="0" Maximum="64" TickFrequency="1" Value="0" />
+                <TextBlock Text="{Binding #SectorCornerSlider.Value, StringFormat='{}{0:0}px'}"
+                           Width="56" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <!-- 快捷预设 -->
+              <TextBlock Text="形态预设" Foreground="#AAA" FontSize="12" Margin="0,4,0,0" />
+              <WrapPanel>
+                <Button Content="椭圆"        Click="BtnSectorFull_Click"        Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="半圆"        Click="BtnSectorHalf_Click"        Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="扇形"        Click="BtnSectorPie_Click"         Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="弧"          Click="BtnSectorArc_Click"         Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="圆环"        Click="BtnSectorRing_Click"        Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="扇环"        Click="BtnSectorRingSector_Click"   Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="四分之一圆"  Click="BtnSectorQuarter_Click"      Margin="0,0,4,4" Padding="8,4" />
+                <Button Content="恢复默认"    Click="BtnSectorReset_Click"      Margin="0,0,4,4" Padding="8,4" />
+              </WrapPanel>
+
+              <Separator Background="#333" />
+
+              <!-- 描边 -->
+              <StackPanel Orientation="Horizontal" Spacing="8">
+                <TextBlock Text="描边" Width="40" Foreground="#CCC" VerticalAlignment="Center" />
+                <Slider x:Name="SectorStrokeSlider" Width="200" Minimum="0" Maximum="10" Value="2" />
+                <TextBlock Text="{Binding #SectorStrokeSlider.Value, StringFormat='{}{0:0.0}'}"
+                           Width="40" Foreground="#AAA" VerticalAlignment="Center" />
+              </StackPanel>
+
+              <TextBlock x:Name="SectorInfoText" Foreground="#888" FontSize="11" TextWrapping="Wrap" />
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+
+        <Border Grid.Column="1" Background="#252525" Margin="1,0,0,0">
+          <Border HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Background="#1A1A1A" Padding="40">
+            <Panel x:Name="SectorHost" Width="500" Height="460" />
+          </Border>
+        </Border>
+      </Grid>
+    </Border>
+
+    <!-- ============ Bezier 演示面板 ============ -->
+    <Border x:Name="PanelBezier" Grid.Row="1" Background="#2D2D2D" IsVisible="False">
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel x:Name="BezierContainer" Margin="20" Spacing="16" />
+      </ScrollViewer>
+    </Border>
+
+  </Grid>
+</UserControl>

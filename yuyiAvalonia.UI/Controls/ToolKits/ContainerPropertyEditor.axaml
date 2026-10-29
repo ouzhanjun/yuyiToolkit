@@ -1,0 +1,107 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="150"
+             x:Class="yuyiAvalonia.UI.Controls.ContainerPropertyEditor">
+
+    <StackPanel>
+        <!-- 背景颜色和透明度 -->
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                <TextBlock Text="背景颜色" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:ColorInput Text="{Binding BackgroundColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" FontSize="10" Height="30"/>
+            </StackPanel>
+            
+            <!-- 间距（可选） -->
+            <StackPanel Grid.Column="1" Margin="5,0,0,0" IsVisible="{Binding ShowSpacing, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <TextBlock Text="间距" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx Value="{Binding Spacing, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}" Minimum="0" Maximum="100" Height="30"/>
+            </StackPanel>
+
+        </Grid>
+        
+        <StackPanel Margin="5,0,0,10">
+            <TextBlock Text="透明度" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Slider Grid.Column="0"
+                        Value="{Binding Opacity, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Minimum="0" Maximum="1"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="0.1"
+                        Height="30"/>
+                <TextBlock Grid.Column="1"
+                            Text="{Binding Opacity, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:P0}}"
+                            FontSize="10"
+                            Foreground="{DynamicResource TextPrimary}"
+                            VerticalAlignment="Center"
+                            Margin="8,0,0,0"
+                            Width="40"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- 背景图 -->
+        <StackPanel Margin="0,0,0,10">
+            <TextBlock Text="背景图片" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                         x:Name="PART_ImageTextBox"
+                         Text="{Binding BackgroundImage, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         FontSize="10"
+                         Height="30"
+                         Watermark="图片路径..."/>
+                <Button Grid.Column="1"
+                        x:Name="PART_SelectImageButton"
+                        Content="选择"
+                        Margin="5,0,0,0"
+                        Padding="8,4"
+                        Click="OnSelectImageClick"
+                        FontSize="10"/>
+                <Button Grid.Column="2"
+                        Content="清除"
+                        Margin="5,0,0,0"
+                        Padding="8,4"
+                        Click="OnClearImageClick"
+                        FontSize="10"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- 布局属性行（可选） -->
+        <Grid IsVisible="{Binding ShowLayoutProperties, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 排列方向（可选） -->
+            <StackPanel Grid.Column="0" Margin="0,0,5,0" IsVisible="{Binding ShowOrientation, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <TextBlock Text="排列方向" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton Content="垂直"
+                                 IsChecked="{Binding IsVertical, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 Margin="0,0,8,0"
+                                 FontSize="10"/>
+                    <RadioButton Content="水平"
+                                 IsChecked="{Binding IsHorizontal, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 FontSize="10"/>
+                </StackPanel>
+            </StackPanel>
+
+        </Grid>
+    </StackPanel>
+</UserControl>

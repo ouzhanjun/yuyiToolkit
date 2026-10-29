@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:menu="using:yuyiAvalonia.Base.ViewModels.Menu"
+             xmlns:vm="using:yuyiAvaloniaUI.ViewModels"
+             x:DataType="vm:MainContainerTwoViewModel"
+             x:Class="yuyiAvaloniaUI.SideToolBar">
+    
+    <DockPanel>
+	    <ItemsControl ItemsSource="{Binding LeftTopToolBar}" DockPanel.Dock="Top">
+		    <ItemsControl.ItemTemplate>
+			    <DataTemplate>
+				    <Button Classes="SideToolbarButton" Classes.Active="{Binding IsActive}"
+                            Command="{Binding MenuClickCommand}"
+                            CommandParameter="{Binding}">
+						    <PathIcon Data="{Binding Icon}" Width="20" ToolTip.Tip="{Binding Text}"/>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+                        
+        <Border Background="{DynamicResource DividerColor}" Height="1" Width="32" DockPanel.Dock="Top" HorizontalAlignment="Center"></Border>
+
+	    <ItemsControl ItemsSource="{Binding LeftBottomToolBar}" DockPanel.Dock="Bottom">
+		    <ItemsControl.ItemTemplate>
+			    <DataTemplate>
+				    <Button Classes="SideToolbarButton" 
+                            Command="{Binding MenuClickCommand}"
+                            VerticalAlignment="Center"
+                            CommandParameter="{Binding}">
+						    <PathIcon Width="20" Data="{Binding Icon}" ToolTip.Tip="{Binding Text}"/>
+                            <Button.Flyout>
+                                <MenuFlyout ItemsSource="{Binding Items}" Placement="Right" Opened="MenuFlyout_Opened">
+                                    <MenuFlyout.ItemContainerTheme>
+                                        <ControlTheme
+                                            x:DataType="menu:MenuItemViewModel"
+                                            BasedOn="{StaticResource {x:Type MenuItem}}"
+                                            TargetType="MenuItem">
+                                            <Setter Property="Background" Value="{DynamicResource BgToolbar}" />
+                                            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}" />
+                                            <Setter Property="Padding" Value="12,8" />
+                                            <Setter Property="CornerRadius" Value="4" />
+                                            <Setter Property="Header" Value="{Binding Text}" />
+                                            <Setter Property="ItemsSource" Value="{Binding Items}" />
+                                            <Setter Property="Command" Value="{Binding MenuClickCommand}" />
+                                            <Setter Property="CommandParameter" Value="{Binding}" />
+                                        </ControlTheme>
+                                    </MenuFlyout.ItemContainerTheme>
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <Border></Border>
+    </DockPanel>
+</UserControl>

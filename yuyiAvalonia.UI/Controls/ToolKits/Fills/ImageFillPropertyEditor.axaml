@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="350" d:DesignHeight="350"
+             x:Class="yuyiAvalonia.UI.Controls.ImageFillPropertyEditor"
+             x:Name="Root">
+
+    <StackPanel>
+        
+        <!-- 图片设置 -->
+        <StackPanel>
+            <!-- 图片路径 -->
+            <StackPanel Margin="0,0,0,6">
+                <TextBlock Text="图片路径" FontSize="10" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                <controls:TextInput Text="{Binding $parent[UserControl].ImagePath, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    FontSize="11"
+                    AcceptsReturn="True"/>
+            </StackPanel>
+
+            <!-- 选择/清除按钮 -->
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                <Button Content="选择图片"
+                        Margin="0,0,5,0"
+                        Padding="10,4"
+                        Click="SelectImage_Click"
+                        FontSize="11"/>
+                <Button Content="清除"
+                        Padding="10,4"
+                        Click="ClearImage_Click"
+                        FontSize="11"/>
+            </StackPanel>
+
+            <!-- 拉伸模式 + 平铺模式 -->
+            <Grid Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                    <TextBlock Text="拉伸模式" FontSize="10" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                    <controls:EnumComboBox x:Name="PART_StretchComboBox"
+                        FontSize="10" Height="30"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                    <TextBlock Text="平铺模式" FontSize="10" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                    <controls:EnumComboBox x:Name="PART_TileModeComboBox"
+                        FontSize="10" Height="28"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 水平起点 + 垂直起点 -->
+            <Grid Margin="0,0,0,6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="0,0,4,0">
+                    <TextBlock Text="水平起点" FontSize="10" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                    <controls:EnumComboBox x:Name="PART_AlignmentXComboBox"
+                        FontSize="10" Height="30"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="4,0,0,0">
+                    <TextBlock Text="垂直起点" FontSize="10" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                    <controls:EnumComboBox x:Name="PART_AlignmentYComboBox"
+                        FontSize="10" Height="30"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- 透明度 -->
+            <StackPanel Margin="0,0,0,6">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Text="透明度" FontSize="10" Foreground="{DynamicResource TextSecondary}" Margin="0,0,10,0"/>
+                    <controls:NumericUpDownEx 
+                        Grid.Column="1"
+                        Title="透明度"
+                        Icon="{x:Static icon:Icon.Opacity}"
+                        Minimum="0"
+                        Maximum="100"
+                        Suffix="%"
+                        Step="1"
+                        FontSize="10"
+                        Value="{Binding OpacityPercent, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        VerticalAlignment="Center"/>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

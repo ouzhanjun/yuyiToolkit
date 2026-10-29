@@ -1,0 +1,154 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="600"
+             x:Class="yuyiAvalonia.UI.Controls.CardElementProperty">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel IsVisible="{Binding ElementProperty, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+            <TabControl Padding="5">
+
+                <!-- 基本 -->
+                <TabItem Header="基本">
+                    <StackPanel Margin="0,10,0,0">
+
+                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,10" Padding="8" CornerRadius="3">
+                            <local:IdPropertyEditor
+                                Id="{Binding ElementProperty.Id, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Icon="{x:Static icon:Icon.Identity}"
+                                Title="标识"
+                                ShowIdLabel="{Binding ElementProperty.ShowIdLabel, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Opacity="{Binding ElementProperty.Opacity, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                IsElementVisible="{Binding ElementProperty.IsVisible, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </Border>
+
+                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,10" Padding="8" CornerRadius="3">
+                            <StackPanel>
+                                <TextBlock Text="位置"
+                                        FontWeight="Bold"
+                                        FontSize="12"
+                                        Margin="0,0,0,5"
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource TextPrimary}"/>
+
+                                <local:BoundsEditor
+                                    Margin="0,0,0,5"
+                                    X="{Binding ElementProperty.X, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Y="{Binding ElementProperty.Y, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Width="{Binding ElementProperty.Width, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Height="{Binding ElementProperty.Height, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <local:RotationEditor
+                                        Grid.Column="0"
+                                        Rotation="{Binding ElementProperty.Rotation, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,10" Padding="8" CornerRadius="3">
+                            <StackPanel>
+                                <TextBlock Text="布局"
+                                        FontWeight="Bold"
+                                        FontSize="12"
+                                        Margin="0,0,0,5"
+                                        VerticalAlignment="Center"
+                                        Foreground="{DynamicResource TextPrimary}"/>
+
+                                <local:PositionEditor
+                                    Left="{Binding ElementProperty.Left, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Top="{Binding ElementProperty.Top, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Right="{Binding ElementProperty.Right, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Bottom="{Binding ElementProperty.Bottom, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    FixLeft="{Binding ElementProperty.FixLeft, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    FixTop="{Binding ElementProperty.FixTop, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    FixRight="{Binding ElementProperty.FixRight, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    FixBottom="{Binding ElementProperty.FixBottom, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Margin="0,4,0,0"/>
+
+                                <local:MarginEditor
+                                    ElementProperty="{Binding ElementProperty, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                                <local:PaddingEditor
+                                    ElementProperty="{Binding ElementProperty, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                                <local:AlignmentPropertyEditor
+                                    HorizontalAlignment="{Binding ElementProperty.HorizontalAlignment, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    VerticalAlignment="{Binding ElementProperty.VerticalAlignment, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </TabItem>
+
+                <!-- 外观 -->
+                <TabItem Header="外观">
+                    <StackPanel Margin="0,10,0,0">
+
+                        <!-- 填充 -->
+                        <TextBlock Text="填充"
+                                   FontWeight="Bold"
+                                   FontSize="13"
+                                   Margin="0,0,0,10"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,10" Padding="8" CornerRadius="3">
+                            <local:FillPropertyEditor
+                                Fill="{Binding ElementProperty.BackgroundFill, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </Border>
+
+                    </StackPanel>
+                </TabItem>
+
+                <TabItem Header="描边">
+                    <StackPanel Margin="0,10,0,0">
+                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,10" Padding="8" CornerRadius="3">
+                            <local:StrokeEditor x:Name="StrokeEditorCtrl"
+                                StrokeFills="{Binding ElementProperty.StrokeFills, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeDashOffset="{Binding ElementProperty.StrokeDashOffset, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeWidth="{Binding ElementProperty.StrokeWidth, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeType="{Binding ElementProperty.StrokeType, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeStyle="{Binding ElementProperty.StrokeStyle, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokePosition="{Binding ElementProperty.StrokePosition, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeEndpoint="{Binding ElementProperty.StrokeEndpoint, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeJoin="{Binding ElementProperty.StrokeJoin, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeMiterLimit="{Binding ElementProperty.StrokeMiterLimit, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeDashArrayString="{Binding ElementProperty.StrokeDashArrayString, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Opacity="{Binding ElementProperty.StrokeOpacity, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                StrokeColor="{Binding ElementProperty.StrokeColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- 阴影 -->
+                <TabItem Header="阴影">
+                    <StackPanel Margin="0,10,0,0">
+                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,10" Padding="8" CornerRadius="3">
+                            <local:ShadowEditor x:Name="ShadowEditorCtrl"/>
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- 填充 -->
+                <TabItem Header="填充">
+                    <StackPanel Margin="0,10,0,0">
+                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Margin="0,0,0,10" Padding="8" CornerRadius="3">
+                            <local:FillEditor x:Name="FillEditorCtrl"/>
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+
+            </TabControl>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

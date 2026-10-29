@@ -1,0 +1,194 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:local="using:yuyiAvalonia.Base.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="80" d:DesignHeight="28"
+             x:Class="yuyiAvalonia.Base.Controls.NumericSpecUpDownEx"
+             x:Name="This">
+    <Panel>
+        <!-- 角度选择器弹窗 -->
+        <Popup x:Name="AnglePickerPopup"
+               PlacementMode="AnchorAndGravity"
+               PlacementAnchor="BottomRight"
+               PlacementGravity="BottomLeft"
+               HorizontalOffset="0"
+               VerticalOffset="5"
+               IsLightDismissEnabled="True"
+               IsOpen="{Binding IsAnglePickerOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Border Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="6"
+                    HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <local:AnglePicker x:Name="PopupAnglePicker"
+                        Size="120"
+                        Angle="{Binding $parent[UserControl].Value, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        CircleBrush="{DynamicResource BorderColor}"
+                        LineBrush="{DynamicResource AccentColor}"
+                        HandleBrush="{DynamicResource AccentColor}"/>
+                    <TextBlock Text="拖动调整角度"
+                        FontSize="9"
+                        Foreground="{DynamicResource TextSecondary}"
+                        HorizontalAlignment="Center"
+                        Margin="0,6,0,0"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+        <!-- 角度选择器弹窗 -->
+        <Popup x:Name="SliderPickerPopup"
+            PlacementMode="AnchorAndGravity"
+            PlacementAnchor="BottomRight"
+            PlacementGravity="BottomLeft"
+            HorizontalOffset="0"
+            Height="32"
+            VerticalOffset="5"
+            IsLightDismissEnabled="True"
+            IsOpen="{Binding IsSliderPickerOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Border Background="{DynamicResource BgToolbar}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="3,-5,3,5"
+                HorizontalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <Slider Width="100"
+                        x:Name="PART_Slider"
+                        MinWidth="60"
+                        Height="30"
+                        Value="{Binding $parent[UserControl].Value, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        Minimum="{Binding $parent[UserControl].Minimum, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" 
+                        Maximum="{Binding $parent[UserControl].Maximum, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        TickPlacement="None"
+                        IsSnapToTickEnabled="True"
+                        TickFrequency="1">
+                    </Slider>
+                </StackPanel>
+            </Border>
+        </Popup>
+        
+        <common:PropertyBorder Background="{DynamicResource BgProperty}"
+            x:Name="PART_PropertyBorder"
+            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            ClipToBounds="True">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" x:Name="PART_GridContent">
+                <Border CornerRadius="3,0,0,3"
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    ClipToBounds="True"
+                    Padding="3,0">
+                    <Panel x:Name="PART_PanelIcon"
+                        Cursor="SizeWestEast"
+                        PointerPressed="PanelIcon_PointerPressed"
+                        PointerMoved="PanelIcon_PointerMoved"
+                        PointerReleased="PanelIcon_PointerReleased"
+                        Tag="False">
+                        <TextBlock x:Name="PART_Title"
+                            Foreground="{DynamicResource TextSecondary}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsVisible="False"
+                            FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        <PathIcon x:Name="PART_Icon"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextSecondary}"
+                            IsVisible="False"
+                            Width="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            Height="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                   
+                    </Panel>
+                </Border>
+
+                <Border Grid.Column="1" ClipToBounds="True" Padding="-3">
+                    <TextBox x:Name="PART_TextBox"
+                        Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Padding="4,3"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        MinWidth="30"/>
+                </Border>
+                
+                <Border Grid.Column="2" VerticalAlignment="Center" >
+			        <TextBlock FontSize="11" 
+                        Cursor="SizeWestEast"
+                        PointerPressed="PanelIcon_PointerPressed"
+                        PointerMoved="PanelIcon_PointerMoved"
+                        PointerReleased="PanelIcon_PointerReleased"
+                        Foreground="{DynamicResource TextSecondary}" 
+                        x:Name="PART_Suffix"
+                        Text="{Binding Suffix, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"/>
+                </Border>
+
+                <Grid 
+                    ColumnDefinitions="Auto,*"
+                    Grid.Column="3"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent">
+                    <Button 
+                        Grid.Column="1"
+                        x:Name="PART_Button"
+                        Background="Transparent"
+                        Cursor="Hand"
+                        Padding="3,0"
+                        Margin="0,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        CornerRadius="3"                    
+                        Width="20">
+                        <Panel>
+                            <PathIcon x:Name="PART_ButtonIcon"
+                                Data="{x:Static icon:Icon.Rotation}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Width="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Height="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </Panel>
+                    </Button>
+                    <Grid x:Name="PART_UpDownButtons" RowDefinitions="*,*" Grid.Column="0">
+                        <Button x:Name="PART_UpButton"
+                            Grid.Row="0" 
+                            Width="16"
+                            Content="▲"
+                            FontSize="6"
+                            Padding="2"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextSecondary}"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"/>
+                        <Button x:Name="PART_DownButton"
+                            Grid.Row="1" 
+                            Width="16"
+                            Content="▼"
+                            FontSize="6"
+                            Padding="2"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextSecondary}"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"/>
+                </Grid>
+            </Grid>
+            </Grid>
+        </common:PropertyBorder>
+    </Panel>
+</UserControl>

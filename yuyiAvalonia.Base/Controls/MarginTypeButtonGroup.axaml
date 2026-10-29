@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="28" d:DesignHeight="28"
+    x:Class="yuyiAvalonia.Base.Controls.MarginTypeButtonGroup"
+    x:Name="This">
+
+    <!-- 统一模式按钮 -->
+    <Border x:Name="PART_ButtonUniform"
+        Cursor="Hand"
+        Background="Transparent" 
+        CornerRadius="3"
+        ClipToBounds="True"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch"
+        Tapped="ButtonUniform_Click"
+        ToolTip.Tip="统一">
+		<PathIcon FontSize="11" Data="{Binding UniformIcon, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="14" Height="14" Foreground="{DynamicResource TextSecondary}"/>
+                
+    </Border>
+</UserControl>

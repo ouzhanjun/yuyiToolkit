@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="140" d:DesignHeight="28"
+             x:Class="yuyiAvalonia.Base.Controls.TextFormatButtonGroup"
+             x:Name="This">
+
+    <UserControl.Styles>
+        <Style Selector="ToggleButton.formatToggle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="MinWidth" Value="30"/>
+        </Style>
+        <Style Selector="ToggleButton.formatToggle:checked">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+        </Style>
+        <Style Selector="ToggleButton.formatToggle PathIcon">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimary}"/>
+        </Style>
+        <Style Selector="ToggleButton.formatToggle:checked PathIcon">
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Border Background="{DynamicResource BgInput}"
+            CornerRadius="{DynamicResource CornerRadius}"
+            Height="{Binding Height, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            BorderBrush="{DynamicResource BorderColor}"
+            BorderThickness="{DynamicResource BorderThickness}"
+            ClipToBounds="True">
+        <Grid ColumnDefinitions="Auto,1,Auto,1,Auto,1,Auto">
+            <ToggleButton x:Name="PART_Bold"
+                          Grid.Column="0"
+                          IsChecked="{Binding IsBold, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                          Classes="formatToggle">
+                <PathIcon Data="{x:Static icon:Icon.Bold}" Width="14"/>
+            </ToggleButton>
+            <Border Grid.Column="1" Width="1" Background="{DynamicResource BorderColor}" Margin="0,4"/>
+            <ToggleButton x:Name="PART_Italic"
+                          Grid.Column="2"
+                          IsChecked="{Binding IsItalic, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                          Classes="formatToggle">
+                <PathIcon Data="{x:Static icon:Icon.Italic}" Width="14"/>
+            </ToggleButton>
+            <Border Grid.Column="3" Width="1" Background="{DynamicResource BorderColor}" Margin="0,4"/>
+            <ToggleButton x:Name="PART_Underline"
+                          Grid.Column="4"
+                          IsChecked="{Binding IsUnderline, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                          Classes="formatToggle">
+                <PathIcon Data="{x:Static icon:Icon.Underline}" Width="14"/>
+            </ToggleButton>
+            <Border Grid.Column="5" Width="1" Background="{DynamicResource BorderColor}" Margin="0,4"/>
+            <ToggleButton x:Name="PART_StrikeThrough"
+                          Grid.Column="6"
+                          IsChecked="{Binding IsStrikethrough, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                          Classes="formatToggle">
+                <PathIcon Data="{x:Static icon:Icon.StrikeThrough}" Width="14"/>
+            </ToggleButton>
+        </Grid>
+    </Border>
+</UserControl>

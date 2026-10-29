@@ -1,0 +1,205 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
+             x:Class="yuyiAvalonia.UI.Controls.PositionEditor">
+
+    <StackPanel>
+        <Grid Margin="0,0,0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="相对位置" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+        <!--
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="锁定" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center"/>
+                <Button x:Name="DockButton" Grid.Column="1"
+                        Padding="4"
+                        Background="Transparent"
+                        Click="DockButton_Click"
+                        ToolTip.Tip="锁定位置">
+                    <PathIcon Data="{x:Static icon:Icon.Fixed}" Width="16" Height="16"/>
+                </Button>
+            </Grid>
+            -->
+        </Grid>
+        <!-- 数值编辑器 -->
+        <Grid Margin="0,0,0,5" ColumnDefinitions="*,*,30" RowDefinitions="*,*" ColumnSpacing="1" RowSpacing="1">
+            <StackPanel Grid.Column="0" Grid.Row="0" >
+                <controls:NumericLockUpDownEx
+                    CornerRadius="3,0,0,0"
+                    Title ="L"
+                    Icon="{x:Static icon:Icon.L_M}"
+                    NeedUpDown="False"
+                    Fixed="{Binding FixLeft, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Value="{Binding Left, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="-1" Maximum="2000" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="0" >
+                <controls:NumericLockUpDownEx
+                    CornerRadius="0,3,0,0"
+                    Title ="T"
+                    Icon="{x:Static icon:Icon.T_M}"
+                    NeedUpDown="False"
+                    Fixed="{Binding FixTop, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Value="{Binding Top, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="-1" Maximum="2000" Height="30"/>
+            </StackPanel>
+            
+            <Button x:Name="DockButton" Grid.Column="2" Grid.Row="0" 
+                    Width="28" Height="28"
+                    Foreground="{DynamicResource TextSecondary}"
+                    Background="Transparent"
+                    Click="DockButton_Click"
+                    ToolTip.Tip="锁定位置">
+                <PathIcon Data="{x:Static icon:Icon.Fixed}" Width="16" Height="16"/>
+            </Button>
+            <StackPanel Grid.Column="0" Grid.Row="1">
+                <controls:NumericLockUpDownEx
+                    CornerRadius="0,0,0,3"
+                    Title ="R"
+                    Icon="{x:Static icon:Icon.R_M}"
+                    NeedUpDown="False"
+                    Fixed="{Binding FixRight, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Value="{Binding Right, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="-1" Maximum="2000" Height="30"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1">
+                <controls:NumericLockUpDownEx
+                    CornerRadius="0,0,3,0"
+                    Title ="B"
+                    Icon="{x:Static icon:Icon.B_M}"
+                    NeedUpDown="False"
+                    Fixed="{Binding FixBottom, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Value="{Binding Bottom, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="-1" Maximum="2000" Height="30"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 9宫格固定边选择器弹窗 -->
+        <Popup x:Name="DockPopup"
+               PlacementMode="AnchorAndGravity"
+               PlacementTarget="{Binding #DockButton}"
+               PlacementAnchor="BottomRight"
+               PlacementGravity="BottomLeft"
+
+               HorizontalOffset="5"
+               VerticalOffset="0"
+               IsLightDismissEnabled="True"
+               IsOpen="{Binding IsDockPanelOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Border Background="{DynamicResource BgContent}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="10">
+                <StackPanel>
+                    <Grid Height="88" Width="88">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- 左上 - Left+Top -->
+                        <Button x:Name="BtnLeftTop" Grid.Row="0" Grid.Column="0" Tag="1"
+                                ToolTip.Tip="固定左上" Classes="dock-btn" Margin="1"
+                                IsVisible="False"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon Data="{x:Static icon:Icon.LeftTop}" Width="12" Height="12"/>
+                        </Button>
+
+                        <!-- 上中 - Top -->
+                        <Button x:Name="BtnTop" Grid.Row="0" Grid.Column="1" Tag="2"
+                                ToolTip.Tip="固定上边" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon x:Name="IconTop" Data="{x:Static icon:Icon.Lock}" Width="12" Height="12"/>
+                        </Button>
+
+                        <!-- 右上 - Top+Right -->
+                        <Button x:Name="BtnTopRight" Grid.Row="0" Grid.Column="2" Tag="3"
+                                IsVisible="False"
+                                ToolTip.Tip="固定右上" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon Data="{x:Static icon:Icon.TopRight}" Width="12" Height="12"/>
+                        </Button>
+
+                        <!-- 左中 - Left -->
+                        <Button x:Name="BtnLeft" Grid.Row="1" Grid.Column="0" Tag="4"
+                                ToolTip.Tip="固定左边" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon x:Name="IconLeft" Data="{x:Static icon:Icon.Lock}" Width="12" Height="12"/>
+                        </Button>
+
+                        <!-- 居中 - 都不固定 -->
+                        <Button x:Name="BtnCenter" Grid.Row="1" Grid.Column="1" Tag="5"
+                                IsEnabled="False"
+                                ToolTip.Tip="不固定" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <Border Width="16" Height="16" Background="{DynamicResource AccentColorBrush}" CornerRadius="2"/>
+                        </Button>
+
+                        <!-- 右中 - Right -->
+                        <Button x:Name="BtnRight" Grid.Row="1" Grid.Column="2" Tag="6"
+                                ToolTip.Tip="固定右边" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon x:Name="IconRight" Data="{x:Static icon:Icon.Lock}" Width="12" Height="12"/>
+                        </Button>
+
+                        <!-- 左下 - Left+Bottom -->
+                        <Button x:Name="BtnLeftBottom" Grid.Row="2" Grid.Column="0" Tag="7"
+                                IsVisible="False"
+                                ToolTip.Tip="固定左下" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon Data="{x:Static icon:Icon.LeftBottom}" Width="12" Height="12"/>
+                        </Button>
+
+                        <!-- 下中 - Bottom -->
+                        <Button x:Name="BtnBottom" Grid.Row="2" Grid.Column="1" Tag="8"
+                                ToolTip.Tip="固定下边" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon x:Name="IconBottom" Data="{x:Static icon:Icon.Lock}" Width="12" Height="12"/>
+                        </Button>
+
+                        <!-- 右下 - Right+Bottom -->
+                        <Button x:Name="BtnRightBottom" Grid.Row="2" Grid.Column="2" Tag="9"
+                                IsVisible="False"
+                                ToolTip.Tip="固定右下" Classes="dock-btn" Margin="1"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Click="OnDockClick">
+                            <PathIcon Data="{x:Static icon:Icon.RightBottom}" Width="12" Height="12"/>
+                        </Button>
+                    </Grid>
+                    <TextBlock Text="锁定位置"
+                               FontSize="9"
+                               Foreground="{DynamicResource TextSecondary}"
+                               HorizontalAlignment="Center"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+    </StackPanel>
+</UserControl>

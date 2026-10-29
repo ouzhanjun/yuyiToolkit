@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>颜色主题样式指南 - HTML预览</title>
+    <style>
+        :root {
+            --primary-color: #1890FF;
+            --primary-light: #40A9FF;
+            --primary-dark: #096DD9;
+            --secondary-color: #722ED1;
+            --success-color: #52C41A;
+            --warning-color: #FAAD14;
+            --error-color: #FF4D4F;
+            --info-color: #1890FF;
+            
+            --background-color: #FFFFFF;
+            --background-secondary: #FAFAFA;
+            --background-tertiary: #F5F5F5;
+            
+            --foreground-color: rgba(0, 0, 0, 0.85);
+            --foreground-secondary: rgba(0, 0, 0, 0.65);
+            --foreground-tertiary: rgba(0, 0, 0, 0.45);
+            
+            --border-color: #D9D9D9;
+            --border-secondary: #E8E8E8;
+            --border-light: #F0F0F0;
+            
+            --divider-color: #E8E8E8;
+            --placeholder-color: #BFBFBF;
+            --disabled-color: #D9D9D9;
+            --hover-color: #F5F5F5;
+            
+            --gray-1: #FFFFFF;
+            --gray-2: #FAFAFA;
+            --gray-3: #F5F5F5;
+            --gray-4: #E8E8E8;
+            --gray-5: #D9D9D9;
+            --gray-6: #BFBFBF;
+            --gray-7: #8C8C8C;
+            --gray-8: #595959;
+            --gray-9: #434343;
+            --gray-10: #262626;
+            --gray-11: #1F1F1F;
+            --gray-12: #141414;
+            --gray-13: #000000;
+            
+            --border-radius: 6px;
+            --border-radius-lg: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background-tertiary);
+            color: var(--foreground-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .section {
+            background: var(--background-color);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-secondary);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--foreground-color);
+        }
+        
+        .section-desc {
+            font-size: 12px;
+            color: var(--foreground-tertiary);
+            margin-bottom: 16px;
+        }
+        
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .color-item {
+            text-align: center;
+        }
+        
+        .color-swatch {
+            height: 40px;
+            border-radius: var(--border-radius);
+            margin-bottom: 8px;
+        }
+        
+        .color-name {
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .color-value {
+            font-size: 9px;
+            color: var(--foreground-tertiary);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-primary:active {
+            background: var(--primary-dark);
+        }
+        
+        .btn-primary:disabled {
+            background: var(--disabled-color);
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--foreground-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--hover-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-error {
+            background: var(--error-color);
+            color: white;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .btn-label {
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .input {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 14px;
+            width: 150px;
+            transition: all 0.2s;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        }
+        
+        .input:disabled {
+            background: var(--background-tertiary);
+            cursor: not-allowed;
+        }
+        
+        .input::placeholder {
+            color: var(--placeholder-color);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            margin-top: 12px;
+        }
+        
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .checkbox {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-color);
+        }
+        
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 22px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: 0.3s;
+            border-radius: 22px;
+        }
+        
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+        
+        .switch input:checked + .switch-slider {
+            background-color: var(--primary-color);
+        }
+        
+        .switch input:checked + .switch-slider:before {
+            transform: translateX(22px);
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        .card {
+            background: white;
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--border-radius-lg);
+            padding: 16px;
+            transition: all 0.2s;
+        }
+        
+        .card:hover {
+            border-color: var(--primary-light);
+        }
+        
+        .card.selected {
+            background: rgba(24, 144, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .card-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .card-desc {
+            font-size: 12px;
+            color: var(--foreground-tertiary);
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-secondary);
+            margin-top: 12px;
+        }
+        
+        .tab {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            color: var(--foreground-secondary);
+        }
+        
+        .tab:hover {
+            color: var(--primary-color);
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .tab.disabled {
+            color: var(--placeholder-color);
+            cursor: not-allowed;
+        }
+        
+        .list {
+            background: white;
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        
+        .list-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-secondary);
+            transition: all 0.2s;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .list-item:hover {
+            background: var(--hover-color);
+        }
+        
+        .list-item.selected {
+            background: rgba(24, 144, 255, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            background: white;
+            border: 1px solid var(--border-secondary);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        
+        .table th {
+            background: var(--background-secondary);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+        
+        .table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-secondary);
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .table tr:hover td {
+            background: var(--hover-color);
+        }
+        
+        .gray-scale {
+            display: flex;
+            gap: 2px;
+            margin-top: 12px;
+        }
+        
+        .gray-item {
+            width: 50px;
+            height: 40px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 4px;
+        }
+        
+        .gray-item:first-child {
+            border-radius: var(--border-radius) 0 0 var(--border-radius);
+        }
+        
+        .gray-item:last-child {
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        .gray-label {
+            font-size: 8px;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .code-block {
+            background: #1E1E1E;
+            border-radius: var(--border-radius);
+            padding: 12px;
+            margin-top: 16px;
+            overflow-x: auto;
+        }
+        
+        .code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 11px;
+            color: #D4D4D4;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+        
+        .code-comment {
+            color: #6A9955;
+        }
+        
+        .code-keyword {
+            color: #569CD6;
+        }
+        
+        .code-string {
+            color: #CE9178;
+        }
+        
+        .code-property {
+            color: #9CDCFE;
+        }
+        
+        .neutral-colors {
+            margin-top: 12px;
+        }
+        
+        .neutral-row {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        
+        .neutral-swatch {
+            width: 60px;
+            height: 30px;
+            border-radius: 4px;
+        }
+        
+        .neutral-labels {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .neutral-label {
+            width: 60px;
+            text-align: center;
+            font-size: 9px;
+            color: var(--foreground-tertiary);
+        }
+        
+        .foreground-demo {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+        
+        .foreground-item {
+            font-size: 12px;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--foreground-tertiary);
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">颜色主题样式指南</h1>
+        <p class="page-subtitle">本文档展示 ColorTheme 生成的样式效果及其调用方式 - HTML预览版</p>
+        
+        <!-- 1. 基础颜色 -->
+        <div class="section">
+            <h2 class="section-title">1. 基础颜色 (Semantic Colors)</h2>
+            <p class="section-desc">用于定义应用的核心语义色彩，支持主色、次色、成功、警告、错误、信息等状态色。</p>
+            
+            <div class="color-grid">
+                <div class="color-item">
+                    <div class="color-swatch" style="background: var(--primary-color);"></div>
+                    <div class="color-name">PrimaryColor</div>
+                    <div class="color-value">#1890FF</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: var(--secondary-color);"></div>
+                    <div class="color-name">SecondaryColor</div>
+                    <div class="color-value">#722ED1</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: var(--success-color);"></div>
+                    <div class="color-name">SuccessColor</div>
+                    <div class="color-value">#52C41A</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: var(--warning-color);"></div>
+                    <div class="color-name">WarningColor</div>
+                    <div class="color-value">#FAAD14</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: var(--error-color);"></div>
+                    <div class="color-name">ErrorColor</div>
+                    <div class="color-value">#FF4D4F</div>
+                </div>
+                <div class="color-item">
+                    <div class="color-swatch" style="background: var(--info-color);"></div>
+                    <div class="color-name">InfoColor</div>
+                    <div class="color-value">#1890FF</div>
+                </div>
+            </div>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 调用示例</span>
+<span class="code-keyword">var</span> theme = <span class="code-keyword">new</span> ColorTheme();
+theme.<span class="code-property">PrimaryColor</span> = <span class="code-string">"#1890FF"</span>;      <span class="code-comment">// 主色</span>
+theme.<span class="code-property">SecondaryColor</span> = <span class="code-string">"#722ED1"</span>;    <span class="code-comment">// 次要色</span>
+theme.<span class="code-property">SuccessColor</span> = <span class="code-string">"#52C41A"</span>;      <span class="code-comment">// 成功色</span>
+theme.<span class="code-property">WarningColor</span> = <span class="code-string">"#FAAD14"</span>;      <span class="code-comment">// 警告色</span>
+theme.<span class="code-property">ErrorColor</span> = <span class="code-string">"#FF4D4F"</span>;        <span class="code-comment">// 错误色</span>
+theme.<span class="code-property">InfoColor</span> = <span class="code-string">"#1890FF"</span>;         <span class="code-comment">// 信息色</span></code>
+            </div>
+        </div>
+        
+        <!-- 2. 按钮样式 -->
+        <div class="section">
+            <h2 class="section-title">2. 按钮样式 (FormElementStyle)</h2>
+            <p class="section-desc">支持主按钮、次要按钮、虚线按钮等多种类型，包含默认、悬停、按下、禁用四种状态。</p>
+            
+            <div class="btn-label">主按钮 (Primary Button)</div>
+            <div class="btn-group">
+                <button class="btn btn-primary">默认状态</button>
+                <button class="btn btn-primary" style="background: var(--primary-dark);">悬停状态</button>
+                <button class="btn btn-primary" style="background: #0050B3;">按下状态</button>
+                <button class="btn btn-primary" disabled>禁用状态</button>
+            </div>
+            
+            <div class="btn-label" style="margin-top: 16px;">次要按钮 (Secondary Button)</div>
+            <div class="btn-group">
+                <button class="btn btn-secondary">默认状态</button>
+                <button class="btn btn-secondary" style="background: var(--hover-color); border-color: var(--primary-color);">悬停状态</button>
+                <button class="btn btn-secondary" style="background: rgba(24, 144, 255, 0.1); border-color: var(--primary-color); color: var(--primary-color);">按下状态</button>
+                <button class="btn btn-secondary" style="background: var(--hover-color); color: var(--placeholder-color); border-color: var(--border-color);" disabled>禁用状态</button>
+            </div>
+            
+            <div class="btn-label" style="margin-top: 16px;">语义按钮 (Semantic Buttons)</div>
+            <div class="btn-group">
+                <button class="btn btn-primary">主要</button>
+                <button class="btn btn-secondary">次要</button>
+                <button class="btn btn-success">成功</button>
+                <button class="btn btn-warning">警告</button>
+                <button class="btn btn-error">错误</button>
+            </div>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 调用示例</span>
+<span class="code-keyword">var</span> formStyle = theme.<span class="code-property">FormElementStyle</span>;
+
+<span class="code-comment">// 主按钮样式</span>
+<span class="code-keyword">var</span> primaryBg = formStyle.<span class="code-property">PrimaryBackgroundColor</span>;        <span class="code-comment">// #1890FF</span>
+<span class="code-keyword">var</span> primaryHoverBg = formStyle.<span class="code-property">PrimaryHoverBackgroundColor</span>; <span class="code-comment">// #096DD9</span>
+<span class="code-keyword">var</span> primaryActiveBg = formStyle.<span class="code-property">PrimaryActiveBackgroundColor</span>; <span class="code-comment">// #0050B3</span>
+
+<span class="code-comment">// 次要按钮样式</span>
+<span class="code-keyword">var</span> secondaryBg = formStyle.<span class="code-property">SecondaryBackgroundColor</span>;    <span class="code-comment">// #FFFFFF</span>
+<span class="code-keyword">var</span> secondaryBorder = formStyle.<span class="code-property">SecondaryBorderColor</span>;    <span class="code-comment">// #D9D9D9</span></code>
+            </div>
+        </div>
+        
+        <!-- 3. 输入框样式 -->
+        <div class="section">
+            <h2 class="section-title">3. 输入框样式 (Input Style)</h2>
+            <p class="section-desc">包含文本输入框、下拉选择框、复选框、单选框、开关等表单元素。</p>
+            
+            <div class="btn-label">文本输入框</div>
+            <div class="input-group">
+                <input type="text" class="input" value="默认状态" />
+                <input type="text" class="input" value="聚焦状态" style="border-color: var(--primary-color);" />
+                <input type="text" class="input" value="禁用状态" disabled />
+            </div>
+            
+            <div class="btn-label" style="margin-top: 16px;">下拉选择框</div>
+            <div class="input-group">
+                <select class="input" style="width: 150px;">
+                    <option>选项一</option>
+                    <option>选项二</option>
+                    <option>选项三</option>
+                </select>
+            </div>
+            
+            <div class="btn-label" style="margin-top: 16px;">复选框 & 单选框 & 开关</div>
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" class="checkbox" checked />
+                    复选框
+                </label>
+                <label class="checkbox-label">
+                    <input type="radio" class="checkbox" name="radio" checked />
+                    单选框
+                </label>
+                <label class="switch">
+                    <input type="checkbox" checked />
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 调用示例</span>
+<span class="code-keyword">var</span> formStyle = theme.<span class="code-property">FormElementStyle</span>;
+
+<span class="code-comment">// 输入框样式</span>
+<span class="code-keyword">var</span> inputBg = formStyle.<span class="code-property">InputBackgroundColor</span>;           <span class="code-comment">// #FFFFFF</span>
+<span class="code-keyword">var</span> inputBorder = formStyle.<span class="code-property">InputBorderColor</span>;           <span class="code-comment">// #D9D9D9</span>
+<span class="code-keyword">var</span> inputFocusBorder = formStyle.<span class="code-property">InputFocusBorderColor</span>; <span class="code-comment">// #1890FF</span>
+<span class="code-keyword">var</span> inputPlaceholder = formStyle.<span class="code-property">InputPlaceholderColor</span>; <span class="code-comment">// #BFBFBF</span>
+
+<span class="code-comment">// 复选框样式</span>
+<span class="code-keyword">var</span> checkboxCheckedBg = formStyle.<span class="code-property">CheckboxCheckedBackgroundColor</span>; <span class="code-comment">// #1890FF</span>
+
+<span class="code-comment">// 开关样式</span>
+<span class="code-keyword">var</span> switchOnBg = formStyle.<span class="code-property">SwitchOnBackgroundColor</span>;     <span class="code-comment">// #1890FF</span>
+<span class="code-keyword">var</span> switchOffBg = formStyle.<span class="code-property">SwitchOffBackgroundColor</span>;   <span class="code-comment">// #D9D9D9</span></code>
+            </div>
+        </div>
+        
+        <!-- 4. 面板样式 -->
+        <div class="section">
+            <h2 class="section-title">4. 面板样式 (PagePanelStyle)</h2>
+            <p class="section-desc">用于页面容器、卡片、标签页、工具栏、侧边栏、列表、表格等容器元素。</p>
+            
+            <div class="btn-label">卡片面板</div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-title">默认面板</div>
+                    <div class="card-desc">这是面板内容示例</div>
+                </div>
+                <div class="card" style="border-color: var(--primary-light);">
+                    <div class="card-title">悬停面板</div>
+                    <div class="card-desc">边框变为主色</div>
+                </div>
+                <div class="card selected">
+                    <div class="card-title" style="color: var(--primary-color);">选中面板</div>
+                    <div class="card-desc" style="color: var(--primary-color);">背景和边框都变为主色</div>
+                </div>
+            </div>
+            
+            <div class="btn-label" style="margin-top: 16px;">标签页</div>
+            <div class="tabs">
+                <div class="tab active">选中标签</div>
+                <div class="tab">未选中标签</div>
+                <div class="tab disabled">禁用标签</div>
+            </div>
+            
+            <div class="btn-label" style="margin-top: 16px;">列表项</div>
+            <div class="list">
+                <div class="list-item">默认列表项</div>
+                <div class="list-item" style="background: var(--hover-color);">悬停列表项</div>
+                <div class="list-item selected">选中列表项</div>
+            </div>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 调用示例</span>
+<span class="code-keyword">var</span> pageStyle = theme.<span class="code-property">PagePanelStyle</span>;
+
+<span class="code-comment">// 面板样式</span>
+<span class="code-keyword">var</span> panelBg = pageStyle.<span class="code-property">PanelBackgroundColor</span>;           <span class="code-comment">// #FFFFFF</span>
+<span class="code-keyword">var</span> panelBorder = pageStyle.<span class="code-property">PanelBorderColor</span>;           <span class="code-comment">// #E8E8E8</span>
+<span class="code-keyword">var</span> panelHoverBorder = pageStyle.<span class="code-property">PanelHoverBorderColor</span>; <span class="code-comment">// #40A9FF</span>
+<span class="code-keyword">var</span> panelSelectedBg = pageStyle.<span class="code-property">PanelSelectedBackgroundColor</span>; <span class="code-comment">// #E6F7FF</span>
+
+<span class="code-comment">// 标签页样式</span>
+<span class="code-keyword">var</span> tabSelectedFg = pageStyle.<span class="code-property">TabSelectedForegroundColor</span>;     <span class="code-comment">// #1890FF</span>
+<span class="code-keyword">var</span> tabUnderline = pageStyle.<span class="code-property">TabSelectedUnderlineColor</span>;       <span class="code-comment">// #1890FF</span>
+
+<span class="code-comment">// 列表项样式</span>
+<span class="code-keyword">var</span> listItemHoverBg = pageStyle.<span class="code-property">ListItemHoverBackgroundColor</span>; <span class="code-comment">// #F5F5F5</span>
+<span class="code-keyword">var</span> listItemSelectedBg = pageStyle.<span class="code-property">ListItemSelectedBackgroundColor</span>; <span class="code-comment">// #E6F7FF</span></code>
+            </div>
+        </div>
+        
+        <!-- 5. 表格样式 -->
+        <div class="section">
+            <h2 class="section-title">5. 表格样式 (Table Style)</h2>
+            <p class="section-desc">用于数据表格的表头、单元格、行状态等样式定义。</p>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>年龄</th>
+                        <th>城市</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>张三</td>
+                        <td>25</td>
+                        <td>北京</td>
+                    </tr>
+                    <tr style="background: var(--hover-color);">
+                        <td>李四</td>
+                        <td>30</td>
+                        <td>上海</td>
+                    </tr>
+                    <tr style="background: rgba(24, 144, 255, 0.1);">
+                        <td style="font-weight: 600;">王五</td>
+                        <td style="font-weight: 600;">28</td>
+                        <td style="font-weight: 600;">广州</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 调用示例</span>
+<span class="code-keyword">var</span> pageStyle = theme.<span class="code-property">PagePanelStyle</span>;
+
+<span class="code-comment">// 表头样式</span>
+<span class="code-keyword">var</span> headerBg = pageStyle.<span class="code-property">TableHeaderBackgroundColor</span>;    <span class="code-comment">// #FAFAFA</span>
+<span class="code-keyword">var</span> headerFg = pageStyle.<span class="code-property">TableHeaderForegroundColor</span>;    <span class="code-comment">// #333333</span>
+<span class="code-keyword">var</span> headerBorder = pageStyle.<span class="code-property">TableHeaderBorderColor</span>;    <span class="code-comment">// #E8E8E8</span>
+
+<span class="code-comment">// 单元格样式</span>
+<span class="code-keyword">var</span> cellBg = pageStyle.<span class="code-property">TableCellBackgroundColor</span>;        <span class="code-comment">// #FFFFFF</span>
+<span class="code-keyword">var</span> cellBorder = pageStyle.<span class="code-property">TableCellBorderColor</span>;        <span class="code-comment">// #E8E8E8</span>
+
+<span class="code-comment">// 行状态样式</span>
+<span class="code-keyword">var</span> rowHoverBg = pageStyle.<span class="code-property">TableRowHoverBackgroundColor</span>;  <span class="code-comment">// #F5F5F5</span>
+<span class="code-keyword">var</span> rowSelectedBg = pageStyle.<span class="code-property">TableRowSelectedBackgroundColor</span>; <span class="code-comment">// #E6F7FF</span></code>
+            </div>
+        </div>
+        
+        <!-- 6. 中性色 -->
+        <div class="section">
+            <h2 class="section-title">6. 中性色 (Neutral Colors)</h2>
+            <p class="section-desc">用于背景、前景、边框、分割线等基础元素。</p>
+            
+            <div class="neutral-colors">
+                <div class="btn-label">背景色</div>
+                <div class="neutral-row">
+                    <div class="neutral-swatch" style="background: var(--background-color); border: 1px solid var(--border-secondary);"></div>
+                    <div class="neutral-swatch" style="background: var(--background-secondary);"></div>
+                    <div class="neutral-swatch" style="background: var(--background-tertiary);"></div>
+                    <div class="neutral-swatch" style="background: var(--gray-13);"></div>
+                </div>
+                <div class="neutral-labels">
+                    <div class="neutral-label">Background</div>
+                    <div class="neutral-label">Secondary</div>
+                    <div class="neutral-label">Tertiary</div>
+                    <div class="neutral-label">Dark</div>
+                </div>
+            </div>
+            
+            <div class="neutral-colors" style="margin-top: 16px;">
+                <div class="btn-label">前景色</div>
+                <div class="foreground-demo">
+                    <span class="foreground-item" style="color: var(--foreground-color);">主要文字</span>
+                    <span class="foreground-item" style="color: var(--foreground-secondary);">次要文字</span>
+                    <span class="foreground-item" style="color: var(--foreground-tertiary);">辅助文字</span>
+                    <span class="foreground-item" style="color: var(--placeholder-color);">禁用文字</span>
+                </div>
+            </div>
+            
+            <div class="neutral-colors" style="margin-top: 16px;">
+                <div class="btn-label">边框色</div>
+                <div class="neutral-row">
+                    <div class="neutral-swatch" style="background: var(--border-color);"></div>
+                    <div class="neutral-swatch" style="background: var(--border-secondary);"></div>
+                    <div class="neutral-swatch" style="background: var(--border-light);"></div>
+                    <div class="neutral-swatch" style="background: var(--gray-9);"></div>
+                </div>
+                <div class="neutral-labels">
+                    <div class="neutral-label">Default</div>
+                    <div class="neutral-label">Secondary</div>
+                    <div class="neutral-label">Light</div>
+                    <div class="neutral-label">Dark</div>
+                </div>
+            </div>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 调用示例</span>
+<span class="code-comment">// 背景色</span>
+theme.<span class="code-property">BackgroundColor</span> = <span class="code-string">"#FFFFFF"</span>;           <span class="code-comment">// 主背景</span>
+theme.<span class="code-property">BackgroundSecondary</span> = <span class="code-string">"#FAFAFA"</span>;       <span class="code-comment">// 次背景</span>
+theme.<span class="code-property">BackgroundTertiary</span> = <span class="code-string">"#F5F5F5"</span>;        <span class="code-comment">// 三级背景</span>
+
+<span class="code-comment">// 前景色</span>
+theme.<span class="code-property">ForegroundColor</span> = <span class="code-string">"rgba(0,0,0,0.85)"</span>;  <span class="code-comment">// 主要文字</span>
+theme.<span class="code-property">ForegroundSecondary</span> = <span class="code-string">"rgba(0,0,0,0.65)"</span>; <span class="code-comment">// 次要文字</span>
+theme.<span class="code-property">ForegroundTertiary</span> = <span class="code-string">"rgba(0,0,0,0.45)"</span>; <span class="code-comment">// 辅助文字</span>
+
+<span class="code-comment">// 边框色</span>
+theme.<span class="code-property">BorderColor</span> = <span class="code-string">"#D9D9D9"</span>;               <span class="code-comment">// 默认边框</span>
+theme.<span class="code-property">BorderSecondary</span> = <span class="code-string">"#E8E8E8"</span>;           <span class="code-comment">// 次边框</span>
+theme.<span class="code-property">BorderLight</span> = <span class="code-string">"#F0F0F0"</span>;               <span class="code-comment">// 浅边框</span>
+
+<span class="code-comment">// 其他</span>
+theme.<span class="code-property">DividerColor</span> = <span class="code-string">"#E8E8E8"</span>;              <span class="code-comment">// 分割线</span>
+theme.<span class="code-property">PlaceholderColor</span> = <span class="code-string">"#BFBFBF"</span>;          <span class="code-comment">// 占位符</span>
+theme.<span class="code-property">DisabledColor</span> = <span class="code-string">"#D9D9D9"</span>;             <span class="code-comment">// 禁用色</span></code>
+            </div>
+        </div>
+        
+        <!-- 7. 灰度色板 -->
+        <div class="section">
+            <h2 class="section-title">7. 灰度色板 (Gray Scale)</h2>
+            <p class="section-desc">从白到黑的13级灰度色板，用于各种中性色场景。</p>
+            
+            <div class="gray-scale">
+                <div class="gray-item" style="background: var(--gray-1); border: 1px solid var(--border-secondary);"><span class="gray-label" style="color: var(--gray-13); text-shadow: none;">Gray1</span></div>
+                <div class="gray-item" style="background: var(--gray-2);"><span class="gray-label" style="color: var(--gray-13); text-shadow: none;">Gray2</span></div>
+                <div class="gray-item" style="background: var(--gray-3);"><span class="gray-label" style="color: var(--gray-13); text-shadow: none;">Gray3</span></div>
+                <div class="gray-item" style="background: var(--gray-4);"><span class="gray-label" style="color: var(--gray-13); text-shadow: none;">Gray4</span></div>
+                <div class="gray-item" style="background: var(--gray-5);"><span class="gray-label" style="color: var(--gray-13); text-shadow: none;">Gray5</span></div>
+                <div class="gray-item" style="background: var(--gray-6);"><span class="gray-label" style="color: var(--gray-13); text-shadow: none;">Gray6</span></div>
+                <div class="gray-item" style="background: var(--gray-7);"><span class="gray-label">Gray7</span></div>
+                <div class="gray-item" style="background: var(--gray-8);"><span class="gray-label">Gray8</span></div>
+                <div class="gray-item" style="background: var(--gray-9);"><span class="gray-label">Gray9</span></div>
+                <div class="gray-item" style="background: var(--gray-10);"><span class="gray-label">Gray10</span></div>
+                <div class="gray-item" style="background: var(--gray-11);"><span class="gray-label">Gray11</span></div>
+                <div class="gray-item" style="background: var(--gray-12);"><span class="gray-label">Gray12</span></div>
+                <div class="gray-item" style="background: var(--gray-13);"><span class="gray-label">Gray13</span></div>
+            </div>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 调用示例</span>
+theme.<span class="code-property">Gray1</span> = <span class="code-string">"#FFFFFF"</span>;   <span class="code-comment">// 最亮</span>
+theme.<span class="code-property">Gray2</span> = <span class="code-string">"#FAFAFA"</span>;
+theme.<span class="code-property">Gray3</span> = <span class="code-string">"#F5F5F5"</span>;
+<span class="code-comment">// ...</span>
+theme.<span class="code-property">Gray13</span> = <span class="code-string">"#000000"</span>;  <span class="code-comment">// 最暗</span></code>
+            </div>
+        </div>
+        
+        <!-- 8. CSS 导出 -->
+        <div class="section">
+            <h2 class="section-title">8. CSS 导出</h2>
+            <p class="section-desc">主题支持导出为 CSS 变量、SCSS 变量、JSON 格式。</p>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 导出示例</span>
+<span class="code-keyword">var</span> theme = <span class="code-keyword">new</span> ColorTheme();
+
+<span class="code-comment">// 导出 CSS 变量</span>
+<span class="code-keyword">string</span> cssVariables = theme.<span class="code-property">ToCssVariables</span>();
+
+<span class="code-comment">// 导出完整 CSS</span>
+<span class="code-keyword">string</span> fullCss = theme.<span class="code-property">ToFullCss</span>();
+
+<span class="code-comment">// 导出按钮 CSS</span>
+<span class="code-keyword">string</span> buttonCss = theme.<span class="code-property">FormElementStyle</span>.<span class="code-property">ToButtonCss</span>(<span class="code-string">".btn-primary"</span>, ...);
+
+<span class="code-comment">/* CSS 变量输出示例:
+:root {
+  --primary-color: #1890FF;
+  --primary-light: #40A9FF;
+  --primary-dark: #096DD9;
+  --success-color: #52C41A;
+  --warning-color: #FAAD14;
+  --error-color: #FF4D4F;
+  --background-color: #FFFFFF;
+  --foreground-color: rgba(0, 0, 0, 0.85);
+  --border-color: #D9D9D9;
+}
+*/</span></code>
+            </div>
+        </div>
+        
+        <!-- 9. 自动同步机制 -->
+        <div class="section">
+            <h2 class="section-title">9. 自动同步机制</h2>
+            <p class="section-desc">当修改基础颜色时，相关组件样式会自动更新。</p>
+            
+            <div class="code-block">
+                <code class="code"><span class="code-comment">// C# 示例</span>
+<span class="code-keyword">var</span> theme = <span class="code-keyword">new</span> ColorTheme();
+
+<span class="code-comment">// 修改主色时，按钮样式自动更新</span>
+theme.<span class="code-property">PrimaryColor</span> = <span class="code-string">"#FF6600"</span>;
+<span class="code-comment">// 自动更新:</span>
+<span class="code-comment">// - FormElementStyle.PrimaryBackgroundColor = "#FF6600"</span>
+<span class="code-comment">// - FormElementStyle.PrimaryHoverBackgroundColor = 自动计算深色</span>
+<span class="code-comment">// - FormElementStyle.PrimaryForegroundColor = 自动计算对比色</span>
+
+<span class="code-comment">// 修改背景色时，面板样式自动更新</span>
+theme.<span class="code-property">BackgroundColor</span> = <span class="code-string">"#1F1F1F"</span>;
+<span class="code-comment">// 自动更新:</span>
+<span class="code-comment">// - PagePanelStyle.PanelBackgroundColor = "#1F1F1F"</span>
+<span class="code-comment">// - PagePanelStyle.TabBackgroundColor = "#1F1F1F"</span>
+<span class="code-comment">// - 自动判断是否为深色主题</span>
+
+<span class="code-comment">// 强制同步所有样式</span>
+theme.<span class="code-property">ForceSyncAllStyles</span>();
+
+<span class="code-comment">// 关闭自动同步</span>
+theme.<span class="code-property">AutoSyncStyles</span> = <span class="code-keyword">false</span>;</code>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

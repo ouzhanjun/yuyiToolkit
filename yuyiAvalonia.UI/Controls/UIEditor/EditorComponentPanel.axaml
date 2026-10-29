@@ -1,0 +1,117 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:models="using:yuyiAvalonia.UI.Models"
+             mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="600"
+             x:Class="yuyiAvalonia.UI.Controls.EditorComponentPanel">
+
+    <UserControl.Resources>
+        <conv:CategoryBackgroundColorConverter x:Key="CatBg"/>
+        <conv:CategoryForeColorConverter x:Key="CatForeColor"/>
+        <conv:ComponentTypeIconConverter x:Key="TypeIcon"/>
+        <conv:ShapeIconConverter x:Key="ShapeIcon"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ItemsControl ItemsSource="{Binding Source={x:Static models:ComponentGroupSource.Instance}, Path=Groups}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border>
+                        <DockPanel>
+                            <!-- 分组头部 -->
+                            <Border DockPanel.Dock="Top"
+                                    Background="{DynamicResource BgToolbar}"
+                                    Margin="0,0,0,5"
+                                    Padding="8,6"
+                                    Cursor="Hand"
+                                    Tapped="OnGroupHeaderTapped"
+                                    Tag="{Binding}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{Binding Name}"
+                                               FontSize="11"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextPrimary}"
+                                               VerticalAlignment="Center"/>
+                                    <Panel Grid.Column="1" Width="16" Height="16">
+                                        <!-- 展开箭头 -->
+                                        <Path Data="M4,2 L10,8 L4,14"
+                                              Stroke="{DynamicResource TextSecondary}"
+                                              StrokeThickness="1.5"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              IsVisible="{Binding IsExpanded}"/>
+                                        <!-- 折叠箭头 -->
+                                        <Path Data="M2,4 L8,10 L14,4"
+                                              Stroke="{DynamicResource TextSecondary}"
+                                              StrokeThickness="1.5"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              IsVisible="{Binding !IsExpanded}"/>
+                                    </Panel>
+                                </Grid>
+                            </Border>
+
+                            <!-- 组件列表 - 动画由代码控制 -->
+                            <StackPanel IsVisible="{Binding IsExpanded}"
+                                        x:Name="ContentPanel"
+                                        Opacity="1">
+                                <ItemsControl ItemsSource="{Binding Components}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="2"
+                                                    Padding="5"
+                                                    CornerRadius="6"
+                                                    Background="{DynamicResource BgToolbar}"
+                                                    BorderBrush="{DynamicResource BorderColor}"
+                                                    BorderThickness="1"
+                                                    Cursor="Hand"
+                                                    Width="60"
+                                                    Height="60"
+                                                    PointerPressed="OnComponentPressed"
+                                                    PointerMoved="OnComponentMoved"
+                                                    PointerReleased="OnComponentReleased">
+                                                <StackPanel HorizontalAlignment="Center">
+                                                    <Border Width="32"
+                                                            Height="32"
+                                                            CornerRadius="4"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Center">
+                                                        <Panel Width="26" Height="26">
+                                                            <Image Source="{Binding Icon, Converter={StaticResource ShapeIcon}}"
+                                                                   Stretch="Uniform"
+                                                                   IsVisible="{Binding Icon, Converter={x:Static conv:Converters.IsShapeIcon}}"/>
+                                                            <PathIcon Data="{Binding Type, Converter={StaticResource TypeIcon}}"
+                                                                      Width="22" Height="22"
+                                                                      Foreground="{DynamicResource TextPrimary}"
+                                                                      IsVisible="{Binding Icon, Converter={x:Static conv:Converters.IsNotShapeIcon}}"/>
+                                                        </Panel>
+                                                    </Border>
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontSize="10"
+                                                               Foreground="{DynamicResource TextPrimary}"
+                                                               HorizontalAlignment="Center"
+                                                               TextWrapping="NoWrap"
+                                                               TextAlignment="Center"
+                                                               Margin="0,4,0,0"
+                                                               ClipToBounds="True"
+                                                               MaxWidth="85"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</UserControl>

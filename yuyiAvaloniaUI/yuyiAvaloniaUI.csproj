@@ -1,0 +1,95 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Remove="Assets\Fonts\HarmonyOS_Sans_Regular.ttf" />
+    <AvaloniaResource Remove="Assets\i18n\en-US.json" />
+    <AvaloniaResource Remove="Assets\i18n\zh-CN.json" />
+    <AvaloniaResource Remove="Assets\images\file.png" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Remove="Assets\Fonts\HarmonyOS_Sans_SC_Regular.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.11" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.11" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.11" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.11" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.11">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageReference Include="System.Runtime.Serialization.Formatters" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\i18n\en-US.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\i18n\zh-CN.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Fonts\HarmonyOS_Sans_Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <AvaloniaResource Update="Assets\Fonts\HarmonyOS_Sans_SC_Regular.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Assets\ControlStyles.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+    <None Update="Assets\images\file.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <AvaloniaResource Update="Assets\Styles.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Assets\Themes.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\MainContainerTwoView.axaml.cs">
+      <DependentUpon>MainContainerTwoView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainContainerFourView.axaml.cs">
+      <DependentUpon>MainContainerFourView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UserControls\TopToolbar.axaml.cs">
+      <DependentUpon>TopToolbar.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Configs\menus.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="docs\Help.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\yuyiAvalonia.Base\yuyiAvalonia.Base.csproj" />
+    <ProjectReference Include="..\yuyiAvalonia.Java\yuyiAvalonia.Java.csproj" />
+    <ProjectReference Include="..\yuyiAvalonia.UI\yuyiAvalonia.UI.csproj" />
+  </ItemGroup>
+</Project>

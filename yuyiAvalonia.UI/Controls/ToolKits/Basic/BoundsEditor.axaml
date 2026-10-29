@@ -1,0 +1,95 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:helpers="using:yuyiAvalonia.Base.Helpers"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+             x:Class="yuyiAvalonia.UI.Controls.BoundsEditor">
+    <StackPanel>
+        
+        <TextBlock Text="位置" 
+            FontSize="11"
+            Foreground="{DynamicResource TextSecondary}" 
+            VerticalAlignment="Center" 
+            Margin="0,0,0,5"/>
+    
+        <Grid Margin="0,0,0,5" ColumnDefinitions="*,*,30" ColumnSpacing="1">
+            <StackPanel Grid.Column="0" Grid.Row="0" >
+                <controls:NumericUpDownEx  
+                    Title = "X"
+                    Value="{Binding X, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    NeedUpDown="True"
+                    CornerRadius="3,0,0,3"
+                    Minimum="0" Maximum="1000" Height="28"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="0" Margin="0,0,0,0">
+                <controls:NumericUpDownEx  
+                    Title ="Y"
+                    CornerRadius="0,3,3,0"
+                    Value="{Binding Y, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    NeedUpDown="True"
+                    Minimum="0" Maximum="1000" Height="28"/>
+            </StackPanel>
+        </Grid>
+        
+        <TextBlock Text="尺寸" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+    
+        <Grid ColumnDefinitions="*,*,30" ColumnSpacing="1" Margin="0,0,0,5">
+            <StackPanel Grid.Column="0" Grid.Row="1">
+                <controls:NumericUpDownEx  
+                    Title ="W"
+                    Value="{Binding Width, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    NeedUpDown="True"
+                    CornerRadius="3,0,0,3"
+                    Minimum="0" Maximum="1000" Height="28"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.Row="1" Margin="0,0,0,0">
+                <controls:NumericUpDownEx  
+                    Title ="H"
+                    CornerRadius="0,3,3,0"
+                    Value="{Binding Height, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    NeedUpDown="True"
+                    Minimum="0" Maximum="1000" Height="28"/>
+            </StackPanel>
+        </Grid>
+        
+        <Grid ColumnDefinitions="*,*,30" ColumnSpacing="1">
+
+            <StackPanel Grid.Column="0"  VerticalAlignment="Center">
+                <TextBlock Text="旋转角度" FontSize="11" Margin="0,0,0,5" Foreground="{DynamicResource TextSecondary}" />
+                <controls:NumericSpecUpDownEx
+                    x:Name="AnglePickerButton"
+                    CornerRadius="3,0,0,3"
+                    UseAngleButton="True"
+                    NeedUpDown="False"
+                    Height="28"
+                    Icon="{x:Static helpers:Icon.Rotation}"
+                    ButtonIcon="{x:Static helpers:Icon.RotationMove}"
+                    Value="{Binding Rotation, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="0" Maximum="360"/>
+            </StackPanel>
+            
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="透明度" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericSpecUpDownEx
+                    Title ="透明度"
+                    Icon="{x:Static helpers:Icon.Opacity}"
+                    ButtonIcon="{x:Static helpers:Icon.Slider}"
+                    UseSlider="True"
+                    CornerRadius="0,3,3,0"
+                    NeedUpDown="False"
+                    Height="28"
+                    Minimum="0"
+                    Maximum="100"
+                    Suffix="%"
+                    Step="1"
+                    FontSize="11"
+                    Value="{Binding OpacityPercent, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    VerticalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

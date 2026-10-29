@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="using:yuyiAvaloniaUI.ViewModels"
+             x:DataType="vm:MainWindowViewModel"
+             x:Class="yuyiAvaloniaUI.Statusbar">
+
+	<StackPanel Orientation="Horizontal">
+
+    <ItemsControl ItemsSource="{Binding StatusItems}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="11" Text="{Binding Text}" Margin="5,0" VerticalAlignment="Center" />
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    </StackPanel>
+</UserControl>

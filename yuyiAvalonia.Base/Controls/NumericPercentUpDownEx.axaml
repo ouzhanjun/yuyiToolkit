@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="80" d:DesignHeight="28"
+             x:Class="yuyiAvalonia.Base.Controls.NumericPercentUpDownEx"
+             x:Name="This">
+
+   <common:PropertyBorder Background="{DynamicResource BgProperty}"
+            x:Name="PART_PropertyBorder"
+            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            ClipToBounds="True">
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto" x:Name="PART_GridContent" ColumnSpacing="1">
+            <Border CornerRadius="3,0,0,3"
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                ClipToBounds="True"
+                Padding="3,0">
+                <Panel x:Name="PART_PanelIcon"
+                    Cursor="SizeWestEast"
+                    PointerPressed="PanelIcon_PointerPressed"
+                    PointerMoved="PanelIcon_PointerMoved"
+                    PointerReleased="PanelIcon_PointerReleased"
+                    Tag="False">
+                    <TextBlock x:Name="PART_Title"
+                        Foreground="{DynamicResource TextSecondary}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        IsVisible="False"
+                        FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    <PathIcon x:Name="PART_Icon"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource TextSecondary}"
+                        IsVisible="False"
+                        Width="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Height="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                   
+                </Panel>
+            </Border>
+            <Border Grid.Column="1" ClipToBounds="True" Padding="-3">
+                <TextBox x:Name="PART_TextBox"
+                    Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Padding="4,3"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Margin="-3,0"
+                    MinWidth="30"/>
+            </Border>
+            <Border Grid.Column="2" VerticalAlignment="Center" Padding="3,0">
+				<TextBlock FontSize="11"
+                    Cursor="SizeWestEast"
+                    PointerPressed="PanelIcon_PointerPressed"
+                    PointerMoved="PanelIcon_PointerMoved"
+                    PointerReleased="PanelIcon_PointerReleased"
+                    Foreground="{DynamicResource TextSecondary}" 
+                    Text="{Binding Suffix, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"/>
+            </Border>
+            <Grid RowDefinitions="*,*"
+                x:Name="PART_UpDownButtons"
+                Grid.Column="3"
+                Width="18"
+                VerticalAlignment="Stretch"
+                HorizontalAlignment="Stretch"
+                Background="Transparent">
+                <Button x:Name="PART_UpButton"
+                        Grid.Row="0"
+                        Content="▲"
+                        FontSize="6"
+                        Padding="2"
+                        Background="Transparent"
+                        Foreground="{DynamicResource TextSecondary}"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"/>
+                <Button x:Name="PART_DownButton"
+                        Grid.Row="1"
+                        Content="▼"
+                        FontSize="6"
+                        Padding="2"
+                        Background="Transparent"
+                        Foreground="{DynamicResource TextSecondary}"
+                        BorderThickness="0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"/>
+            </Grid>
+        </Grid>
+    </common:PropertyBorder>
+</UserControl>

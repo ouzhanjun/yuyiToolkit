@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:menu="using:yuyiAvalonia.Base.ViewModels.Menu"
+             xmlns:vm="using:yuyiAvaloniaUI.ViewModels"
+             xmlns:conv="using:yuyiAvaloniaUI.Converters"
+            xmlns:mm ="using:yuyiAvalonia.Base.Helpers"
+             x:DataType="vm:MainWindowViewModel"
+             x:Class="yuyiAvaloniaUI.TopToolbar">
+    <UserControl.Resources>
+        <conv:MenuItemVisibilityConverter x:Key="MenuItemVisibilityConverter"/>
+    </UserControl.Resources>
+    <WrapPanel>
+        <ItemsControl ItemsSource="{Binding TopToolbars}" DockPanel.Dock="Top">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+                    <Border x:Name="{Binding Name}"
+                        Padding="3,3,3,3"
+                        CornerRadius="3"
+                        Margin="0,0,3,0"
+                        Height="30"
+                        HorizontalAlignment="Left"
+                        Classes="subToolbar"
+                        Background="{DynamicResource BgContent}"
+                        VerticalAlignment="Top">
+                                        
+                        <ItemsControl ItemsSource="{Binding MenuItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+						        <DataTemplate>
+                                    <Panel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <!-- 分隔线 -->
+                                        <Border Width="1"
+                                                Height="16"
+                                                Margin="3"
+                                                Background="{DynamicResource DividerColor}">
+                                            <Border.IsVisible>
+                                                <MultiBinding Converter="{StaticResource MenuItemVisibilityConverter}" ConverterParameter="Separator">
+                                                    <Binding Path="IsSeparator"/>
+                                                    <Binding Path="IsComplex"/>
+                                                </MultiBinding>
+                                            </Border.IsVisible>
+                                        </Border>
+                                        <!-- 复杂控件（如缩放选择器） -->
+                                        <ContentControl>
+                                            <ContentControl.IsVisible>
+                                                <MultiBinding Converter="{StaticResource MenuItemVisibilityConverter}" ConverterParameter="Complex">
+                                                    <Binding Path="IsSeparator"/>
+                                                    <Binding Path="IsComplex"/>
+                                                </MultiBinding>
+                                            </ContentControl.IsVisible>
+                                            <ContentControl.Content>
+                                                <Binding Path="ComplexContent"/>
+                                            </ContentControl.Content>
+                                        </ContentControl>
+                                        <!-- 普通按钮 -->
+                                        <Button Width="22" ToolTip.Tip="{Binding Text}" Height="22" Background="Transparent" Padding="3" Command="{Binding MenuClickCommand}">
+                                            <Button.IsVisible>
+                                                <MultiBinding Converter="{StaticResource MenuItemVisibilityConverter}" ConverterParameter="Button">
+                                                    <Binding Path="IsSeparator"/>
+                                                    <Binding Path="IsComplex"/>
+                                                </MultiBinding>
+                                            </Button.IsVisible>
+                                            <PathIcon Data="{Binding Icon}" Width="16" Height="16"></PathIcon>
+                                        </Button>
+                                    </Panel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </WrapPanel>
+</UserControl>

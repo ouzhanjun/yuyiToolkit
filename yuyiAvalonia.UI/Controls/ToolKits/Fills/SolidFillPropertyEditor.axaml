@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
+             x:Class="yuyiAvalonia.UI.Controls.SolidFillPropertyEditor"
+             x:Name="Root">
+
+    <Grid RowDefinitions="*,*" RowSpacing="5">
+         <local:SolidColorPickerPanel
+            x:Name="PART_ColorPicker"
+            Grid.Row="1"
+            Color="{Binding PickerColor, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Alpha="{Binding PickerAlpha, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+    </Grid>
+
+</UserControl>

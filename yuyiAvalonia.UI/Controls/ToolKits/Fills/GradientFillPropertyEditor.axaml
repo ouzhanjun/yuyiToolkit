@@ -1,0 +1,279 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:controls="using:yuyiAvalonia.Base.Controls"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="420"
+             x:Class="yuyiAvalonia.UI.Controls.GradientFillPropertyEditor"
+             x:Name="Root">
+
+    <UserControl.Resources>
+        <local:GradientKindRadialConverter x:Key="GradientKindRadialConverter"/>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel>
+
+            <!-- 渐变类型选择 -->
+            <StackPanel Margin="0,0,0,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="渐变类型" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <Border 
+                        Grid.Column="1"
+                        CornerRadius="4"
+                        Background="{DynamicResource BgProperty}"
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="1"
+                        Height="30"
+                        ClipToBounds="True">
+                    <controls:EnumComboBox x:Name="PART_GradientKindComboBox"
+                              FontSize="11"
+                              Height="30"/>
+                    </Border>
+                </Grid>
+            </StackPanel>
+
+            <!-- 颜色停止点编辑器 -->
+            <StackPanel Margin="0,0,0,5">
+                <Grid Margin="0,0,0,4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" 
+                        Text="颜色停止点" FontSize="11" 
+                        Foreground="{DynamicResource TextSecondary}" 
+                        VerticalAlignment="Center"/>
+                    <Border Grid.Column="1" 
+                        ClipToBounds="True"
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Stretch"
+                        Margin="0">
+                        <Button Content="+"
+                            Tapped="AddStop_Click"
+                            FontSize="18"
+                            Margin="0"
+                            Padding="5,0"
+                            Foreground="{DynamicResource TextSecondary}" 
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Background="Transparent"
+                            ToolTip.Tip="添加停止点">
+                        </Button>
+                    </Border>
+                </Grid>
+
+                <!-- 渐变色带（标记点位于色带上方，尖角指向色带；
+                     单击色带空白处添加停止点，右键删除最近的停止点，双击标记删除该点） -->
+                <Panel Margin="0,0,0,5">
+                   
+                    <!-- 渐变色带 -->
+                    <Border Grid.Row="1"
+                            x:Name="PART_GradientBar"
+                            MinHeight="24"
+                            CornerRadius="4"
+                            ClipToBounds="True"
+                            PointerPressed="GradientBar_PointerPressed"
+                            Padding="4"
+                            BorderBrush="{DynamicResource BorderColor}">
+                        <local:GradientPreviewCanvas x:Name="PART_PreviewCanvas"/>
+                    </Border>
+                    <!-- 停止点标记控件层（独立行，底部尖角指向色带对应的位置） -->
+                    <Canvas Grid.Row="0"
+                            x:Name="PART_MarkersCanvas"
+                            ClipToBounds="False"/>
+
+                </Panel>
+
+                <!-- 停止点列表 -->
+                <ItemsControl x:Name="PART_StopList"
+                    ItemsSource="{Binding GradientStops, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{DynamicResource BorderColor}"
+                                BorderThickness="0"
+                                CornerRadius="3"
+                                Margin="0,0,0,3"
+                                ClipToBounds="True">
+                                <StackPanel>
+                                    <!-- 颜色选择 + 位置 + 删除 -->
+                                    <Grid ColumnSpacing="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <controls:NumericPercentUpDownEx
+                                            Grid.Column="0"
+                                            Title ="位置"
+                                            Icon="{x:Static icon:Icon.Position}"
+                                            Minimum="0"
+                                            Maximum="100"
+                                            Suffix="%"
+                                            Foreground="{DynamicResource TextSecondary}"
+                                            Step="1"
+                                            FontSize="11"
+                                            Height="30"
+                                            CornerRadius="3,0,0,3"
+                                            Tag="{Binding}"
+                                            NeedUpDown="False"
+                                            ValueChanged="NumericUpDownEx_ValueChanged"
+                                            ActualValue="{Binding Offset}"
+                                            VerticalAlignment="Center"/>
+                                        <!--
+                                        <Border Grid.Column="1"
+                                            Width="28" Height="28"
+                                            CornerRadius="4"
+                                            Background="{Binding Color, Converter={x:Static local:ColorToBrushConverter.Instance}}"
+                                            BorderBrush="{DynamicResource BorderColor}"
+                                            BorderThickness="1"
+                                            PointerPressed="Border_PointerPressed"
+                                            Tag="{Binding}"/>
+                                                 -->
+                                        <!--  
+                                        <controls:ColorInput Grid.Column="1" 
+                                            IsFrontColor="True" 
+                                            Text="{Binding Color}" 
+                                            CornerRadius="0"
+                                            TextChanged="ColorInput_TextChanged"
+                                            Tag="{Binding}"
+                                            Width="100" FontSize="11" Height="30"/>
+                                          -->
+                                        <local:SimpleColorInput Grid.Column="1" 
+                                            Text="{Binding Color}" 
+                                            IsFrontColor="True" 
+                                            CornerRadius="0"
+                                            Height="30"
+                                            TextChanged="ColorInput_TextChanged"
+                                            ColorPickerClicked="SimpleColorInput_ColorPickerClicked"
+                                            Tag="{Binding}"
+                                            Width="100" FontSize="11"/>
+                                      
+                                          <!--      -->
+
+                                        <controls:NumericPercentUpDownEx Grid.Column="2"
+                                            Title="透明度"
+                                            Icon="{x:Static icon:Icon.Opacity}"
+                                            Minimum="0"
+                                            Maximum="100"
+                                            Suffix="%"
+                                            CornerRadius="0"
+                                            Step="1"
+                                            FontSize="11"
+                                            Height="30"
+                                            NeedUpDown="False"
+                                            Foreground="{DynamicResource TextSecondary}"
+                                            ValueChanged="NumericUpDownEx_ValueChanged"
+                                            ActualValue="{Binding Opacity}"
+                                            VerticalAlignment="Center"/>
+
+                                        <Border CornerRadius="0,3,3,0" Grid.Column="3"
+                                            Height="30"
+                                            Background="{DynamicResource BgProperty}"
+                                            BorderBrush="{DynamicResource BorderColor}">
+                                            <TextBlock Grid.Column="3"
+                                                VerticalAlignment="Center"
+                                                HorizontalAlignment="Center"
+                                                Background="Transparent"
+                                                Text="×"
+                                                Tapped="RemoveStop_Click"
+                                                Cursor="Hand"
+                                                Tag="{Binding}"
+                                                Padding="4,0"
+                                                FontSize="14"
+                                                ToolTip.Tip="移除此停止点"/>
+
+                                        </Border>
+                                    </Grid>
+
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <Grid ColumnDefinitions="*,*" Margin="0,0,0,5" ColumnSpacing="1">
+                <!-- 整体透明度 -->
+                <StackPanel Grid.Column="0">
+                    <TextBlock VerticalAlignment="Center" Text="透明度" FontSize="11" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                    <controls:NumericUpDownEx Grid.Column="1"
+                        Title="透明度"
+                        Icon="{x:Static icon:Icon.Opacity}"
+                        Minimum="0"
+                        Maximum="100"
+                        Suffix="%"
+                        Step="1"
+                        FontSize="11"
+                        NeedUpDown="False"
+                        CornerRadius="3,0,0,3"
+                        Value="{Binding OpacityPercent, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock VerticalAlignment="Center" Text="透明度" FontSize="11" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,5"/>
+                    
+                <controls:NumericSpecUpDownEx
+                    x:Name="AnglePickerButton"
+                    CornerRadius="0,3,3,0"
+                    UseAngleButton="True"
+                    Icon="{x:Static icon:Icon.Rotation}"
+                    ButtonIcon="{x:Static icon:Icon.RotationMove}"
+                    Value="{Binding GradientAngle, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="0" Maximum="360"/>
+                </StackPanel>
+                <!-- 渐变角度（线性/角度渐变显示） 
+                <local:RotationEditor Grid.Column="1"
+                    CornerRadius="0,3,3,0"
+                    IsShowTitle="true"
+                    Rotation="{Binding GradientAngle, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"/>-->
+            </Grid>
+            <!-- 径向渐变中心点 -->
+            <StackPanel Margin="0,0,0,8" IsVisible="{Binding GradientKindEnum, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource GradientKindRadialConverter}}">
+                <TextBlock Text="中心点" FontSize="11" Foreground="{DynamicResource TextSecondary}" Margin="0,0,0,4"/>
+                <Grid ColumnSpacing="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="X (0-1)" FontSize="9" Foreground="{DynamicResource TextSecondary}"/>
+                        <Slider Value="{Binding RadialCenterX, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                Minimum="0" Maximum="1" Height="24"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Y (0-1)" FontSize="9" Foreground="{DynamicResource TextSecondary}"/>
+                        <Slider Value="{Binding RadialCenterY, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                                Minimum="0" Maximum="1" Height="24"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+            <Popup x:Name="PART_ColorPopup"
+                PlacementMode="AnchorAndGravity"
+                PlacementAnchor="Left"
+                PlacementGravity="Left"
+                IsLightDismissEnabled="True"
+                Width="250"
+                IsOpen="{Binding IsPickerOpen, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                <Border Background="{DynamicResource BgContent}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    x:Name="DragHost"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    BoxShadow="0 4 16 0 #60000000">
+                    <controls:ColorPickerPanel x:Name="PART_ColorPicker"/>
+                </Border>
+            </Popup>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

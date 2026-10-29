@@ -1,0 +1,148 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="400"
+             x:Class="yuyiAvalonia.UI.Controls.EditorTemplatePanel">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="4">
+            <!-- 模板分类标题 -->
+            <TextBlock Text="快速模板"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="{DynamicResource TextPrimary}"
+                       Margin="8,8,8,12"/>
+
+            <!-- 模板卡片 -->
+            <Border Margin="4"
+                    CornerRadius="8"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    Cursor="Hand"
+                    PointerPressed="OnLandingPagePressed">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 预览区域 -->
+                    <Border Grid.Column="0"
+                            Background="#E3F2FD"
+                            CornerRadius="6,0,0,6">
+                        <Panel>
+                            <TextBlock Text="LP"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="#1976D2"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Panel>
+                    </Border>
+
+                    <!-- 信息区域 -->
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Margin="10,8">
+                        <TextBlock Text="着陆页模板"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="适合营销推广页面"
+                                   FontSize="10"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Margin="4"
+                    CornerRadius="8"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    Cursor="Hand"
+                    PointerPressed="OnFormPressed">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 预览区域 -->
+                    <Border Grid.Column="0"
+                            Background="#FFF3E0"
+                            CornerRadius="6,0,0,6">
+                        <Panel>
+                            <TextBlock Text="FM"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="#F57C00"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Panel>
+                    </Border>
+
+                    <!-- 信息区域 -->
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Margin="10,8">
+                        <TextBlock Text="表单模板"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="适合数据收集页面"
+                                   FontSize="10"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Margin="4"
+                    CornerRadius="8"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="1"
+                    Cursor="Hand"
+                    PointerPressed="OnDashboardPressed">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 预览区域 -->
+                    <Border Grid.Column="0"
+                            Background="#E8F5E9"
+                            CornerRadius="6,0,0,6">
+                        <Panel>
+                            <TextBlock Text="DB"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="#388E3C"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Panel>
+                    </Border>
+
+                    <!-- 信息区域 -->
+                    <StackPanel Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Margin="10,8">
+                        <TextBlock Text="仪表盘模板"
+                                   FontSize="12"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"/>
+                        <TextBlock Text="适合数据展示页面"
+                                   FontSize="10"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

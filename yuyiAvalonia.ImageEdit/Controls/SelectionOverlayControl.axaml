@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://www.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
+             x:Class="yuyiAvalonia.ImageEdit.Controls.SelectionOverlayControl">
+    <Canvas x:Name="SelectionCanvas" Background="Transparent">
+        <!-- 选择框矩形 -->
+        <Border x:Name="SelectionBorder"
+                BorderBrush="#00AAFF"
+                BorderThickness="2"
+                Background="#2000AAFF"
+                IsHitTestVisible="False"
+                IsVisible="False"/>
+
+        <!-- 8 个调整手柄 -->
+        <Border x:Name="HandleTopLeft" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+        <Border x:Name="HandleTopRight" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+        <Border x:Name="HandleBottomLeft" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+        <Border x:Name="HandleBottomRight" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+        <Border x:Name="HandleTop" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+        <Border x:Name="HandleBottom" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+        <Border x:Name="HandleLeft" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+        <Border x:Name="HandleRight" Width="10" Height="10" Background="White"
+                BorderBrush="#00AAFF" BorderThickness="1" ZIndex="100" IsVisible="False"/>
+
+        <!-- 移动区域 -->
+        <Border x:Name="MoveArea" Background="Transparent" IsHitTestVisible="True" ZIndex="50" IsVisible="False"/>
+    </Canvas>
+</UserControl>

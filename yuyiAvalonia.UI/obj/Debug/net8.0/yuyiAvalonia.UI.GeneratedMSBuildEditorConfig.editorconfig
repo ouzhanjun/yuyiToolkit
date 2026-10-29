@@ -1,0 +1,138 @@
+is_global = true
+build_property.AvaloniaNameGeneratorIsEnabled = true
+build_property.AvaloniaNameGeneratorBehavior = InitializeComponent
+build_property.AvaloniaNameGeneratorDefaultFieldModifier = internal
+build_property.AvaloniaNameGeneratorFilterByPath = *
+build_property.AvaloniaNameGeneratorFilterByNamespace = *
+build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
+build_property.AvaloniaNameGeneratorAttachDevTools = true
+build_property.TargetFramework = net8.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = yuyiAvalonia.UI
+build_property.ProjectDir = D:\我的项目\yuyiToolkits\yuyiToolkitsV3.07\yuyiAvalonia.UI\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ButtonElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/CanvasElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/CanvasPageProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/CardElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/DashArrayDefinitionEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/GridElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ImageElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/PanelElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ShapeElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/StackPanelElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/TextElementProperty.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/AlignmentPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/BorderPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/BoundsEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/ContainerPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/FillCanvasPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/FillPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/GlowPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/GridDefinitionEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/GridDimensionMarker.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/IdPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/MarginEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/PositionEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/RotationEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/ShadowPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/ShapeShadowPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/StrokePropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/TextGradientEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/TextPropertyEditor.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/ToolKits/ZoomControl.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/UIEditor/EditorComponentPanel.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/UIEditor/EditorTemplatePanel.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/UIEditor/ElementTreeControl.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Controls/UIEditor/ElementTreeNode.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Views/FlowEditorView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Views/UIMainView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Views/UITabPagesView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[D:/我的项目/yuyiToolkits/yuyiToolkitsV3.07/yuyiAvalonia.UI/Views/WebEditorView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="using:yuyiAvalonia.UI.Converters"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             xmlns:baseControls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="100"
+             x:Class="yuyiAvalonia.UI.Controls.IdPropertyEditor">
+
+    <StackPanel>
+
+        <Grid ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,5">
+            <TextBlock Text="显示"
+                    Grid.Column="0"
+                    FontWeight="Bold"
+                    FontSize="12"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource TextPrimary}"/>
+
+            <baseControls:VisibilityToggle Grid.Column="2"
+                    HorizontalAlignment="Right"
+                    IsVisible="{Binding IsElementVisible, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    ToolTip="显示/隐藏元素"
+                    ToggleOnClick="True"
+                    VerticalAlignment="Center"/>
+        </Grid>
+        
+        <!-- 透明度数值输入 -->
+        <Grid ColumnDefinitions="*,3,30">
+            <StackPanel Grid.Column="0">
+                <Border Background="{DynamicResource BgProperty}"
+                    Height="28"
+                    CornerRadius="3"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    ClipToBounds="True"
+                    BorderThickness="0">
+                    <Grid x:Name="PART_GridContent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0"
+                            VerticalAlignment="Center"
+                            ClipToBounds="True"
+                            Padding="3,0">
+                            <Panel>
+                                <TextBlock x:Name="PART_Title"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsVisible="False"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                                <PathIcon x:Name="PART_Icon"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{DynamicResource TextSecondary}"
+                                    IsVisible="False"
+                                    Width="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    Height="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                            </Panel>
+                        </Border>
+                        <Border Background="{DynamicResource BgProperty}"
+                            Grid.Column="1"
+                            BorderBrush="{DynamicResource BorderColor}"
+                            Padding="-3"
+                            ClipToBounds="True">
+                            <TextBox x:Name="PART_IdTextBox"
+                                Text="{Binding Id, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Watermark="输入标识"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                HorizontalContentAlignment="Left"
+                                VerticalContentAlignment="Center"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                FontSize="11"
+                                Padding="4,3"/>
+                        </Border>
+                        <!-- 唯一标识 - 眼睛控件 -->
+                        <baseControls:VisibilityToggle Grid.Column="2"
+                            IsVisible="{Binding ShowIdLabel, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            ToolTip="显示或者隐藏元素ID"     
+                            ToggleOnClick="True"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</UserControl>

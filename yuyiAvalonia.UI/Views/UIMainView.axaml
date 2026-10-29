@@ -1,0 +1,683 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:yuyiAvalonia.UI.ViewModels"
+             xmlns:cv="using:yuyiAvalonia.UI.Converters"
+             xmlns:models="using:yuyiAvalonia.UI.Models"
+             mc:Ignorable="d" d:DesignWidth="1400" d:DesignHeight="900"
+             x:Class="yuyiAvalonia.UI.Views.UIMainView"
+             x:DataType="vm:UIMainViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.template-card">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.2"/>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.template-card:pointerover">
+            <Setter Property="Background" Value="{DynamicResource HoverColor}"/>
+        </Style>
+        <Style Selector="Border.template-card:pressed">
+            <Setter Property="Background" Value="{DynamicResource ActiveColor}"/>
+        </Style>
+
+        <Style Selector="Border.category-chip">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.15"/>
+                    <BrushTransition Property="BorderBrush" Duration="0:0:0.15"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Border.category-chip:pointerover">
+            <Setter Property="Background" Value="{DynamicResource HoverColor}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{DynamicResource BgBody}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 左侧原型设计面板 -->
+        <Border Grid.Column="0"
+                Background="{DynamicResource BgContent}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- 面板标题 -->
+                <Border Grid.Row="0"
+                        Background="{DynamicResource BgToolbar}"
+                        Padding="20,16"
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="0,0,0,1">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Border Width="32" Height="32" CornerRadius="6"
+                                Background="{DynamicResource AccentColor}">
+                            <TextBlock Text="&#xE70F;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="原型设计"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimary}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 快速操作区域 -->
+                <ScrollViewer Grid.Row="1"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              Padding="12">
+                    <StackPanel Spacing="12">
+                        <!-- 新建空白原型 -->
+                        <Border Background="{DynamicResource BgToolbar}"
+                                CornerRadius="8"
+                                Padding="16,12"
+                                Cursor="Hand"
+                                PointerPressed="OnNewPrototypePressed">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0"
+                                        Width="36" Height="36"
+                                        CornerRadius="8"
+                                        Background="{DynamicResource AccentColor}"
+                                        Margin="0,0,12,0">
+                                    <TextBlock Text="+"
+                                               FontSize="20"
+                                               FontWeight="Bold"
+                                               Foreground="White"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="新建空白原型"
+                                               FontSize="13"
+                                               FontWeight="Medium"
+                                               Foreground="{DynamicResource TextPrimary}"/>
+                                    <TextBlock Text="从空白画布开始设计"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource TextSecondary}"
+                                               Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2"
+                                           Text="&#xE76C;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- 模板分类标题 -->
+                        <TextBlock Text="快速模板"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="4,8,0,4"/>
+
+                        <!-- 快速模板列表 -->
+                        <ItemsControl ItemsSource="{Binding QuickTemplates}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="models:TemplateItem">
+                                    <Border Background="Transparent"
+                                            CornerRadius="6"
+                                            Padding="12,8"
+                                            Cursor="Hand"
+                                            PointerPressed="OnQuickTemplatePressed"
+                                            Tag="{Binding}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0"
+                                                    Width="32" Height="32"
+                                                    CornerRadius="6"
+                                                    Background="{Binding BackgroundColor}"
+                                                    Margin="0,0,10,0">
+                                                <TextBlock Text="{Binding Icon}"
+                                                           FontSize="14"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontSize="12"
+                                                           FontWeight="Medium"
+                                                           Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="{Binding Category}"
+                                                           FontSize="10"
+                                                           Foreground="{DynamicResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- 最近使用 -->
+                        <TextBlock Text="最近使用"
+                                   FontSize="12"
+                                   FontWeight="Medium"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Margin="4,12,0,4"/>
+
+                        <StackPanel IsVisible="{Binding !RecentTemplates.Count}">
+                            <TextBlock Text="暂无最近使用的原型"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,12,0,0"/>
+                        </StackPanel>
+
+                        <ItemsControl ItemsSource="{Binding RecentTemplates}" IsVisible="{Binding !!RecentTemplates.Count}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="Transparent"
+                                            CornerRadius="6"
+                                            Padding="8,6"
+                                            Cursor="Hand">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0"
+                                                    Width="28" Height="28"
+                                                    CornerRadius="4"
+                                                    Background="{DynamicResource HoverColor}"
+                                                    Margin="0,0,8,0">
+                                                <TextBlock Text="&#xE70F;"
+                                                           FontFamily="Segoe MDL2 Assets"
+                                                           FontSize="12"
+                                                           Foreground="{DynamicResource TextSecondary}"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontSize="11"
+                                                           Foreground="{DynamicResource TextPrimary}"/>
+                                                <TextBlock Text="{Binding LastModified}"
+                                                           FontSize="9"
+                                                           Foreground="{DynamicResource TextSecondary}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- 底部操作 -->
+                <Border Grid.Row="2"
+                        Background="{DynamicResource BgToolbar}"
+                        Padding="12,12"
+                        BorderBrush="{DynamicResource BorderColor}"
+                        BorderThickness="0,1,0,0">
+                    <Button Classes="Accent"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Padding="0,10"
+                            PointerPressed="OnOpenPrototypeDesign">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="&#xE70F;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text="打开原型设计"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- 右侧主内容区域 -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 顶部区域 - Logo 和 标题 -->
+            <Border Grid.Row="0"
+                    Background="{DynamicResource BgToolbar}"
+                    BorderBrush="{DynamicResource BorderColor}"
+                    BorderThickness="0,0,0,1"
+                    Padding="0,0,0,0">
+                <Grid Margin="20,18,20,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Logo 和品牌 -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Width="44" Height="44" CornerRadius="10"
+                                Background="{DynamicResource AccentColor}"
+                                Margin="0,0,16,0">
+                            <TextBlock Text="UI"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="UI Designer"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="{DynamicResource TextPrimary}"/>
+                            <TextBlock Text="专业界面设计工具"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- 搜索框 -->
+                    <Border Grid.Column="1"
+                            Background="{DynamicResource BgContent}"
+                            CornerRadius="10"
+                            MaxWidth="400"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,20,0"
+                            BorderBrush="{DynamicResource BorderColor}"
+                            BorderThickness="1">
+                        <Border.Styles>
+                            <Style Selector="Border:hover">
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+                            </Style>
+                            <Style Selector="Border:focus">
+                                <Setter Property="BorderBrush" Value="{DynamicResource AccentColor}"/>
+                            </Style>
+                        </Border.Styles>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="🔍"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       VerticalAlignment="Center"
+                                       Margin="16,0,12,0"/>
+                            <TextBox Grid.Column="1"
+                                     Text="{Binding SearchText}"
+                                     Watermark="搜索模板..."
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     VerticalAlignment="Center"
+                                     Padding="0,12"
+                                     FontSize="14"
+                                     Foreground="{DynamicResource TextPrimary}"
+                                     MinWidth="200"/>
+                            <Border Grid.Column="2"
+                                    Width="24"
+                                    Height="24"
+                                    CornerRadius="12"
+                                    Cursor="Hand"
+                                    IsVisible="{Binding SearchText, Converter={x:Static cv:InverseBoolConverter.Instance}}">
+                                <TextBlock Text="✕"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource TextSecondary}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- 右侧操作 -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Spacing="12">
+                        <Button Classes="IconButton" Padding="8" ToolTip.Tip="帮助文档">
+                            <TextBlock Text="&#xE897;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                       Foreground="{DynamicResource TextSecondary}"/>
+                        </Button>
+                        <Button Classes="IconButton" Padding="8" ToolTip.Tip="设置">
+                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="16"
+                                       Foreground="{DynamicResource TextSecondary}"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 分类筛选区域 -->
+            <Border Grid.Row="1"
+                    Background="{DynamicResource BgContent}"
+                    Padding="20,20,20,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 分类标签 -->
+                    <ScrollViewer Grid.Column="0"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding Categories}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Classes="category-chip"
+                                            Margin="0,0,8,0"
+                                            Padding="16,8"
+                                            CornerRadius="20"
+                                            Cursor="Hand"
+                                            Background="{Binding IsSelected, Converter={x:Static cv:CategoryBackgroundConverter.Instance}, ConverterParameter={Binding}}"
+                                            BorderBrush="{Binding IsSelected, Converter={x:Static cv:CategoryBorderConverter.Instance}, ConverterParameter={Binding}}"
+                                            BorderThickness="1"
+                                            PointerPressed="OnCategoryPressed">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="{Binding Icon}"
+                                                       FontSize="14"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,0,0,1"/>
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="13"
+                                                       FontWeight="{Binding IsSelected, Converter={x:Static cv:CategoryFontWeightConverter.Instance}}"
+                                                       Foreground="{Binding IsSelected, Converter={x:Static cv:CategoryForegroundConverter.Instance}, ConverterParameter={Binding}}"
+                                                       VerticalAlignment="Center"/>
+                                            <Border Background="{DynamicResource AccentColorLight}"
+                                                    CornerRadius="8"
+                                                    Width="16"
+                                                    Height="16"
+                                                    Padding="0"
+                                                    Margin="4,0,0,0"
+                                                    IsVisible="{Binding Count, Converter={x:Static cv:CountToVisibilityConverter.Instance}}">
+                                                <TextBlock Text="{Binding Count}"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="10"
+                                                           Foreground="{DynamicResource AccentColor}"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- 视图切换和统计 -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                        <TextBlock Foreground="{DynamicResource TextSecondary}" FontSize="12" VerticalAlignment="Center" Margin="0,0,16,0">
+                            <Run Text="共"/>
+                            <Run Text="{Binding FilteredTemplates.Count}" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimary}"/>
+                            <Run Text="个模板"/>
+                        </TextBlock>
+                        <Border Background="{DynamicResource BgToolbar}"
+                                CornerRadius="6"
+                                Padding="4">
+                            <StackPanel Orientation="Horizontal" Spacing="2">
+                                <RadioButton Classes="ViewToggle" IsChecked="{Binding IsGridView}" GroupName="ViewMode" Padding="8,6" ToolTip.Tip="网格视图">
+                                    <TextBlock Text="&#xE8A9;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource TextSecondary}"/>
+                                </RadioButton>
+                                <RadioButton Classes="ViewToggle" IsChecked="{Binding IsListView}" GroupName="ViewMode" Padding="8,6" ToolTip.Tip="列表视图">
+                                    <TextBlock Text="&#xE8BA;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource TextSecondary}"/>
+                                </RadioButton>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 主内容区域 - 模板网格 -->
+            <ScrollViewer Grid.Row="2"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          Padding="0,0,0,0">
+                <StackPanel HorizontalAlignment="Center" Margin="20">
+                    <!-- 网格视图 -->
+                    <ItemsControl ItemsSource="{Binding FilteredTemplates}"
+                                  IsVisible="{Binding IsGridView}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="models:TemplateItem">
+                                <Border Classes="template-card"
+                                        Width="300"
+                                        Margin="0,0,10,10"
+                                        CornerRadius="10"
+                                        Cursor="Hand"
+                                        Background="{DynamicResource BgContent}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1"
+                                        PointerPressed="OnTemplatePressed"
+                                        Tag="{Binding Id}"
+                                        BoxShadow="0 2 8 0 #000000">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- 卡片头部 - 图标区域 -->
+                                        <Border Grid.Row="0"
+                                                Height="140"
+                                                CornerRadius="12,12,0,0"
+                                                Background="{Binding BackgroundColor}">
+                                            <Panel>
+                                                <Border CornerRadius="12,12,0,0">
+                                                    <Border.Background>
+                                                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                            <GradientStop Offset="0" Color="#40000000"/>
+                                                            <GradientStop Offset="1" Color="#00000000"/>
+                                                        </LinearGradientBrush>
+                                                    </Border.Background>
+                                                </Border>
+
+                                                <Border Width="64"
+                                                        Height="64"
+                                                        CornerRadius="16"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        Background="#30FFFFFF">
+                                                    <TextBlock Text="{Binding Icon}"
+                                                               FontSize="32"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="White"
+                                                               FontWeight="Bold"
+                                                               LineHeight="40"/>
+                                                </Border>
+
+                                                <Border HorizontalAlignment="Right"
+                                                        VerticalAlignment="Top"
+                                                        Margin="12,12,12,0"
+                                                        Padding="10,4"
+                                                        CornerRadius="12"
+                                                        Background="#50FFFFFF">
+                                                    <TextBlock Text="{Binding Category}"
+                                                               FontSize="11"
+                                                               Foreground="White"
+                                                               FontWeight="Medium"/>
+                                                </Border>
+                                            </Panel>
+                                        </Border>
+
+                                        <!-- 卡片内容 -->
+                                        <StackPanel Grid.Row="1" Margin="20,16,20,20">
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="{DynamicResource TextPrimary}"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondary}"
+                                                       TextWrapping="Wrap"
+                                                       MaxHeight="40"
+                                                       Margin="0,6,0,12"/>
+
+                                            <Border Background="{DynamicResource BgToolbar}"
+                                                    CornerRadius="6"
+                                                    Padding="12,8"
+                                                    Cursor="Hand"
+                                                    PointerPressed="OnQuickCreatePressed"
+                                                    Tag="{Binding}">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
+                                                    <TextBlock Text="&#xE710;"
+                                                               FontFamily="Segoe MDL2 Assets"
+                                                               FontSize="12"
+                                                               Foreground="{DynamicResource AccentColor}"
+                                                               VerticalAlignment="Center"/>
+                                                    <TextBlock Text="快速创建"
+                                                               FontSize="12"
+                                                               FontWeight="Medium"
+                                                               Foreground="{DynamicResource AccentColor}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- 列表视图 -->
+                    <ItemsControl ItemsSource="{Binding FilteredTemplates}"
+                                  IsVisible="{Binding IsListView}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="models:TemplateItem">
+                                <Border Classes="template-card"
+                                        Margin="0,0,0,12"
+                                        Padding="20,16"
+                                        CornerRadius="10"
+                                        Cursor="Hand"
+                                        Background="{DynamicResource BgContent}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1"
+                                        PointerPressed="OnTemplatePressed"
+                                        Tag="{Binding Id}"
+                                        BoxShadow="0 1 4 0 #10000000">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Grid.Column="0"
+                                                Width="56"
+                                                Height="56"
+                                                CornerRadius="12"
+                                                Background="{Binding BackgroundColor}"
+                                                Margin="0,0,16,0">
+                                            <TextBlock Text="{Binding Icon}"
+                                                       FontSize="24"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="White"
+                                                       FontWeight="Bold"
+                                                       LineHeight="32"/>
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                <TextBlock Text="{Binding Name}"
+                                                           FontSize="15"
+                                                           FontWeight="Bold"
+                                                           Foreground="{DynamicResource TextPrimary}"/>
+                                                <Border Background="{DynamicResource AccentColorLight}"
+                                                        CornerRadius="4"
+                                                        Padding="8,2">
+                                                    <TextBlock Text="{Binding Category}"
+                                                               FontSize="10"
+                                                               Foreground="{DynamicResource AccentColor}"/>
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Description}"
+                                                       FontSize="12"
+                                                       Foreground="{DynamicResource TextSecondary}"
+                                                       Margin="0,4,0,0"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="2"
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center"
+                                                    Spacing="8">
+                                            <Button Content="编辑"
+                                                    Padding="16,8"
+                                                    Classes="Accent"
+                                                    Tag="{Binding Id}"
+                                                    PointerPressed="OnQuickCreatePressed"/>
+                                            <Button Content="详情"
+                                                    Padding="16,8"
+                                                    Classes="Outline"
+                                                    Tag="{Binding Id}"
+                                                    PointerPressed="OnTemplatePressed"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <!-- 空状态 -->
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsVisible="{Binding !FilteredTemplates.Count}"
+                                Margin="0,80,0,0">
+                        <TextBlock Text="&#xE721;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="48"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Opacity="0.3"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="未找到匹配的模板"
+                                   FontSize="16"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,16,0,4"/>
+                        <TextBlock Text="请尝试其他关键词或分类"
+                                   FontSize="12"
+                                   Foreground="{DynamicResource TextSecondary}"
+                                   Opacity="0.7"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

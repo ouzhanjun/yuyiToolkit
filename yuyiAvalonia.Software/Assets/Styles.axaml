@@ -1,0 +1,73 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+        </Border>
+    </Design.PreviewWith>
+
+    <!-- 软件列表项样式 -->
+    <Style Selector="Border.SoftwareListItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.SoftwareListItem:pointerover">
+        <Setter Property="Background" Value="#0A000000"/>
+    </Style>
+
+    <Style Selector="Border.SoftwareListItem:selected">
+        <Setter Property="Background" Value="#1A1890FF"/>
+    </Style>
+
+    <!-- 软件卡片样式 -->
+    <Style Selector="Border.SoftwareCard">
+        <Setter Property="Background" Value="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16"/>
+        <Setter Property="Margin" Value="8"/>
+    </Style>
+
+    <!-- 分类标签样式 -->
+    <Style Selector="Border.CategoryTag">
+        <Setter Property="Background" Value="#1A1890FF"/>
+        <Setter Property="CornerRadius" Value="4"/>
+        <Setter Property="Padding" Value="8,4"/>
+    </Style>
+
+    <Style Selector="TextBlock.CategoryTag">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+    </Style>
+
+    <!-- 状态指示器 -->
+    <Style Selector="Ellipse.StatusIndicator">
+        <Setter Property="Width" Value="8"/>
+        <Setter Property="Height" Value="8"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style Selector="Ellipse.StatusIndicator.Downloaded">
+        <Setter Property="Fill" Value="#52C41A"/>
+    </Style>
+
+    <Style Selector="Ellipse.StatusIndicator.NotDownloaded">
+        <Setter Property="Fill" Value="#8C8C8C"/>
+    </Style>
+
+    <Style Selector="Ellipse.StatusIndicator.Downloading">
+        <Setter Property="Fill" Value="#1890FF"/>
+    </Style>
+
+    <Style Selector="Ellipse.StatusIndicator.Error">
+        <Setter Property="Fill" Value="#FF4D4F"/>
+    </Style>
+</Styles>

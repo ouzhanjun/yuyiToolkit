@@ -1,0 +1,199 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+             xmlns:helpers="using:yuyiAvalonia.Base.Helpers"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="700"
+             x:Class="yuyiAvalonia.UI.Controls.RoundedPolygonShapeEditor">
+
+    <StackPanel Margin="0,0,0,5" Spacing="5">
+
+        <TextBlock Text="多边形"
+                FontWeight="Bold"
+                FontSize="12"
+                Margin="0,0,0,5"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Foreground="{DynamicResource TextPrimary}"/>
+
+        <!-- 第一行：顶点数 + 起始角度 -->
+        <Grid ColumnDefinitions="*,*,30" ColumnSpacing="1">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="顶点数" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericUpDownEx
+                    x:Name="PART_PointCount"
+                    Icon="{x:Static icon:Icon.Star}"
+                    Title="顶点数"
+                    CornerRadius="3,0,0,3"
+                    Value="{Binding PointCount, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="3" Maximum="32" Height="28"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="起始角度" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <controls:NumericSpecUpDownEx
+                    x:Name="PART_RotDeg"
+                    Icon="{x:Static icon:Icon.StartAngle}"
+                    Title="起始角度"
+                    Suffix="°"
+                    UseSlider="True"
+                    ButtonIcon="{x:Static helpers:Icon.Slider}"
+                    NeedUpDown="False"
+                    CornerRadius="0,3,3,0"
+                    Value="{Binding RotDeg, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    Minimum="-180" Maximum="180" Height="28"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- 默认圆角 -->
+        <Grid ColumnDefinitions="*,30" ColumnSpacing="1">
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="默认圆角" FontSize="11" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                <Grid ColumnDefinitions="80,*" ColumnSpacing="1">
+                    <controls:NumericUpDownEx
+                        x:Name="PART_UnifiedCornerRadius"
+                        Grid.Column="0"
+                        Title="圆角"
+                        Icon="{x:Static icon:Icon.CornerRadius}"
+                        CornerRadius="3,0,0,3"
+                        Step="1"
+                        Value="{Binding CornerRadius, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Minimum="0" Maximum="60" Height="28"/>
+                    <common:PropertyBorder Grid.Column="1"
+                        x:Name="PART_PropertyBorder"
+                        Background="{DynamicResource BgProperty}"
+                        CornerRadius="0,3,3,0"
+                        Height="28"
+                        Padding="3,0,3,0"
+                        ClipToBounds="True">
+                        <Slider x:Name="PART_Slider_UnifiedCornerRadius"
+                            Margin="0,-9,0,0"
+                            Minimum="0"
+                            Maximum="60"
+                            TickFrequency="1"
+                            TickPlacement="None"
+                            IsSnapToTickEnabled="True"
+                            Value="{Binding CornerRadius, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            VerticalAlignment="Center"/>
+                    </common:PropertyBorder>
+                </Grid>
+            </StackPanel>
+            <StackPanel Grid.Column="1">
+                <TextBlock Text="" FontSize="11" Margin="0,0,0,5"/>
+                <controls:MarginTypeButtonGroup
+                    x:Name="PART_MarginTypeButton"
+                    Grid.Column="2"
+                    Grid.Row="0"
+                    CornerRadius="3"
+                    VerticalAlignment="Top"
+                    UniformIcon="{x:Static icon:Icon.CornerRadius}"
+                    Width="28" Height="28"
+                    IsUniform="{Binding IsShowCornerRadiusIsUniform, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+            </StackPanel>
+        </Grid>
+        
+        <Grid ColumnDefinitions="*,30" ColumnSpacing="1">
+            <!-- 逐顶点圆角半径：只在分开模式显示 -->
+            <StackPanel Grid.Column="0" IsVisible="{Binding IsShowCornerRadiusIsUniform, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static BoolConverters.Not}}">
+                <TextBlock Text="顶点圆角半径"
+                       FontWeight="Bold"
+                       FontSize="11"
+                       Margin="0,5,0,5"
+                       Foreground="{DynamicResource TextSecondary}"/>
+                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="8" CornerRadius="3">
+                    <ItemsControl x:Name="RadiiItemsControl">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2" ColumnDefinitions="80,*">
+                                    <controls:NumericUpDownEx
+                                        Title="{Binding Index, StringFormat=V{0}}"
+                                        Icon="{x:Static icon:Icon.CornerRadius}"
+                                        CornerRadius="3,0,0,3"
+                                        Step="1"
+                                        Value="{Binding Radius, Mode=TwoWay}"
+                                        Minimum="0" Maximum="60" Height="28"/>
+                                    <common:PropertyBorder Grid.Column="1"
+                                        Background="{DynamicResource BgProperty}"
+                                        CornerRadius="0,3,3,0"
+                                        Height="28"
+                                        Padding="3,0,3,0"
+                                        ClipToBounds="True"
+                                        Margin="1,0,0,0">
+                                        <Slider Margin="0,-9,0,0"
+                                            Minimum="0"
+                                            Maximum="60"
+                                            TickFrequency="1"
+                                            TickPlacement="None"
+                                            IsSnapToTickEnabled="True"
+                                            Value="{Binding Radius, Mode=TwoWay}"
+                                            VerticalAlignment="Center"/>
+                                    </common:PropertyBorder>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </StackPanel>
+        </Grid>
+
+        <!-- 调试点显示控制 -->
+        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" Padding="8" CornerRadius="3">
+            <StackPanel Spacing="8">
+                <TextBlock Text="调试点显示"
+                       FontWeight="Bold"
+                       FontSize="11"
+                       Foreground="{DynamicResource TextSecondary}"/>
+
+                <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                    <!-- 总开关 -->
+                    <CheckBox Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                        Content="显示调试点"
+                        IsChecked="{Binding DrawPoint, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Margin="0,0,0,5"/>
+
+                    <!-- 图形点 -->
+                    <Ellipse Grid.Row="1" Grid.Column="0" Width="12" Height="12"
+                            Fill="#1E88E5" Stroke="#1565C0" StrokeThickness="1"
+                            Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <CheckBox Grid.Row="1" Grid.Column="1"
+                        Content="图形点（顶点）"
+                        IsChecked="{Binding DrawVertex, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Margin="0,0,0,3"/>
+
+                    <!-- 虚线连接 -->
+                    <Border Grid.Row="2" Grid.Column="0" Width="12" Height="12"
+                            BorderBrush="#1E88E5" BorderThickness="1"
+                            Margin="0,0,8,0" VerticalAlignment="Center">
+                        <Border.RenderTransform>
+                            <RotateTransform Angle="45"/>
+                        </Border.RenderTransform>
+                    </Border>
+                    <CheckBox Grid.Row="2" Grid.Column="1"
+                        Content="顶点虚线连接"
+                        IsChecked="{Binding DrawVertexLine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Margin="0,0,0,3"/>
+
+                    <!-- 控制点 -->
+                    <Ellipse Grid.Row="3" Grid.Column="0" Width="12" Height="12"
+                            Fill="#FFEB3B" Stroke="#F57F17" StrokeThickness="1"
+                            Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <CheckBox Grid.Row="3" Grid.Column="1"
+                        Content="控制点（切点）"
+                        IsChecked="{Binding DrawTangent, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Margin="0,0,0,3"/>
+
+                    <!-- 圆心 -->
+                    <Ellipse Grid.Row="4" Grid.Column="0" Width="12" Height="12"
+                            Fill="#FF9800" Stroke="#E65100" StrokeThickness="1"
+                            Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <CheckBox Grid.Row="4" Grid.Column="1"
+                        Content="圆心"
+                        IsChecked="{Binding DrawCenter, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:yuyiAvalonia.UI.Controls"
+        mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="450"
+        x:Class="yuyiAvalonia.UI.Controls.Layout">
+    <StackPanel>
+        <!-- 只有父容器是Canvas可见 -->
+        <local:PositionEditor
+            x:Name="PART_Position"
+            Left="{Binding ElementProperty.Left, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Top="{Binding ElementProperty.Top, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Right="{Binding ElementProperty.Right, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Bottom="{Binding ElementProperty.Bottom, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            FixLeft="{Binding ElementProperty.FixLeft, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            FixTop="{Binding ElementProperty.FixTop, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            FixRight="{Binding ElementProperty.FixRight, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            FixBottom="{Binding ElementProperty.FixBottom, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Margin="0,5,0,0"/>
+        
+        <!-- 只有父容器是StackPanel可见 -->
+        <local:MarginEditor
+            x:Name="PART_Margin"
+            ElementProperty="{Binding ElementProperty, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+        <!-- 只有自身是StackPanel可见 -->
+        <local:PaddingEditor
+            x:Name="PART_Padding"
+            ElementProperty="{Binding ElementProperty, Mode=OneWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+        
+        <!-- 具备父容器可见 -->
+        <local:AlignmentPropertyEditor
+            x:Name="PART_Alignment"
+            HorizontalAlignment="{Binding ElementProperty.HorizontalAlignment, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            VerticalAlignment="{Binding ElementProperty.VerticalAlignment, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+    </StackPanel>
+</UserControl>

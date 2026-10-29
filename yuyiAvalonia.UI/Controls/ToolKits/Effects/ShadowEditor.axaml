@@ -1,0 +1,407 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:local="using:yuyiAvalonia.UI.Controls"
+             xmlns:models="using:yuyiAvalonia.UI.Models"
+             xmlns:conv="using:yuyiAvalonia.UI.Converters"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="400"
+             x:Class="yuyiAvalonia.UI.Controls.ShadowEditor">
+
+    <UserControl.Resources>
+        <conv:StringToBrushConverter x:Key="StrToBrush"/>
+        <conv:StringToColorConverter x:Key="StrToColor"/>
+    </UserControl.Resources>
+
+    <Grid x:Name="RootGrid" RowDefinitions="*,Auto">
+
+        <!-- 列表内容 -->
+        <StackPanel Grid.Row="0">
+            <!-- 标题行：添加按钮 -->
+            <Grid Margin="0,0,0,5" ColumnDefinitions="*,Auto">
+                <TextBlock Grid.Column="0"
+                    Text="阴影"
+                    FontSize="12"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource TextPrimary}"
+                    VerticalAlignment="Center"/>
+                <Button x:Name="AddButton"
+                    Width="24" 
+                    Height="24"
+                    Background="Transparent"
+                    Grid.Column="1"
+                    Padding="3"
+                    ToolTip.Tip="添加阴影层"
+                    Click="AddButton_Click">
+                    <Border>
+                        <PathIcon Data="{x:Static icon:Icon.Add}"
+                            Width="11" Height="11"
+                            Foreground="{DynamicResource TextSecondary}"/>
+                    </Border>
+                </Button>
+            </Grid>
+
+            <!-- 无阴影时显示提示 -->
+            <StackPanel IsVisible="{Binding !HasShadows, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        HorizontalAlignment="Center"
+                        Margin="0,8,0,8">
+                <TextBlock Text="暂无阴影，点击上方添加"
+                           FontSize="11"
+                           Opacity="0.8"
+                           Foreground="{DynamicResource TextSecondary}"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- 阴影项列表 -->
+            <ItemsControl x:Name="ShadowsItemsControl"
+                ItemsSource="{Binding Shadows, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                IsVisible="{Binding HasShadows, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="models:ShadowItem">
+                        <Grid ColumnDefinitions="*,25,25" ColumnSpacing="1"
+                            Margin="0,0,0,5" >
+                            <Border Grid.Column="0"
+                                Padding="3"
+                                Background="{DynamicResource BgToolbar}"
+                                BorderBrush="{DynamicResource BorderColor}"
+                                BorderThickness="1"
+                                CornerRadius="3"
+                                Cursor="Hand"
+                                PointerPressed="ShadowItem_Click">
+                                <!-- 阴影预览和名称 -->
+                                <Grid ColumnDefinitions="Auto,*,25"
+                                    ColumnSpacing="1"
+                                    VerticalAlignment="Center">
+                                    <Border Width="28" Height="28"
+                                        Grid.Column="0"
+                                        CornerRadius="3"
+                                        ClipToBounds="True"
+                                        Background="{DynamicResource BgContent}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1">
+                                        <Panel>
+                                            <Border CornerRadius="2"
+                                                Background="{Binding Color, Converter={StaticResource StrToBrush}}"
+                                                Opacity="{Binding Opacity}"/>
+                                        </Panel>
+                                    </Border>
+
+                                    <StackPanel VerticalAlignment="Center" Grid.Column="1">
+                                        <TextBlock Text="{Binding Name}"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextPrimary}"
+                                            TextTrimming="CharacterEllipsis"
+                                            MaxWidth="120"/>
+                                        <Grid ColumnDefinitions="Auto,Auto,*">
+                                            <TextBlock Text="{Binding Opacity, Converter={x:Static conv:OpacityToPercentConverter.Instance}}"
+                                                Grid.Column="0"
+                                                FontSize="10"
+                                                Foreground="{DynamicResource TextSecondary}"/>
+                                            
+                                            <TextBlock Text="% - "
+                                                Grid.Column="1"
+                                                FontSize="10"
+                                                Foreground="{DynamicResource TextSecondary}"/>
+
+                                            <TextBlock Text="{Binding ShadowType}"
+                                                Grid.Column="2"
+                                                FontSize="10"
+                                                Foreground="{DynamicResource TextSecondary}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                    <!-- 上移 -->
+                                    <Button Grid.Column="2"
+                                        Background="Transparent"
+                                        Width="24" 
+                                        Height="24"
+                                        Cursor="Hand"
+                                        Click="MoveUpShadow_Click"
+                                        ToolTip.Tip="上移">
+                                        <PathIcon Data="{x:Static icon:Icon.TopDock}" Width="12" Height="12" Foreground="{DynamicResource TextSecondary}"/>
+                                    </Button>
+
+                                </Grid>
+                            </Border>
+
+                            <!-- 可见性切换按钮 -->
+                            <controls:VisibilityToggle Grid.Column="1"
+                                IconSize="13"
+                                Width="24" 
+                                Height="24"
+                                Cursor="Hand"
+                                IsVisible="{Binding IsEnabled, Mode=TwoWay}"
+                                ToggleOnClick="True"
+                                Toggled="VisibilityToggle_Toggled"/>
+
+                            <!-- 删除 -->
+                            <Button Grid.Column="3"
+                                Background="Transparent"
+                                Width="24" 
+                                Height="24"
+                                Cursor="Hand"
+                                Click="RemoveShadow_Click"
+                                ToolTip.Tip="删除此阴影">
+                                <PathIcon Data="{x:Static icon:Icon.Delete}" Width="11" Height="11" Foreground="{DynamicResource TextSecondary}"/>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <!-- 阴影编辑器 Popup -->
+        <Popup x:Name="ShadowEditorPopup"
+            PlacementMode="AnchorAndGravity"
+            PlacementAnchor="Left"
+            PlacementGravity="Left"
+            IsLightDismissEnabled="True"
+            IsOpen="{Binding $parent[UserControl].IsShadowEditorOpen, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+            <Border Background="{DynamicResource BgContent}"
+                BorderBrush="{DynamicResource BorderColor}"
+                x:Name="DragHost"
+                BorderThickness="1"
+                CornerRadius="4"
+                BoxShadow="0 4 16 0 #60000000"
+                Padding="12"
+                DataContext="{Binding $parent[UserControl].SelectedShadow, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <StackPanel Width="260">
+                    <!-- 标题栏 -->
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- 类型切换按钮组 -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                            <ToggleButton x:Name="OuterTypeBtn"
+                                    IsChecked="{Binding $parent[UserControl].SelectedShadow.ShadowType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:ShadowEditor.ShadowTypeOuterConverter}, Mode=OneWay}"
+                                    Click="SelectShadowType_Click"
+                                    Tag="{x:Static models:ShadowType.Outer}"
+                                    ToolTip.Tip="外阴影"
+                                    Padding="6"
+                                    MinWidth="32" Height="30"
+                                    CornerRadius="4">
+                                <PathIcon Data="{x:Static icon:Icon.OuterShadonw}"
+                                    Width="14" Height="14"
+                                    Foreground="{DynamicResource TextPrimary}"/>
+                            </ToggleButton>
+                            <ToggleButton x:Name="InnerTypeBtn"
+                                    IsChecked="{Binding $parent[UserControl].SelectedShadow.ShadowType, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={x:Static local:ShadowEditor.ShadowTypeInnerConverter}, Mode=OneWay}"
+                                    Click="SelectShadowType_Click"
+                                    Tag="{x:Static models:ShadowType.Inner}"
+                                    ToolTip.Tip="内阴影"
+                                    Padding="6"
+                                    MinWidth="32" Height="30"
+                                    CornerRadius="4">
+                                <PathIcon Data="{x:Static icon:Icon.InnerShadonw}"
+                                    Width="14" Height="14"
+                                    Foreground="{DynamicResource TextPrimary}"/>
+                            </ToggleButton>
+                        </StackPanel>
+
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center"/>
+
+                        <controls:VisibilityToggle Grid.Column="2"
+                                IsVisible="{Binding $parent[UserControl].SelectedShadow.IsEnabled}"
+                                ToggleOnClick="True"
+                                Margin="0,0,4,0"/>
+
+                        <Button Grid.Column="3"
+                                Content="X"
+                                Padding="6,2"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="CloseShadowEditor_Click"
+                                FontSize="10"
+                                Foreground="{DynamicResource TextSecondary}"/>
+                    </Grid>
+
+                    <!-- 名称 -->
+                    <controls:TextInput Text="{Binding $parent[UserControl].SelectedShadow.Name, Mode=TwoWay}"
+                        Margin="0,0,0,5"
+                        Title="名称"
+                        FontSize="11"
+                        Watermark="阴影名称"
+                        AcceptsReturn="True"/>
+
+                    <!-- 颜色 + 透明度 -->
+                    <Grid ColumnDefinitions="*,5,*">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="颜色" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                            <controls:ColorInput
+                                Text="{Binding $parent[UserControl].SelectedShadow.Color, Mode=TwoWay}"
+                                FontSize="11"
+                                Height="30"/>
+                        </StackPanel>
+                        
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="透明度" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                            
+                            <controls:NumericSpecUpDownEx
+                                Title ="透明度"
+                                Icon="{x:Static icon:Icon.Opacity}"
+                                ButtonIcon="{x:Static icon:Icon.Slider}"
+                                UseSlider="True"
+                                Minimum="0"
+                                Maximum="100"
+                                Suffix="%"
+                                Step="1"
+                                FontSize="11"
+                                Value="{Binding $parent[UserControl].OpacityPercent, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                    </Grid>
+
+                    <!-- 偏移 X/Y -->
+                    <TextBlock Text="偏移" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                    <Grid Margin="0,0,0,5" ColumnDefinitions="*,5,*">
+                        <controls:NumericSpecUpDownEx Grid.Column="0"
+                            Title="X"
+                            Value="{Binding $parent[UserControl].SelectedShadow.OffsetX, Mode=TwoWay}"
+                            Minimum="-100"
+                            Maximum="100"
+                            UseSlider="True"
+                            ButtonIcon="{x:Static icon:Icon.Slider}"
+                            Height="30"/>
+                        <controls:NumericSpecUpDownEx Grid.Column="2"
+                            Title="Y"
+                            Value="{Binding $parent[UserControl].SelectedShadow.OffsetY, Mode=TwoWay}"
+                            Minimum="-100"
+                            Maximum="100"
+                            UseSlider="True"
+                            ButtonIcon="{x:Static icon:Icon.Slider}"
+                            Height="30"/>
+                    </Grid>
+
+                    <!-- 扩散 + 模糊 -->
+                    <Grid Margin="0,0,0,5" ColumnDefinitions="*,5,*">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="扩展" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                             <controls:NumericSpecUpDownEx Grid.Column="0"
+                                Icon="{x:Static icon:Icon.Spread}"                 
+                                Value="{Binding $parent[UserControl].SelectedShadow.Spread, Mode=TwoWay}"
+                                Minimum="-50"
+                                Maximum="50"
+                                UseSlider="True"
+                                ButtonIcon="{x:Static icon:Icon.Slider}"
+                                Height="30"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="模糊" FontSize="10" Foreground="{DynamicResource TextSecondary}" VerticalAlignment="Center" Margin="0,0,0,5"/>
+                            <controls:NumericSpecUpDownEx Grid.Column="2"
+                                Icon="{x:Static icon:Icon.Blur}"           
+                                Value="{Binding $parent[UserControl].SelectedShadow.Blur, Mode=TwoWay}"
+                                Minimum="0"
+                                Maximum="100"
+                                UseSlider="True"
+                                ButtonIcon="{x:Static icon:Icon.Slider}"
+                                Height="30"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Popup>
+        
+        <!-- 添加阴影类型的 Popup -->
+        <Popup x:Name="AddShadowPopup"
+            PlacementMode="AnchorAndGravity"
+            PlacementTarget="{Binding #AddButton}"
+            PlacementAnchor="BottomRight"
+            PlacementGravity="BottomLeft"
+            HorizontalOffset="0"
+            VerticalOffset="5"
+            IsLightDismissEnabled="True"
+            IsOpen="{Binding IsAddShadowPopupOpen, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+            <Border Background="{DynamicResource BgContent}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="8">
+                <StackPanel>
+                    <TextBlock Text="选择阴影类型"
+                        FontSize="10"
+                        Foreground="{DynamicResource TextSecondary}"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,8"/>
+
+                    <!-- 两种阴影类型图标按钮 -->
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <!-- 外阴影 -->
+                        <Button x:Name="AddOuterShadowButton"
+                            Padding="8"
+                            ToolTip.Tip="外阴影"
+                            Click="AddOuterShadow_Click">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="32" Height="32"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource BgToolbar}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1">
+                                    <Border Width="20" Height="20"
+                                            CornerRadius="2"
+                                            ClipToBounds="True"
+                                            Background="#E0E0E0">
+                                        <Border Width="12" Height="12"
+                                                CornerRadius="1"
+                                                Background="#808080"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                BoxShadow="0 2 4 #40000000"/>
+                                    </Border>
+                                </Border>
+                                <TextBlock Text="外阴影" FontSize="9"
+                                            Foreground="{DynamicResource TextSecondary}"
+                                            HorizontalAlignment="Center"
+                                            Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!-- 内阴影 -->
+                        <Button x:Name="AddInnerShadowButton"
+                            Padding="8"
+                            ToolTip.Tip="内阴影"
+                            Click="AddInnerShadow_Click">
+                            <StackPanel HorizontalAlignment="Center">
+                                <Border Width="32" Height="32"
+                                        CornerRadius="4"
+                                        Background="{DynamicResource BgToolbar}"
+                                        BorderBrush="{DynamicResource BorderColor}"
+                                        BorderThickness="1">
+                                    <Border Width="20" Height="20"
+                                            CornerRadius="2"
+                                            ClipToBounds="True"
+                                            Background="#E0E0E0">
+                                        <Border Width="12" Height="12"
+                                            CornerRadius="1"
+                                            Background="#808080"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                                    <GradientStop Offset="0" Color="#40000000"/>
+                                                    <GradientStop Offset="1" Color="#00000000"/>
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                    </Border>
+                                </Border>
+                                <TextBlock Text="内阴影" FontSize="9"
+                                            Foreground="{DynamicResource TextSecondary}"
+                                            HorizontalAlignment="Center"
+                                            Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+    </Grid>
+</UserControl>

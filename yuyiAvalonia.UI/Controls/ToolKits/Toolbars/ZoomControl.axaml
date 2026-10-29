@@ -1,0 +1,53 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icon="using:yuyiAvalonia.UI.Helpers"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="40"
+             x:Class="yuyiAvalonia.UI.Controls.ZoomControl">
+
+    <UserControl.Styles>
+    </UserControl.Styles>
+
+    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4">
+        <Button Content="-"
+                Classes="Outline"
+                Width="28"
+                Height="28"
+                FontSize="14"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="OnZoomOutClick"/>
+        <Border Width="50"
+                Height="28"
+                Background="{DynamicResource BgContent}"
+                CornerRadius="4"
+                VerticalAlignment="Center">
+            <TextBlock x:Name="ZoomPercentText"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="11"
+                       Foreground="{DynamicResource TextPrimary}"/>
+        </Border>
+        <Button Content="+"
+                Classes="Outline"
+                Width="28"
+                Height="28"
+                FontSize="14"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                Click="OnZoomInClick"/>
+     
+        <Button ToolTip.Tip="重置"
+                Click="OnResetZoomClick"
+                Classes="Outline"
+                Width="28" Height="28"
+                Padding="6,4">
+            <Path Data="{x:Static icon:IconHelper.ResetSize}"
+                    Width="14" Height="14"
+                    Fill="{DynamicResource TextPrimary}"
+                    Stretch="Uniform"/>
+        </Button>
+    </StackPanel>
+
+</UserControl>

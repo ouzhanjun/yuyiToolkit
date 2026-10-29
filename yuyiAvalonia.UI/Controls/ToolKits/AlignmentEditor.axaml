@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:yuyiAvalonia.Base.Controls;assembly=yuyiAvalonia.Base"
+             xmlns:icon="clr-namespace:yuyiAvalonia.Base.Helpers;assembly=yuyiAvalonia.Base"
+             mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="80"
+             x:Class="yuyiAvalonia.UI.AlignmentEditor">
+
+    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+        <!-- 水平对齐 -->
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,5,5" HorizontalAlignment="Left">
+            <TextBlock Text="水平对齐" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <controls:AlignmentButtonGroup x:Name="PART_HorizontalGroup"
+                                           Height="28"
+                                           Width="100"
+                                           Icon1="{x:Static icon:Icon.LeftAlignment}"
+                                           Icon2="{x:Static icon:Icon.CenterAlignment}"
+                                           Icon3="{x:Static icon:Icon.RightAlignment}"/>
+        </StackPanel>
+
+        <!-- 垂直对齐 -->
+        <StackPanel Grid.Column="1" Grid.Row="0" Margin="5,0,0,5" HorizontalAlignment="Left">
+            <TextBlock Text="垂直对齐" FontSize="10" Foreground="{DynamicResource TextPrimary}" Margin="0,0,0,5"/>
+            <controls:AlignmentButtonGroup x:Name="PART_VerticalGroup"
+                                           Height="28"
+                                           Width="100"
+                                           Icon1="{x:Static icon:Icon.TopAlignment}"
+                                           Icon2="{x:Static icon:Icon.MiddleAlignment}"
+                                           Icon3="{x:Static icon:Icon.BottomAlignment}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

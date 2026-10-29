@@ -1,0 +1,170 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:icon="using:yuyiAvalonia.Base.Helpers"
+             xmlns:local="using:yuyiAvalonia.Base.Controls"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="120" d:DesignHeight="28"
+             x:Class="yuyiAvalonia.Base.Controls.NumericEditUpDownEx"
+             x:Name="This">
+    <Panel>
+        <!-- Slider 弹窗：绑定到当前选中数字段 -->
+        <Popup x:Name="SliderPickerPopup"
+            PlacementMode="AnchorAndGravity"
+            PlacementAnchor="BottomRight"
+            PlacementGravity="BottomLeft"
+            HorizontalOffset="0"
+            Height="32"
+            VerticalOffset="5"
+            IsLightDismissEnabled="True"
+            IsOpen="{Binding IsSliderPickerOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Border Background="{DynamicResource BgToolbar}"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="3,-5,3,5"
+                HorizontalAlignment="Center">
+                <Slider x:Name="PART_Slider"
+                    Width="100"
+                    MinWidth="60"
+                    Height="30"
+                    Value="{Binding $parent[UserControl].SelectedPartValue, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                    Minimum="{Binding $parent[UserControl].Minimum, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
+                    Maximum="{Binding $parent[UserControl].Maximum, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
+                    IsSnapToTickEnabled="True"
+                    TickFrequency="1"/>
+            </Border>
+        </Popup>
+
+        <!-- 主边框 -->
+        <common:PropertyBorder Background="{DynamicResource BgProperty}"
+            x:Name="PART_PropertyBorder"
+            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            ClipToBounds="True">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto" x:Name="PART_GridContent">
+
+                <!-- 左侧 Title / Icon -->
+                <Border Grid.Column="0"
+                        CornerRadius="3,0,0,3"
+                        VerticalAlignment="Center"
+                        ClipToBounds="True"
+                        Padding="3,0">
+                    <Panel x:Name="PART_PanelIcon"
+                        Cursor="SizeWestEast"
+                        PointerPressed="PanelIcon_PointerPressed"
+                        PointerMoved="PanelIcon_PointerMoved"
+                        PointerReleased="PanelIcon_PointerReleased"
+                        Tag="False">
+                        <TextBlock x:Name="PART_Title"
+                            Foreground="{DynamicResource TextSecondary}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsVisible="False"
+                            FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        <PathIcon x:Name="PART_Icon"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextSecondary}"
+                            IsVisible="False"
+                            Width="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            Height="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                    </Panel>
+                </Border>
+
+                <!-- TextBox：逗号分隔的数字字符串 -->
+                <Border Grid.Column="1" ClipToBounds="True" Padding="-3">
+                    <TextBox x:Name="PART_TextBox"
+                        Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+                        FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Padding="4,3"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        MinWidth="30"/>
+                </Border>
+
+                <!-- 后缀 Suffix -->
+                <Border Grid.Column="2" VerticalAlignment="Center">
+			        <TextBlock FontSize="11"
+                        Cursor="SizeWestEast"
+                        PointerPressed="PanelIcon_PointerPressed"
+                        PointerMoved="PanelIcon_PointerMoved"
+                        PointerReleased="PanelIcon_PointerReleased"
+                        Foreground="{DynamicResource TextSecondary}"
+                        x:Name="PART_Suffix"
+                        Text="{Binding Suffix, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"/>
+                </Border>
+
+                <!-- 右侧按钮：Slider 弹窗 + 上下箭头 -->
+                <Grid
+                    ColumnDefinitions="Auto,*"
+                    Grid.Column="3"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Stretch"
+                    Background="Transparent">
+                    <Grid RowDefinitions="*,*" Grid.Column="0" x:Name="PART_UpDownButtons">
+                        <!-- ▲ 按钮 -->
+                        <Button x:Name="PART_UpButton"
+                            Grid.Row="0"
+                            Width="16"
+                            Content="▲"
+                            FontSize="6"
+                            Padding="2"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextSecondary}"
+                            BorderThickness="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"/>
+
+                        <!-- ▼ 按钮 -->
+                        <Button x:Name="PART_DownButton"
+                                Grid.Row="1"
+                                Width="16"
+                                Content="▼"
+                                FontSize="6"
+                                Padding="2"
+                                Background="Transparent"
+                                Foreground="{DynamicResource TextSecondary}"
+                                BorderThickness="0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                VerticalContentAlignment="Center"/>
+                    </Grid>
+                    <!-- Slider 弹窗触发按钮 -->
+                    <Button
+                        Grid.Column="1"
+                        x:Name="PART_Button"
+                        Background="Transparent"
+                        Cursor="Hand"
+                        Padding="3,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        CornerRadius="3"
+                        Width="20"
+                        ToolTip.Tip="滑块">
+                        <Panel>
+                            <PathIcon x:Name="PART_ButtonIcon"
+                                Data="{x:Static icon:Icon.Rotation}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="{DynamicResource TextSecondary}"
+                                Width="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                Height="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                        </Panel>
+                    </Button>
+
+                </Grid>
+            </Grid>
+        </common:PropertyBorder>
+    </Panel>
+</UserControl>

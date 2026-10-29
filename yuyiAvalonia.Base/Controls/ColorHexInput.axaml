@@ -1,0 +1,92 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:common="using:yuyiAvalonia.Base.Controls.Common"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="60" d:DesignHeight="24"
+             x:Class="yuyiAvalonia.Base.Controls.ColorHexInput"
+             x:Name="This">
+
+    <common:PropertyBorder CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        ClipToBounds="True"
+        x:Name="PART_PropertyBorder"
+        Height="{Binding Height, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <Grid ColumnDefinitions="*,2*" ColumnSpacing="1" x:Name="PART_GridContent" ClipToBounds="True">
+            <Border Background="{DynamicResource BgProperty}" 
+                Grid.Column="0"
+                Padding="4,2,2,2"
+                VerticalAlignment="Stretch">
+                <Panel x:Name="PART_PanelIcon"
+                    ClipToBounds="True"
+                    Tag="False">
+                    <!-- 单击触发 Hex/CSS 切换下拉（当 Title 设置为 Hex 或 CSS 时启用） -->
+                    <Panel x:Name="PART_TitleTrigger"
+                           IsVisible="False"
+                           Cursor="Hand"
+                           PointerPressed="TitleTrigger_PointerPressed">
+                        <Grid ColumnDefinitions="*,1,Auto">
+                            <TextBlock x:Name="PART_Title"
+                                Grid.Column="0"
+                                Margin="3"
+                                Foreground="{DynamicResource TextSecondary}"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+                            <TextBlock Grid.Column="2" Text="▾" FontSize="12" Margin="4,0,0,0"
+                                VerticalAlignment="Center" Opacity="0.8"
+                                Foreground="{DynamicResource TextSecondary}"/>
+                        </Grid>
+                        <Popup x:Name="PART_ModePopup"
+                            PlacementTarget="{Binding #PART_TitleTrigger}"
+                            Placement="Bottom"
+                            IsLightDismissEnabled="True">
+                            <Border Background="{DynamicResource BgContent}"
+                                    BorderBrush="{DynamicResource BorderColor}"
+                                    BorderThickness="1"
+                                    CornerRadius="3"
+                                    BoxShadow="0 2 8 0 #40000000"
+                                    Padding="2">
+                                <StackPanel x:Name="PART_ModeItems" />
+                            </Border>
+                        </Popup>
+                    </Panel>
+                    <PathIcon x:Name="PART_Icon"
+                        Margin="4"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{DynamicResource TextSecondary}"
+                        IsVisible="False"
+                        Width="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Height="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
+
+                </Panel>
+            </Border>
+            <Border ClipToBounds="True" Grid.Column="1" Padding="-3" Background="{DynamicResource BgProperty}" >
+                <Panel>
+                    <TextBox x:Name="PART_TextBox"
+                        Margin="-2"
+                        Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Watermark="{Binding Watermark, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        VerticalContentAlignment="Center"
+                        TextAlignment="Center"
+                        Padding="4,3,3,3"
+                        Background="Transparent"
+                        BorderThickness="0"/>
+                    <TextBox x:Name="PART_CssTextBox"
+                        Margin="-2"
+                        Text="{Binding CssText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        FontFamily="Consolas"
+                        Watermark="{Binding CssWatermark, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        VerticalContentAlignment="Center"
+                        TextAlignment="Center"
+                        Padding="4,3,3,3"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        IsVisible="False"/>
+                </Panel>
+            </Border>
+        </Grid>
+    </common:PropertyBorder>
+</UserControl>
